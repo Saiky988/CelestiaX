@@ -949,1052 +949,1076 @@
         </div>
     </div>
 
-    <script>
-        // ĐÃ FIX: Sửa lỗi Parser cắt nhầm token khi chuỗi có chứa nhiều dấu '='
-        const cookieStorage = {
-            getItem: (key) => {
-                const cookies = document.cookie.split(';');
-                const cookie = cookies.find(c => c.trim().startsWith(key + '='));
-                if (!cookie) return null;
-                // Lấy toàn bộ giá trị sau dấu '=' đầu tiên
-                const value = cookie.substring(cookie.indexOf('=') + 1);
-                return decodeURIComponent(value);
-            },
-            setItem: (key, value) => {
-                document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
-            },
-            removeItem: (key) => {
-                document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-            }
-        };
+<script>
+    // ĐÃ FIX: Sửa lỗi Parser cắt nhầm token khi chuỗi có chứa nhiều dấu '='
+    const cookieStorage = {
+        getItem: (key) => {
+            const cookies = document.cookie.split(';');
+            const cookie = cookies.find(c => c.trim().startsWith(key + '='));
+            if (!cookie) return null;
+            const value = cookie.substring(cookie.indexOf('=') + 1);
+            return decodeURIComponent(value);
+        },
+        setItem: (key, value) => {
+            document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
+        },
+        removeItem: (key) => {
+            document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        }
+    };
 
-        const supabaseUrl = 'https://ivlkgqmmtvbfpmgssxsg.supabase.co';
-        const supabaseKey = 'sb_publishable_lusXR7UeNgJ4lwo9pIEaJA_T2sJ-l6U';
-        
-        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                storage: cookieStorage,
-                autoRefreshToken: true,
-                persistSession: true,
-                detectSessionInUrl: true
+    const supabaseUrl = 'https://ivlkgqmmtvbfpmgssxsg.supabase.co';
+    const supabaseKey = 'sb_publishable_lusXR7UeNgJ4lwo9pIEaJA_T2sJ-l6U';
+    
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
+        auth: {
+            storage: cookieStorage,
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        }
+    });
+
+    const PRICE_CANVA = 5000;
+
+    const gameServicesConfig = {
+        "lienquan": {
+            name: "Liên Quân",
+            services: [
+                { id: "rank_dong_chientuong", name: "Đồng → Chiến Tướng", price: 50000, eta: "24h" },
+                { id: "rank_caothu_chientuong", name: "Cao Thủ → Chiến Tướng", price: 35000, eta: "12h" },
+                { id: "farm_vang", name: "Cày 10.000 Vàng", price: 20000, eta: "48h" }
+            ]
+        },
+        "roblox": {
+            name: "Roblox",
+            services: [
+                { id: "bloxfruit_lv1_700", name: "Blox Fruit - Lv 1 > 700", price: 30000, eta: "48h" },
+                { id: "bloxfruit_lv700_max", name: "Blox Fruit - Lv 700 > Max", price: 50000, eta: "72h" },
+                { id: "bloxfruit_maxlevel", name: "Blox Fruit - Lv 1 > Max", price: 100000, eta: "96h" },
+                { id: "bloxfruit_5mbeli", name: "Blox Fruit - 5M Beli", price: 15000, eta: "24h" },
+                { id: "bloxfruit_10mbeli", name: "Blox Fruit - 10M Beli", price: 25000, eta: "24h" },
+                { id: "bloxfruit_1gear", name: "Blox Fruit - 1 Gear V4", price: 15000, eta: "24h" },
+                { id: "bloxfruit_pushlever", name: "Blox Fruit - Gạt Cần", price: 20000, eta: "24h" },
+                { id: "bloxfruit_noteligible_pushlever", name: "Blox Fruit - Gạt Cần (Không điều kiện)", price: 40000, eta: "24h" },
+                { id: "bloxfruit_up_v2fruit", name: "Blox Fruit - Nâng Fruit V2 (thường)", price: 40000, eta: "24h" },
+                { id: "bloxfruit_up_v2fruit_mythic", name: "Blox Fruit - Nâng Fruit V2 (Đặc Biệt)", price: 75000, eta: "24h" },
+                { id: "bloxfruit_yama_tushita", name: "Blox Fruit - Yama + Tushita", price: 70000, eta: "48h" },
+                { id: "bloxfruit_saishi", name: "Blox Fruit - Saishi", price: 20000, eta: "24h" },
+                { id: "bloxfruit_shizu", name: "Blox Fruit - Shizu", price: 20000, eta: "24h" },
+                { id: "bloxfruit_oroshi", name: "Blox Fruit - Oroshi", price: 20000, eta: "24h" },
+                { id: "bloxfruit_mirror_piece", name: "Blox Fruit - Mảnh Gương", price: 20000, eta: "24h" },
+                { id: "bloxfruit_open_gate", name: "Blox Fruit - Mở Cổng", price: 20000, eta: "24h" },
+                { id: "bloxfruit_Belt", name: "Blox Fruit - Full Đai", price: 60000, eta: "48h" },
+                { id: "bloxfruit_yoruv3", name: "Blox Fruit - Yoru V3", price: 50000, eta: "24h" },
+                { id: "bloxfruit_1k_bone", name: "Blox Fruit - 1K Bone", price: 8000, eta: "24h" },
+                { id: "bloxfruit_5k_bone", name: "Blox Fruit - 5K Bone", price: 35000, eta: "24h" },
+                { id: "bloxfruit_500_ectoplasm", name: "Blox Fruit - 500 Ectoplasm", price: 25000, eta: "24h" },
+                { id: "bloxfruit_1k_ectoplasm", name: "Blox Fruit - 1K Ectoplasm", price: 45000, eta: "24h" },
+                { id: "bloxfruit_1_300_mastery", name: "Blox Fruit - 1 > 300 Mastery", price: 20000, eta: "24h" },
+                { id: "bloxfruit_300_600_mastery", name: "Blox Fruit - 300 > 600 Mastery", price: 25000, eta: "24h" },
+                { id: "bloxfruit_ghoulv3", name: "Blox Fruit - Ghoul V3", price: 45000, eta: "24h" },
+                { id: "bloxfruit_cyborg", name: "Blox Fruit - Cyborg V3", price: 60000, eta: "24h" },
+                { id: "bloxfruit_haki_legen", name: "Blox Fruit - 1 Haki Legendery", price: 35000, eta: "24h" },
+                { id: "bloxfruit_soul_guitar", name: "Blox Fruit - 1 Soul Guitar (Full Mastery)", price: 45000, eta: "24h" }
+            ]
+        }
+    };
+
+    let appState = {
+        currentUser: null,
+        orders: [],
+        transactions: []
+    };
+
+    const DOM = {
+        landingView: document.getElementById('landing-view'),
+        authModal: document.getElementById('auth-modal'),
+        appView: document.getElementById('app-view'),
+        loginForm: document.getElementById('login-form'),
+        registerForm: document.getElementById('register-form'),
+        views: document.querySelectorAll('.view-section:not(#landing-view)'),
+        navItems: document.querySelectorAll('.nav-item'),
+        toastContainer: document.getElementById('toast-container'),
+        checkoutModal: document.getElementById('checkout-modal'),
+        checkoutForm: document.getElementById('checkout-form'),
+        ordersTableBody: document.getElementById('orders-table-body'),
+        txTableBody: document.getElementById('tx-table-body'),
+        noOrders: document.getElementById('no-orders'),
+        noTxs: document.getElementById('no-txs'),
+        sidebar: document.getElementById('sidebar'),
+        cardForm: document.getElementById('card-topup-form'),
+        tabBtnBank: document.getElementById('tab-btn-bank'),
+        tabBtnCard: document.getElementById('tab-btn-card'),
+        tabContentBank: document.getElementById('tab-content-bank'),
+        tabContentCard: document.getElementById('tab-content-card'),
+        robuxForm: document.getElementById('robux-form'),
+        gamesForm: document.getElementById('games-form')
+    };
+
+    let paymentPollingInterval = null;
+    let pendingPurchaseAction = null;
+
+    async function init() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            try {
+                if (session) {
+                    const user = session.user;
+                    let profile = null;
+                    
+                    for(let i = 0; i < 3; i++) {
+                        let { data } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
+                        if(data) {
+                            profile = data;
+                            break;
+                        }
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
+
+                    if (!profile) {
+                        profile = {
+                            id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null
+                        };
+                        await supabaseClient.from('profiles').insert([profile]);
+                    }
+
+                    appState.currentUser = profile;
+                    await refreshUserData();
+                    closeAuthModal();
+                    showApp();
+                } else {
+                    appState.currentUser = null;
+                    appState.orders = [];
+                    appState.transactions = [];
+                    DOM.appView.classList.add('hidden');
+                    DOM.landingView.classList.remove('hidden');
+                    setTimeout(() => DOM.landingView.classList.add('active'), 50);
+                    generateFakeCharts();
+                    
+                    window.history.replaceState(null, null, window.location.pathname);
+                }
+            } catch (error) {
+                console.error("Lỗi khi xử lý session:", error);
+                showToast('Đã có lỗi xảy ra khi đồng bộ dữ liệu!', 'error');
             }
         });
 
-        const PRICE_CANVA = 5000;
-
-        const gameServicesConfig = {
-            "lienquan": {
-                name: "Liên Quân",
-                services: [
-                    { id: "rank_dong_chientuong", name: "Đồng → Chiến Tướng", price: 50000, eta: "24h" },
-                    { id: "rank_caothu_chientuong", name: "Cao Thủ → Chiến Tướng", price: 35000, eta: "12h" },
-                    { id: "farm_vang", name: "Cày 10.000 Vàng", price: 20000, eta: "48h" }
-                ]
-            },
-            "roblox": {
-                name: "Roblox",
-                services: [
-                    { id: "bloxfruit_lv1_700", name: "Blox Fruit - Lv 1 > 700", price: 30000, eta: "48h" },
-                    { id: "bloxfruit_lv700_max", name: "Blox Fruit - Lv 700 > Max", price: 50000, eta: "72h" },
-                    { id: "bloxfruit_maxlevel", name: "Blox Fruit - Lv 1 > Max", price: 100000, eta: "96h" },
-                    { id: "bloxfruit_5mbeli", name: "Blox Fruit - 5M Beli", price: 15000, eta: "24h" },
-                    { id: "bloxfruit_10mbeli", name: "Blox Fruit - 10M Beli", price: 25000, eta: "24h" },
-                    { id: "bloxfruit_1gear", name: "Blox Fruit - 1 Gear V4", price: 15000, eta: "24h" },
-                    { id: "bloxfruit_pushlever", name: "Blox Fruit - Gạt Cần", price: 20000, eta: "24h" },
-                    { id: "bloxfruit_noteligible_pushlever", name: "Blox Fruit - Gạt Cần (Không điều kiện)", price: 40000, eta: "24h" },
-                    { id: "bloxfruit_up_v2fruit", name: "Blox Fruit - Nâng Fruit V2 (thường)", price: 40000, eta: "24h" },
-                    { id: "bloxfruit_up_v2fruit_mythic", name: "Blox Fruit - Nâng Fruit V2 (Đặc Biệt)", price: 75000, eta: "24h" },
-                    { id: "bloxfruit_yama_tushita", name: "Blox Fruit - Yama + Tushita", price: 70000, eta: "48h" },
-                    { id: "bloxfruit_saishi", name: "Blox Fruit - Saishi", price: 20000, eta: "24h" },
-                    { id: "bloxfruit_shizu", name: "Blox Fruit - Shizu", price: 20000, eta: "24h" },
-                    { id: "bloxfruit_oroshi", name: "Blox Fruit - Oroshi", price: 20000, eta: "24h" },
-                    { id: "bloxfruit_mirror_piece", name: "Blox Fruit - Mảnh Gương", price: 20000, eta: "24h" },
-                    { id: "bloxfruit_open_gate", name: "Blox Fruit - Mở Cổng", price: 20000, eta: "24h" },
-                    { id: "bloxfruit_Belt", name: "Blox Fruit - Full Đai", price: 60000, eta: "48h" },
-                    { id: "bloxfruit_yoruv3", name: "Blox Fruit - Yoru V3", price: 50000, eta: "24h" },
-                    { id: "bloxfruit_1k_bone", name: "Blox Fruit - 1K Bone", price: 8000, eta: "24h" },
-                    { id: "bloxfruit_5k_bone", name: "Blox Fruit - 5K Bone", price: 35000, eta: "24h" },
-                    { id: "bloxfruit_500_ectoplasm", name: "Blox Fruit - 500 Ectoplasm", price: 25000, eta: "24h" },
-                    { id: "bloxfruit_1k_ectoplasm", name: "Blox Fruit - 1K Ectoplasm", price: 45000, eta: "24h" },
-                    { id: "bloxfruit_1_300_mastery", name: "Blox Fruit - 1 > 300 Mastery", price: 20000, eta: "24h" },
-                    { id: "bloxfruit_300_600_mastery", name: "Blox Fruit - 300 > 600 Mastery", price: 25000, eta: "24h" },
-                    { id: "bloxfruit_ghoulv3", name: "Blox Fruit - Ghoul V3", price: 45000, eta: "24h" },
-                    { id: "bloxfruit_cyborg", name: "Blox Fruit - Cyborg V3", price: 60000, eta: "24h" },
-                    { id: "bloxfruit_haki_legen", name: "Blox Fruit - 1 Haki Legendery", price: 35000, eta: "24h" },
-                    { id: "bloxfruit_soul_guitar", name: "Blox Fruit - 1 Soul Guitar (Full Mastery)", price: 45000, eta: "24h" }
-                ]
-            }
-        };
-
-        let appState = {
-            currentUser: null,
-            orders: [],
-            transactions: []
-        };
-
-        const DOM = {
-            landingView: document.getElementById('landing-view'),
-            authModal: document.getElementById('auth-modal'),
-            appView: document.getElementById('app-view'),
-            loginForm: document.getElementById('login-form'),
-            registerForm: document.getElementById('register-form'),
-            views: document.querySelectorAll('.view-section:not(#landing-view)'),
-            navItems: document.querySelectorAll('.nav-item'),
-            toastContainer: document.getElementById('toast-container'),
-            checkoutModal: document.getElementById('checkout-modal'),
-            checkoutForm: document.getElementById('checkout-form'),
-            ordersTableBody: document.getElementById('orders-table-body'),
-            txTableBody: document.getElementById('tx-table-body'),
-            noOrders: document.getElementById('no-orders'),
-            noTxs: document.getElementById('no-txs'),
-            sidebar: document.getElementById('sidebar'),
-            cardForm: document.getElementById('card-topup-form'),
-            tabBtnBank: document.getElementById('tab-btn-bank'),
-            tabBtnCard: document.getElementById('tab-btn-card'),
-            tabContentBank: document.getElementById('tab-content-bank'),
-            tabContentCard: document.getElementById('tab-content-card'),
-            robuxForm: document.getElementById('robux-form'),
-            gamesForm: document.getElementById('games-form')
-        };
-
-        let paymentPollingInterval = null;
-        let paymentPollingCount = 0;
-        let pendingPurchaseAction = null;
-
-        async function init() {
-            // Ép Supabase đọc session từ cookie ngay lập tức để giảm độ trễ
-            const { data: { session } } = await supabaseClient.auth.getSession();
-
-            supabaseClient.auth.onAuthStateChange(async (event, session) => {
-                try {
-                    if (session) {
-                        const user = session.user;
-                        let profile = null;
-                        
-                        for(let i = 0; i < 3; i++) {
-                            let { data } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
-                            if(data) {
-                                profile = data;
-                                break;
-                            }
-                            await new Promise(r => setTimeout(r, 1000));
-                        }
-
-                        if (!profile) {
-                            profile = {
-                                id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null
-                            };
-                            await supabaseClient.from('profiles').insert([profile]);
-                        }
-
-                        appState.currentUser = profile;
-                        await refreshUserData();
-                        closeAuthModal();
-                        showApp();
-                    } else {
-                        appState.currentUser = null;
-                        appState.orders = [];
-                        appState.transactions = [];
-                        DOM.appView.classList.add('hidden');
-                        DOM.landingView.classList.remove('hidden');
-                        setTimeout(() => DOM.landingView.classList.add('active'), 50);
-                        generateFakeCharts();
-                        
-                        // Xóa hash khi chưa đăng nhập
-                        window.history.replaceState(null, null, window.location.pathname);
-                    }
-                } catch (error) {
-                    console.error("Lỗi khi xử lý session:", error);
-                    showToast('Đã có lỗi xảy ra khi đồng bộ dữ liệu!', 'error');
-                }
-            });
-
-            // Lắng nghe sự kiện chuyển URL Hash (Nút Back/Forward của trình duyệt)
-            window.addEventListener('hashchange', handleHashRouting);
-
-            setupEventListeners();
-            setInterval(simulateAdminUpdates, 4000);
-            
-            initGameServices();
-            calcRobuxPrice();
-        }
-
-        // HỆ THỐNG ROUTER (ĐIỀU HƯỚNG BẰNG HASH)
-        function handleHashRouting() {
-            if (!appState.currentUser) return;
-
-            let hash = window.location.hash.replace('#', '');
-            
-            // Xử lý các Hash đặc biệt cho Modal
-            if (hash === 'checkout-canva') {
-                if (!DOM.checkoutModal.classList.contains('active')) openModal();
-                return;
-            } else if (hash === 'checkout-service') {
-                // Bắt buộc quay về Home vì Modal service cần truyền data động
-                closeGenericModal();
-                switchView('home', false);
-                return;
-            } else {
-                DOM.checkoutModal.classList.remove('active');
-                DOM.checkoutForm.reset();
-                closeGenericModal();
-            }
-
-            const validViews = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile'];
-            if (!validViews.includes(hash)) {
-                hash = 'home';
-            }
-
-            switchView(hash, false); // Tham số false: Không update hash lên URL nữa để tránh vòng lặp vô hạn
-        }
-
-        function showApp() {
-            DOM.landingView.classList.remove('active');
-            setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
-            DOM.appView.classList.remove('hidden');
-            updateUI();
-            generateFakeCharts();
-            
-            // Lấy hash từ URL lúc mới vào trang. Nếu người dùng mở link /#orders, sẽ nhảy thẳng vào orders.
-            let initialHash = window.location.hash.replace('#', '') || 'home';
-            const validViews = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile', 'checkout-canva'];
-            if (!validViews.includes(initialHash)) initialHash = 'home';
-            
-            // Nếu hash là modal, bật trang product đệm phía sau
-            if (initialHash === 'checkout-canva') {
-                switchView('product', false);
-                openModal();
-            } else {
-                switchView(initialHash, true);
-            }
-        }
-
-        function switchView(viewName, updateHash = true) {
-            DOM.navItems.forEach(item => {
-                item.classList.toggle('active', item.dataset.target === viewName);
-            });
-            DOM.views.forEach(view => {
-                view.classList.toggle('active', view.id === `view-${viewName}`);
-            });
-            
-            // Đẩy state hash lên URL bar
-            if (updateHash && window.location.hash !== `#${viewName}`) {
-                window.history.pushState(null, null, `#${viewName}`);
-            }
-
-            // Tự động cuộn lên đầu cực mượt
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Tự động đóng Sidebar trên Mobile
-            if (window.innerWidth < 768 && !DOM.sidebar.classList.contains('-translate-x-full')) {
-                toggleMobileMenu();
-            }
-        }
-
-        async function refreshUserData() {
-            if (!appState.currentUser) return;
-            const uid = appState.currentUser.id;
-            const [ordersRes, txRes] = await Promise.all([
-                supabaseClient.from('orders').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
-                supabaseClient.from('transactions').select('*').eq('user_id', uid).order('created_at', { ascending: false })
-            ]);
-            appState.orders = ordersRes.data || [];
-            appState.transactions = txRes.data || [];
-            updateUI();
-        }
-
-        async function updateBalanceAndLogTx(amount, type, status = 'success') {
-            const newBalance = Number(appState.currentUser.balance) + Number(amount);
-            const txCode = 'TX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            
-            await supabaseClient.from('transactions').insert([{
-                tx_code: txCode,
-                user_id: appState.currentUser.id,
-                type: type,
-                amount: amount,
-                status: status
-            }]);
-
-            if(status === 'success') {
-                await supabaseClient.from('profiles').update({ balance: newBalance }).eq('id', appState.currentUser.id);
-                appState.currentUser.balance = newBalance;
-            }
-            await refreshUserData();
-        }
-
-        function setupEventListeners() {
-
-            document.getElementById('reg-password').addEventListener('input', function(e) {
-                const val = e.target.value;
-                const container = document.getElementById('password-strength-container');
-                const text = document.getElementById('password-strength-text');
-                const bar = document.getElementById('strength-bar');
-
-                if (!val) {
-                    container.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
-                    container.classList.add('max-h-0', 'opacity-0');
-                    bar.style.width = '0%';
-                    return;
-                }
-                
-                container.classList.remove('max-h-0', 'opacity-0');
-                container.classList.add('max-h-[50px]', 'opacity-100', 'mt-2.5');
-
-                let strength = 0;
-                if (val.length >= 6) strength++; 
-                if (val.match(/(?=.*[a-z])(?=.*[A-Z])/)) strength++; 
-                if (val.match(/(?=.*[0-9])/)) strength++; 
-                if (val.match(/[^A-Za-z0-9]/)) strength++; 
-
-                let width = '0%';
-                let colorClass = 'bg-red-500';
-                
-                if (strength === 1) { width = '25%'; colorClass = 'bg-red-500'; }
-                else if (strength === 2) { width = '50%'; colorClass = 'bg-orange-500'; }
-                else if (strength === 3) { width = '75%'; colorClass = 'bg-yellow-500'; }
-                else if (strength === 4) { width = '100%'; colorClass = 'bg-green-500'; }
-
-                bar.className = `h-full transition-all duration-500 ease-out ${colorClass}`;
-                bar.style.width = width;
-
-                text.className = 'text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ';
-                if (strength <= 1) { text.innerText = 'Weak'; text.classList.add('text-red-500'); }
-                else if (strength === 2) { text.innerText = 'Fair'; text.classList.add('text-orange-500'); }
-                else if (strength === 3) { text.innerText = 'Good'; text.classList.add('text-yellow-500'); }
-                else { text.innerText = 'Strong'; text.classList.add('text-green-500'); }
-            });
-
-            document.getElementById('toggle-register').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('register'); });
-            document.getElementById('toggle-login').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('login'); });
-
-            DOM.loginForm.addEventListener('submit', handleLogin);
-            DOM.registerForm.addEventListener('submit', handleRegister);
-            document.getElementById('btn-logout').addEventListener('click', handleLogout);
-
-            DOM.navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    switchView(item.dataset.target);
-                });
-            });
-
-            document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
-            document.getElementById('close-sidebar').addEventListener('click', toggleMobileMenu);
-
-            DOM.checkoutForm.addEventListener('submit', handleCheckout);
-            DOM.cardForm.addEventListener('submit', handleCardTopUp);
-
-            document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
-            document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
-
-            document.getElementById('robux-method').addEventListener('change', (e) => {
-                const warning = document.getElementById('robux-warning');
-                if(e.target.value === 'gift') warning.classList.remove('hidden');
-                else warning.classList.add('hidden');
-            });
-
-            document.getElementById('robux-amount').addEventListener('input', calcRobuxPrice);
-            DOM.robuxForm.addEventListener('submit', handleRobuxOrder);
-
-            document.getElementById('boost-game').addEventListener('change', populateGameServices);
-            document.getElementById('boost-service').addEventListener('change', calcBoostPrice);
-            DOM.gamesForm.addEventListener('submit', handleGameBoostOrder);
-
-            document.getElementById('btn-generic-pay').addEventListener('click', () => {
-                if(pendingPurchaseAction) pendingPurchaseAction();
-                closeGenericModal();
-            });
-        }
-
-        function initGameServices() {
-            const gameSelect = document.getElementById('boost-game');
-            gameSelect.innerHTML = '';
-            for (const key in gameServicesConfig) {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.innerText = gameServicesConfig[key].name;
-                gameSelect.appendChild(opt);
-            }
-            populateGameServices();
-        }
-
-        function populateGameServices() {
-            const gameKey = document.getElementById('boost-game').value;
-            const serviceSelect = document.getElementById('boost-service');
-            serviceSelect.innerHTML = '';
-            
-            if (gameServicesConfig[gameKey]) {
-                gameServicesConfig[gameKey].services.forEach(srv => {
-                    const opt = document.createElement('option');
-                    opt.value = srv.id;
-                    opt.innerText = srv.name;
-                    opt.dataset.price = srv.price;
-                    opt.dataset.eta = srv.eta;
-                    serviceSelect.appendChild(opt);
-                });
-            }
-            calcBoostPrice();
-        }
-
-        function calcRobuxPrice() {
-            const amount = parseInt(document.getElementById('robux-amount').value) || 0;
-            const price = Math.ceil((amount / 70) * 10000);
-            const afterTax = Math.floor(amount * (50/70));
-
-            document.getElementById('robux-after-tax').innerText = afterTax;
-            document.getElementById('robux-price').innerText = formatCurrency(price);
-            return price;
-        }
-
-        function calcBoostPrice() {
-            const serviceSelect = document.getElementById('boost-service');
-            const selectedOpt = serviceSelect.options[serviceSelect.selectedIndex];
-            if (!selectedOpt) return 0;
-
-            const price = parseInt(selectedOpt.dataset.price) || 0;
-            const eta = selectedOpt.dataset.eta || "N/A";
-
-            document.getElementById('boost-price').innerText = formatCurrency(price);
-            document.getElementById('boost-eta').innerText = `ETA: ${eta}`;
-            return price;
-        }
-
-        function handleRobuxOrder(e) {
-            e.preventDefault();
-            const username = document.getElementById('robux-username').value;
-            const amount = parseInt(document.getElementById('robux-amount').value);
-            const method = document.getElementById('robux-method').value;
-            const methodText = document.getElementById('robux-method').options[document.getElementById('robux-method').selectedIndex].text;
-            const price = calcRobuxPrice();
-
-            if(!amount || amount < 10 || !username) return showToast('Invalid input amount or username', 'error');
-
-            openGenericConfirm('Robux Purchase', `${amount} R$ for Roblox user: ${username} (${methodText})`, price, async () => {
-                if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
-                
-                const orderCode = 'RBX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-                
-                await supabaseClient.from('orders').insert([{
-                    order_code: orderCode,
-                    user_id: appState.currentUser.id,
-                    type: 'robux',
-                    price: price,
-                    details: { roblox_username: username, amount: amount, method: method }
-                }]);
-                
-                await updateBalanceAndLogTx(-price, 'Robux Purchase');
-                
-                finalizeOrder('Robux order placed successfully!');
-                DOM.robuxForm.reset();
-                calcRobuxPrice();
-                document.getElementById('robux-warning').classList.add('hidden');
-            });
-        }
-
-        function handleGameBoostOrder(e) {
-            e.preventDefault();
-            const gameKey = document.getElementById('boost-game').value;
-            const serviceSelect = document.getElementById('boost-service');
-            const serviceName = serviceSelect.options[serviceSelect.selectedIndex].text;
-            const username = document.getElementById('boost-username').value;
-            const password = document.getElementById('boost-password').value;
-            const price = calcBoostPrice();
-
-            if (!username || !password) return showToast('Username and password are required', 'error');
-
-            openGenericConfirm('Game Service', `${serviceName} for ${gameServicesConfig[gameKey].name}`, price, async () => {
-                if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
-                
-                const orderCode = 'BST-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-                
-                await supabaseClient.from('orders').insert([{
-                    order_code: orderCode,
-                    user_id: appState.currentUser.id,
-                    type: 'game_service',
-                    price: price,
-                    details: { game: gameServicesConfig[gameKey].name, service: serviceName, acc_user: username, acc_pass: password }
-                }]);
-                
-                await updateBalanceAndLogTx(-price, 'Game Boost Service');
-                
-                finalizeOrder('Game boosting service ordered!');
-                DOM.gamesForm.reset();
-                populateGameServices();
-            });
-        }
-
-        function finalizeOrder(msg) {
-            refreshUserData();
-            switchView('orders');
-            showToast(msg, 'success');
-        }
-
-        // Tích hợp Hash vào Modals
-        function openGenericConfirm(title, desc, price, callback) {
-            window.history.pushState(null, null, '#checkout-service');
-            document.getElementById('generic-item-name').innerText = title;
-            document.getElementById('generic-item-desc').innerText = desc;
-            document.getElementById('generic-item-price').innerText = formatCurrency(price);
-            pendingPurchaseAction = callback;
-            document.getElementById('generic-checkout-modal').classList.add('active');
-        }
+        window.addEventListener('hashchange', handleHashRouting);
+        setupEventListeners();
+        setInterval(simulateAdminUpdates, 4000);
         
-        function closeGenericModal() {
-            if (window.location.hash === '#checkout-service') {
-                window.history.back(); // Quay về trang trước nếu đóng bằng code
-            }
-            document.getElementById('generic-checkout-modal').classList.remove('active');
-            pendingPurchaseAction = null;
-        }
+        initGameServices();
+        calcRobuxPrice();
+    }
 
-        function openModal() {
-            window.history.pushState(null, null, '#checkout-canva');
-            document.getElementById('target-email').value = appState.currentUser.email;
-            DOM.checkoutModal.classList.add('active');
-        }
+    function handleHashRouting() {
+        if (!appState.currentUser) return;
 
-        function closeModal() {
-            if (window.location.hash === '#checkout-canva') {
-                window.history.back();
-            }
+        let hash = window.location.hash.replace('#', '');
+        
+        if (hash === 'checkout-canva') {
+            if (!DOM.checkoutModal.classList.contains('active')) openModal();
+            return;
+        } else if (hash === 'checkout-service') {
+            closeGenericModal();
+            switchView('home', false);
+            return;
+        } else {
             DOM.checkoutModal.classList.remove('active');
             DOM.checkoutForm.reset();
+            closeGenericModal();
         }
 
-        function openAuthModal(type) {
-            toggleAuthForms(type);
-            DOM.authModal.classList.add('active');
+        const validViews = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile'];
+        if (!validViews.includes(hash)) {
+            hash = 'home';
         }
 
-        function closeAuthModal() {
-            DOM.authModal.classList.remove('active');
-            DOM.loginForm.reset();
-            DOM.registerForm.reset();
+        switchView(hash, false); 
+    }
 
-            const strengthContainer = document.getElementById('password-strength-container');
-            const strengthBar = document.getElementById('strength-bar');
-            const strengthText = document.getElementById('password-strength-text');
+    function showApp() {
+        DOM.landingView.classList.remove('active');
+        setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
+        DOM.appView.classList.remove('hidden');
+        updateUI();
+        generateFakeCharts();
+        
+        let initialHash = window.location.hash.replace('#', '') || 'home';
+        const validViews = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile', 'checkout-canva'];
+        if (!validViews.includes(initialHash)) initialHash = 'home';
+        
+        if (initialHash === 'checkout-canva') {
+            switchView('product', false);
+            openModal();
+        } else {
+            switchView(initialHash, true);
+        }
+    }
 
-            if (strengthContainer) {
-                strengthContainer.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
-                strengthContainer.classList.add('max-h-0', 'opacity-0');
-            }
-            if (strengthBar) {
-                strengthBar.style.width = '0%';
-            }
-            if (strengthText) {
-                strengthText.innerText = 'Strength';
-                strengthText.className = 'text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-colors duration-300';
-            }
-
-            const loginPass = document.getElementById('login-password');
-            const regPass = document.getElementById('reg-password');
-            if (loginPass) loginPass.type = 'password';
-            if (regPass) regPass.type = 'password';
-            
-            const closedEyeSVG = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            document.querySelectorAll('#login-form button[type="button"], #register-form button[type="button"]').forEach(btn => {
-                if(btn.hasAttribute('onclick') && btn.getAttribute('onclick').includes('togglePasswordVisibility')) {
-                    btn.innerHTML = closedEyeSVG;
-                }
-            });
+    function switchView(viewName, updateHash = true) {
+        DOM.navItems.forEach(item => {
+            item.classList.toggle('active', item.dataset.target === viewName);
+        });
+        DOM.views.forEach(view => {
+            view.classList.toggle('active', view.id === `view-${viewName}`);
+        });
+        
+        if (updateHash && window.location.hash !== `#${viewName}`) {
+            window.history.pushState(null, null, `#${viewName}`);
         }
 
-        function toggleAuthForms(type) {
-            const title = document.getElementById('auth-title');
-            const subtitle = document.getElementById('auth-subtitle');
-            
-            title.classList.remove('animate-fade-in');
-            subtitle.classList.remove('animate-fade-in');
-            DOM.loginForm.classList.remove('animate-fade-in');
-            DOM.registerForm.classList.remove('animate-fade-in');
-
-            void title.offsetWidth;
-            void DOM.loginForm.offsetWidth;
-
-            if (type === 'login') {
-                DOM.registerForm.classList.add('hidden');
-                DOM.loginForm.classList.remove('hidden');
-                DOM.loginForm.classList.add('animate-fade-in');
-                
-                title.innerText = 'Welcome Back';
-                subtitle.innerText = 'Sign in to continue to your dashboard.';
-            } else {
-                DOM.loginForm.classList.add('hidden');
-                DOM.registerForm.classList.remove('hidden');
-                DOM.registerForm.classList.add('animate-fade-in');
-                
-                title.innerText = 'Create Account';
-                subtitle.innerText = 'Join us and unlock premium features.';
-            }
-            
-            title.classList.add('animate-fade-in');
-            subtitle.classList.add('animate-fade-in');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        if (window.innerWidth < 768 && !DOM.sidebar.classList.contains('-translate-x-full')) {
+            toggleMobileMenu();
         }
+    }
 
-        function formatCurrency(amount) {
-            return Number(amount).toLocaleString('vi-VN') + '₫';
+    async function refreshUserData() {
+        if (!appState.currentUser) return;
+        const uid = appState.currentUser.id;
+        const [ordersRes, txRes] = await Promise.all([
+            supabaseClient.from('orders').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
+            supabaseClient.from('transactions').select('*').eq('user_id', uid).order('created_at', { ascending: false })
+        ]);
+        appState.orders = ordersRes.data || [];
+        appState.transactions = txRes.data || [];
+        updateUI();
+    }
+
+    async function updateBalanceAndLogTx(amount, type, status = 'success') {
+        const newBalance = Number(appState.currentUser.balance) + Number(amount);
+        const txCode = 'TX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        
+        await supabaseClient.from('transactions').insert([{
+            tx_code: txCode,
+            user_id: appState.currentUser.id,
+            type: type,
+            amount: amount,
+            status: status
+        }]);
+
+        if(status === 'success') {
+            await supabaseClient.from('profiles').update({ balance: newBalance }).eq('id', appState.currentUser.id);
+            appState.currentUser.balance = newBalance;
         }
+        await refreshUserData();
+    }
 
-        async function handleGoogleLogin(btn) {
-            setLoading(btn, true, 'Redirecting...');
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: window.location.origin }
-            });
+    function setupEventListeners() {
+        document.getElementById('reg-password').addEventListener('input', function(e) {
+            const val = e.target.value;
+            const container = document.getElementById('password-strength-container');
+            const text = document.getElementById('password-strength-text');
+            const bar = document.getElementById('strength-bar');
 
-            if (error) {
-                showToast('Login failed: ' + error.message, 'error');
-                setLoading(btn, false, 'Continue with Google');
-            }
-        }
-
-        async function handleRegister(e) {
-            e.preventDefault();
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            const btn = document.getElementById('btn-register');
-
-            setLoading(btn, true, 'Creating...');
-            const { error } = await supabaseClient.auth.signUp({ email, password });
-            
-            if (error) {
-                showToast(error.message, 'error');
-            } else {
-                showToast('Account created! Logging in...', 'success');
-                closeAuthModal();
-            }
-            setLoading(btn, false, 'Create Account');
-        }
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            const btn = document.getElementById('btn-login');
-            
-            setLoading(btn, true, 'Signing In...');
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (error) showToast('Invalid email or password', 'error');
-            
-            setLoading(btn, false, 'Sign In');
-        }
-
-        async function handleLogout() {
-            const { error } = await supabaseClient.auth.signOut();
-            if (!error) {
-                cancelBankQR();
-                showToast('Logged out successfully', 'info');
-            }
-        }
-
-        function updateUI() {
-            if (!appState.currentUser) return;
-            const user = appState.currentUser;
-            
-            const balanceStr = formatCurrency(user.balance);
-            document.querySelectorAll('.user-balance-display').forEach(el => el.innerText = balanceStr);
-            
-            document.getElementById('sidebar-username').innerText = user.username;
-            document.getElementById('home-username').innerText = user.username;
-            document.getElementById('profile-username').value = user.username;
-            document.getElementById('profile-email-input').value = user.email;
-            
-            const dateStr = new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-            document.getElementById('profile-date').innerText = dateStr;
-
-            const initial = user.username.charAt(0).toUpperCase();
-            
-            const sbImg = document.getElementById('sidebar-avatar');
-            const sbInit = document.getElementById('sidebar-initial');
-            const prImg = document.getElementById('profile-avatar-img');
-            const prInit = document.getElementById('profile-avatar-initial');
-
-            if (user.avatar_url) {
-                sbImg.src = user.avatar_url; sbImg.classList.remove('hidden'); sbInit.classList.add('hidden');
-                prImg.src = user.avatar_url; prImg.classList.remove('hidden'); prInit.classList.add('hidden');
-            } else {
-                sbImg.classList.add('hidden'); sbInit.classList.remove('hidden'); sbInit.innerText = initial;
-                prImg.classList.add('hidden'); prInit.classList.remove('hidden'); prInit.innerText = initial;
-            }
-
-            renderOrders();
-            renderTransactions();
-            updateDashboardStats();
-        }
-
-        function switchTopUpTab(tab) {
-            if (tab === 'bank') {
-                DOM.tabBtnBank.classList.replace('border-transparent', 'border-brand-500');
-                DOM.tabBtnBank.classList.replace('text-gray-500', 'text-brand-400');
-                DOM.tabBtnCard.classList.replace('border-brand-500', 'border-transparent');
-                DOM.tabBtnCard.classList.replace('text-brand-400', 'text-gray-500');
-                DOM.tabContentBank.classList.remove('hidden');
-                DOM.tabContentCard.classList.add('hidden');
-            } else {
-                DOM.tabBtnCard.classList.replace('border-transparent', 'border-brand-500');
-                DOM.tabBtnCard.classList.replace('text-gray-500', 'text-brand-400');
-                DOM.tabBtnBank.classList.replace('border-brand-500', 'border-transparent');
-                DOM.tabBtnBank.classList.replace('text-brand-400', 'text-gray-500');
-                DOM.tabContentCard.classList.remove('hidden');
-                DOM.tabContentBank.classList.add('hidden');
-            }
-        }
-
-        function toggleMobileMenu() {
-            DOM.sidebar.classList.toggle('-translate-x-full');
-        }
-
-        function generateBankQR() {
-            const btn = document.getElementById('btn-generate-qr');
-            const amountStr = document.getElementById('qr-amount-input').value;
-            const amount = parseInt(amountStr);
-            
-            if (!amount || amount < 10000) {
-                showToast('Minimum amount is 10,000đ', 'error');
+            if (!val) {
+                container.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
+                container.classList.add('max-h-0', 'opacity-0');
+                bar.style.width = '0%';
                 return;
             }
-
-            setLoading(btn, true, 'Generating...');
-
-            setTimeout(() => {
-                const txId = 'TX' + Math.random().toString(36).substr(2, 8).toUpperCase();
-                const content = `NAPTIEN ${txId}`;
-                const qrData = encodeURIComponent(`Bank: Vietcombank|Acc: 0123456789|Name: NGUYEN VAN A|Amount: ${amount}|Content: ${content}`);
-                
-                const apiResponse = {
-                    success: true,
-                    data: {
-                        qr_url: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${qrData}&color=000000&bgcolor=ffffff`,
-                        transaction_id: txId,
-                        amount: amount,
-                        content: content,
-                        account_name: "NGUYEN VAN A",
-                        account_number: "0123456789",
-                        bank: "Vietcombank"
-                    }
-                };
-
-                document.getElementById('qr-code-img').src = apiResponse.data.qr_url;
-                document.getElementById('qr-bank-name').innerText = apiResponse.data.bank;
-                document.getElementById('qr-account-num').innerText = apiResponse.data.account_number;
-                document.getElementById('qr-account-name').innerText = apiResponse.data.account_name;
-                document.getElementById('transfer-content').innerText = apiResponse.data.content;
-
-                document.getElementById('bank-input-section').classList.add('hidden');
-                document.getElementById('bank-qr-details').classList.remove('hidden');
-
-                setLoading(btn, false, 'Generate QR');
-                
-                startPaymentPolling(apiResponse.data);
-
-            }, 1500);
-        }
-
-        function startPaymentPolling(txData) {
-            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-            paymentPollingCount = 0;
             
-            const badge = document.getElementById('payment-status-badge');
-            badge.innerHTML = `<div class="spinner w-2.5 h-2.5 md:w-3 md:h-3 border-yellow-500 border-l-transparent"></div> Waiting...`;
-            badge.className = 'flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-[10px] md:text-xs font-bold border border-yellow-500/20';
+            container.classList.remove('max-h-0', 'opacity-0');
+            container.classList.add('max-h-[50px]', 'opacity-100', 'mt-2.5');
 
-            paymentPollingInterval = setInterval(() => {
-                paymentPollingCount++;
-                
-                if (paymentPollingCount >= 2 && Math.random() > 0.6) {
-                    clearInterval(paymentPollingInterval);
-                    
-                    badge.innerHTML = `<svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Received`;
-                    badge.className = 'flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-green-500/10 text-green-400 rounded-full text-[10px] md:text-xs font-bold border border-green-500/20';
+            let strength = 0;
+            if (val.length >= 6) strength++; 
+            if (val.match(/(?=.*[a-z])(?=.*[A-Z])/)) strength++; 
+            if (val.match(/(?=.*[0-9])/)) strength++; 
+            if (val.match(/[^A-Za-z0-9]/)) strength++; 
 
-                    setTimeout(() => {
-                        handlePaymentSuccess(txData);
-                    }, 1000);
-                }
-            }, 3000);
-        }
-
-        async function handlePaymentSuccess(txData) {
-            await updateBalanceAndLogTx(txData.amount, 'Top Up (Bank)', 'success');
-            showToast(`Top-up successful! Added ${formatCurrency(txData.amount)}`, 'success');
-            cancelBankQR();
-        }
-
-        function cancelBankQR() {
-            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-            document.getElementById('bank-qr-details').classList.add('hidden');
-            document.getElementById('bank-input-section').classList.remove('hidden');
-            document.getElementById('qr-amount-input').value = '50000';
-        }
-
-        async function handleCardTopUp(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-card-submit');
-            const amount = parseInt(document.getElementById('card-amount').value);
+            let width = '0%';
+            let colorClass = 'bg-red-500';
             
-            setLoading(btn, true, 'Processing...');
+            if (strength === 1) { width = '25%'; colorClass = 'bg-red-500'; }
+            else if (strength === 2) { width = '50%'; colorClass = 'bg-orange-500'; }
+            else if (strength === 3) { width = '75%'; colorClass = 'bg-yellow-500'; }
+            else if (strength === 4) { width = '100%'; colorClass = 'bg-green-500'; }
 
-            setTimeout(async () => {
-                const success = Math.random() > 0.3; 
-                
-                if (success) {
-                    await updateBalanceAndLogTx(amount, 'Top Up (Card)', 'success');
-                    showToast(`Top up successful! Added ${formatCurrency(amount)}`, 'success');
-                } else {
-                    await updateBalanceAndLogTx(amount, 'Top Up (Card)', 'failed');
-                    showToast(`Card processing failed. Invalid Serial/PIN.`, 'error');
-                }
+            bar.className = `h-full transition-all duration-500 ease-out ${colorClass}`;
+            bar.style.width = width;
 
-                DOM.cardForm.reset();
-                setLoading(btn, false, 'Process Card');
-            }, 2500);
+            text.className = 'text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ';
+            if (strength <= 1) { text.innerText = 'Weak'; text.classList.add('text-red-500'); }
+            else if (strength === 2) { text.innerText = 'Fair'; text.classList.add('text-orange-500'); }
+            else if (strength === 3) { text.innerText = 'Good'; text.classList.add('text-yellow-500'); }
+            else { text.innerText = 'Strong'; text.classList.add('text-green-500'); }
+        });
+
+        document.getElementById('toggle-register').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('register'); });
+        document.getElementById('toggle-login').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('login'); });
+
+        DOM.loginForm.addEventListener('submit', handleLogin);
+        DOM.registerForm.addEventListener('submit', handleRegister);
+        document.getElementById('btn-logout').addEventListener('click', handleLogout);
+
+        DOM.navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchView(item.dataset.target);
+            });
+        });
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+        document.getElementById('close-sidebar').addEventListener('click', toggleMobileMenu);
+
+        DOM.checkoutForm.addEventListener('submit', handleCheckout);
+        DOM.cardForm.addEventListener('submit', handleCardTopUp);
+
+        document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
+        document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
+
+        document.getElementById('robux-method').addEventListener('change', (e) => {
+            const warning = document.getElementById('robux-warning');
+            if(e.target.value === 'gift') warning.classList.remove('hidden');
+            else warning.classList.add('hidden');
+        });
+
+        document.getElementById('robux-amount').addEventListener('input', calcRobuxPrice);
+        DOM.robuxForm.addEventListener('submit', handleRobuxOrder);
+
+        document.getElementById('boost-game').addEventListener('change', populateGameServices);
+        document.getElementById('boost-service').addEventListener('change', calcBoostPrice);
+        DOM.gamesForm.addEventListener('submit', handleGameBoostOrder);
+
+        document.getElementById('btn-generic-pay').addEventListener('click', () => {
+            if(pendingPurchaseAction) pendingPurchaseAction();
+            closeGenericModal();
+        });
+    }
+
+    function initGameServices() {
+        const gameSelect = document.getElementById('boost-game');
+        gameSelect.innerHTML = '';
+        for (const key in gameServicesConfig) {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.innerText = gameServicesConfig[key].name;
+            gameSelect.appendChild(opt);
         }
+        populateGameServices();
+    }
 
-        async function handleCheckout(e) {
-            e.preventDefault();
-            const email = document.getElementById('target-email').value;
-            const btn = document.getElementById('btn-submit-order');
+    function populateGameServices() {
+        const gameKey = document.getElementById('boost-game').value;
+        const serviceSelect = document.getElementById('boost-service');
+        serviceSelect.innerHTML = '';
+        
+        if (gameServicesConfig[gameKey]) {
+            gameServicesConfig[gameKey].services.forEach(srv => {
+                const opt = document.createElement('option');
+                opt.value = srv.id;
+                opt.innerText = srv.name;
+                opt.dataset.price = srv.price;
+                opt.dataset.eta = srv.eta;
+                serviceSelect.appendChild(opt);
+            });
+        }
+        calcBoostPrice();
+    }
+
+    function calcRobuxPrice() {
+        const amount = parseInt(document.getElementById('robux-amount').value) || 0;
+        const price = Math.ceil((amount / 70) * 10000);
+        const afterTax = Math.floor(amount * (50/70));
+
+        document.getElementById('robux-after-tax').innerText = afterTax;
+        document.getElementById('robux-price').innerText = formatCurrency(price);
+        return price;
+    }
+
+    function calcBoostPrice() {
+        const serviceSelect = document.getElementById('boost-service');
+        const selectedOpt = serviceSelect.options[serviceSelect.selectedIndex];
+        if (!selectedOpt) return 0;
+
+        const price = parseInt(selectedOpt.dataset.price) || 0;
+        const eta = selectedOpt.dataset.eta || "N/A";
+
+        document.getElementById('boost-price').innerText = formatCurrency(price);
+        document.getElementById('boost-eta').innerText = `ETA: ${eta}`;
+        return price;
+    }
+
+    function handleRobuxOrder(e) {
+        e.preventDefault();
+        const username = document.getElementById('robux-username').value;
+        const amount = parseInt(document.getElementById('robux-amount').value);
+        const method = document.getElementById('robux-method').value;
+        const methodText = document.getElementById('robux-method').options[document.getElementById('robux-method').selectedIndex].text;
+        const price = calcRobuxPrice();
+
+        if(!amount || amount < 10 || !username) return showToast('Invalid input amount or username', 'error');
+
+        openGenericConfirm('Robux Purchase', `${amount} R$ for Roblox user: ${username} (${methodText})`, price, async () => {
+            if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
             
-            if (appState.currentUser.balance < PRICE_CANVA) {
-                showToast('Insufficient balance! Please top up.', 'error');
-                closeModal();
-                switchView('topup');
-                return;
-            }
-
-            setLoading(btn, true, 'Processing...');
-
-            const orderCode = 'ORD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            const orderCode = 'RBX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
             
             await supabaseClient.from('orders').insert([{
                 order_code: orderCode,
                 user_id: appState.currentUser.id,
-                type: 'canva',
-                price: PRICE_CANVA,
-                details: { target_email: email }
+                type: 'robux',
+                price: price,
+                details: { roblox_username: username, amount: amount, method: method }
             }]);
+            
+            await updateBalanceAndLogTx(-price, 'Robux Purchase');
+            
+            finalizeOrder('Robux order placed successfully!');
+            DOM.robuxForm.reset();
+            calcRobuxPrice();
+            document.getElementById('robux-warning').classList.add('hidden');
+        });
+    }
 
-            await updateBalanceAndLogTx(-PRICE_CANVA, 'Purchase Canva');
+    function handleGameBoostOrder(e) {
+        e.preventDefault();
+        const gameKey = document.getElementById('boost-game').value;
+        const serviceSelect = document.getElementById('boost-service');
+        const serviceName = serviceSelect.options[serviceSelect.selectedIndex].text;
+        const username = document.getElementById('boost-username').value;
+        const password = document.getElementById('boost-password').value;
+        const price = calcBoostPrice();
 
+        if (!username || !password) return showToast('Username and password are required', 'error');
+
+        openGenericConfirm('Game Service', `${serviceName} for ${gameServicesConfig[gameKey].name}`, price, async () => {
+            if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
+            
+            const orderCode = 'BST-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            await supabaseClient.from('orders').insert([{
+                order_code: orderCode,
+                user_id: appState.currentUser.id,
+                type: 'game_service',
+                price: price,
+                details: { game: gameServicesConfig[gameKey].name, service: serviceName, acc_user: username, acc_pass: password }
+            }]);
+            
+            await updateBalanceAndLogTx(-price, 'Game Boost Service');
+            
+            finalizeOrder('Game boosting service ordered!');
+            DOM.gamesForm.reset();
+            populateGameServices();
+        });
+    }
+
+    function finalizeOrder(msg) {
+        refreshUserData();
+        switchView('orders');
+        showToast(msg, 'success');
+    }
+
+    function openGenericConfirm(title, desc, price, callback) {
+        window.history.pushState(null, null, '#checkout-service');
+        document.getElementById('generic-item-name').innerText = title;
+        document.getElementById('generic-item-desc').innerText = desc;
+        document.getElementById('generic-item-price').innerText = formatCurrency(price);
+        pendingPurchaseAction = callback;
+        document.getElementById('generic-checkout-modal').classList.add('active');
+    }
+    
+    function closeGenericModal() {
+        if (window.location.hash === '#checkout-service') {
+            window.history.back(); 
+        }
+        document.getElementById('generic-checkout-modal').classList.remove('active');
+        pendingPurchaseAction = null;
+    }
+
+    function openModal() {
+        window.history.pushState(null, null, '#checkout-canva');
+        document.getElementById('target-email').value = appState.currentUser.email;
+        DOM.checkoutModal.classList.add('active');
+    }
+
+    function closeModal() {
+        if (window.location.hash === '#checkout-canva') {
+            window.history.back();
+        }
+        DOM.checkoutModal.classList.remove('active');
+        DOM.checkoutForm.reset();
+    }
+
+    function openAuthModal(type) {
+        toggleAuthForms(type);
+        DOM.authModal.classList.add('active');
+    }
+
+    function closeAuthModal() {
+        DOM.authModal.classList.remove('active');
+        DOM.loginForm.reset();
+        DOM.registerForm.reset();
+
+        const strengthContainer = document.getElementById('password-strength-container');
+        const strengthBar = document.getElementById('strength-bar');
+        const strengthText = document.getElementById('password-strength-text');
+
+        if (strengthContainer) {
+            strengthContainer.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
+            strengthContainer.classList.add('max-h-0', 'opacity-0');
+        }
+        if (strengthBar) {
+            strengthBar.style.width = '0%';
+        }
+        if (strengthText) {
+            strengthText.innerText = 'Strength';
+            strengthText.className = 'text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-colors duration-300';
+        }
+
+        const loginPass = document.getElementById('login-password');
+        const regPass = document.getElementById('reg-password');
+        if (loginPass) loginPass.type = 'password';
+        if (regPass) regPass.type = 'password';
+        
+        const closedEyeSVG = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+        document.querySelectorAll('#login-form button[type="button"], #register-form button[type="button"]').forEach(btn => {
+            if(btn.hasAttribute('onclick') && btn.getAttribute('onclick').includes('togglePasswordVisibility')) {
+                btn.innerHTML = closedEyeSVG;
+            }
+        });
+    }
+
+    function toggleAuthForms(type) {
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        
+        title.classList.remove('animate-fade-in');
+        subtitle.classList.remove('animate-fade-in');
+        DOM.loginForm.classList.remove('animate-fade-in');
+        DOM.registerForm.classList.remove('animate-fade-in');
+
+        void title.offsetWidth;
+        void DOM.loginForm.offsetWidth;
+
+        if (type === 'login') {
+            DOM.registerForm.classList.add('hidden');
+            DOM.loginForm.classList.remove('hidden');
+            DOM.loginForm.classList.add('animate-fade-in');
+            
+            title.innerText = 'Welcome Back';
+            subtitle.innerText = 'Sign in to continue to your dashboard.';
+        } else {
+            DOM.loginForm.classList.add('hidden');
+            DOM.registerForm.classList.remove('hidden');
+            DOM.registerForm.classList.add('animate-fade-in');
+            
+            title.innerText = 'Create Account';
+            subtitle.innerText = 'Join us and unlock premium features.';
+        }
+        
+        title.classList.add('animate-fade-in');
+        subtitle.classList.add('animate-fade-in');
+    }
+
+    function formatCurrency(amount) {
+        return Number(amount).toLocaleString('vi-VN') + '₫';
+    }
+
+    async function handleGoogleLogin(btn) {
+        setLoading(btn, true, 'Redirecting...');
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin }
+        });
+
+        if (error) {
+            showToast('Login failed: ' + error.message, 'error');
+            setLoading(btn, false, 'Continue with Google');
+        }
+    }
+
+    async function handleRegister(e) {
+        e.preventDefault();
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const btn = document.getElementById('btn-register');
+
+        setLoading(btn, true, 'Creating...');
+        const { error } = await supabaseClient.auth.signUp({ email, password });
+        
+        if (error) {
+            showToast(error.message, 'error');
+        } else {
+            showToast('Account created! Logging in...', 'success');
+            closeAuthModal();
+        }
+        setLoading(btn, false, 'Create Account');
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const btn = document.getElementById('btn-login');
+        
+        setLoading(btn, true, 'Signing In...');
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        
+        if (error) showToast('Invalid email or password', 'error');
+        
+        setLoading(btn, false, 'Sign In');
+    }
+
+    async function handleLogout() {
+        const { error } = await supabaseClient.auth.signOut();
+        if (!error) {
+            cancelBankQR();
+            showToast('Logged out successfully', 'info');
+        }
+    }
+
+    function updateUI() {
+        if (!appState.currentUser) return;
+        const user = appState.currentUser;
+        
+        const balanceStr = formatCurrency(user.balance);
+        document.querySelectorAll('.user-balance-display').forEach(el => el.innerText = balanceStr);
+        
+        document.getElementById('sidebar-username').innerText = user.username;
+        document.getElementById('home-username').innerText = user.username;
+        document.getElementById('profile-username').value = user.username;
+        document.getElementById('profile-email-input').value = user.email;
+        
+        const dateStr = new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        document.getElementById('profile-date').innerText = dateStr;
+
+        const initial = user.username.charAt(0).toUpperCase();
+        
+        const sbImg = document.getElementById('sidebar-avatar');
+        const sbInit = document.getElementById('sidebar-initial');
+        const prImg = document.getElementById('profile-avatar-img');
+        const prInit = document.getElementById('profile-avatar-initial');
+
+        if (user.avatar_url) {
+            sbImg.src = user.avatar_url; sbImg.classList.remove('hidden'); sbInit.classList.add('hidden');
+            prImg.src = user.avatar_url; prImg.classList.remove('hidden'); prInit.classList.add('hidden');
+        } else {
+            sbImg.classList.add('hidden'); sbInit.classList.remove('hidden'); sbInit.innerText = initial;
+            prImg.classList.add('hidden'); prInit.classList.remove('hidden'); prInit.innerText = initial;
+        }
+
+        renderOrders();
+        renderTransactions();
+        updateDashboardStats();
+    }
+
+    function switchTopUpTab(tab) {
+        if (tab === 'bank') {
+            DOM.tabBtnBank.classList.replace('border-transparent', 'border-brand-500');
+            DOM.tabBtnBank.classList.replace('text-gray-500', 'text-brand-400');
+            DOM.tabBtnCard.classList.replace('border-brand-500', 'border-transparent');
+            DOM.tabBtnCard.classList.replace('text-brand-400', 'text-gray-500');
+            DOM.tabContentBank.classList.remove('hidden');
+            DOM.tabContentCard.classList.add('hidden');
+        } else {
+            DOM.tabBtnCard.classList.replace('border-transparent', 'border-brand-500');
+            DOM.tabBtnCard.classList.replace('text-gray-500', 'text-brand-400');
+            DOM.tabBtnBank.classList.replace('border-brand-500', 'border-transparent');
+            DOM.tabBtnBank.classList.replace('text-brand-400', 'text-gray-500');
+            DOM.tabContentCard.classList.remove('hidden');
+            DOM.tabContentBank.classList.add('hidden');
+        }
+    }
+
+    function toggleMobileMenu() {
+        DOM.sidebar.classList.toggle('-translate-x-full');
+    }
+
+    // ==========================================
+    // LOGIC TẠO MÃ QR VÀ NẠP TIỀN TỰ ĐỘNG (API VERCEL + SEPAY)
+    // ==========================================
+    async function generateBankQR() {
+        const btn = document.getElementById('btn-generate-qr');
+        const amountStr = document.getElementById('qr-amount-input').value;
+        const amount = parseInt(amountStr);
+        
+        if (!amount || amount < 10000) {
+            showToast('Minimum amount is 10,000đ', 'error');
+            return;
+        }
+
+        if (!appState.currentUser) {
+            showToast('Vui lòng đăng nhập để thực hiện!', 'error');
+            return;
+        }
+
+        setLoading(btn, true, 'Generating...');
+
+        try {
+            // Thay dev.celestiax.fun bằng domain thật của bạn
+            const response = await fetch('https://dev.celestiax.fun/api/v1/payment/generate-qr', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: amount,
+                    userId: appState.currentUser.id
+                })
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || "Lỗi tạo giao dịch");
+            }
+
+            const qrData = result.data;
+
+            document.getElementById('qr-code-img').src = qrData.qrUrl;
+            document.getElementById('qr-bank-name').innerText = "MB Bank";
+            document.getElementById('qr-account-num').innerText = qrData.id;
+            document.getElementById('qr-account-name').innerText = qrData.name;
+            document.getElementById('transfer-content').innerText = qrData.content;
+
+            document.getElementById('bank-input-section').classList.add('hidden');
+            document.getElementById('bank-qr-details').classList.remove('hidden');
+
+            // Khởi động luồng kiểm tra Database
+            startPaymentPolling(qrData.content, amount);
+
+        } catch (error) {
+            console.error("Lỗi:", error);
+            showToast('Lỗi máy chủ: Không thể tạo QR lúc này!', 'error');
+        } finally {
+            setLoading(btn, false, 'Generate QR');
+        }
+    }
+
+    function startPaymentPolling(txCode, amount) {
+        if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+        
+        const badge = document.getElementById('payment-status-badge');
+        badge.innerHTML = `<div class="spinner w-2.5 h-2.5 md:w-3 md:h-3 border-yellow-500 border-l-transparent"></div> Waiting...`;
+        badge.className = 'flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-[10px] md:text-xs font-bold border border-yellow-500/20';
+
+        paymentPollingInterval = setInterval(async () => {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('transactions')
+                    .select('status')
+                    .eq('tx_code', txCode)
+                    .single();
+
+                if (data) {
+                    if (data.status === 'success') {
+                        clearInterval(paymentPollingInterval);
+                        
+                        badge.innerHTML = `<svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Received`;
+                        badge.className = 'flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-green-500/10 text-green-400 rounded-full text-[10px] md:text-xs font-bold border border-green-500/20';
+
+                        setTimeout(() => {
+                            handlePaymentSuccess(amount);
+                        }, 1000);
+
+                    } else if (data.status === 'error_amount') {
+                        clearInterval(paymentPollingInterval);
+                        badge.innerHTML = `<svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Invalid Amount`;
+                        badge.className = 'flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-red-500/10 text-red-400 rounded-full text-[10px] md:text-xs font-bold border border-red-500/20';
+                        showToast('Giao dịch sai mệnh giá! Vui lòng liên hệ Admin.', 'error');
+                    }
+                }
+            } catch (err) {
+                console.log("Polling error (có thể do mạng, bỏ qua)");
+            }
+        }, 3000);
+    }
+
+    async function handlePaymentSuccess(amount) {
+        await refreshUserData();
+        
+        const { data: profile } = await supabaseClient
+            .from('profiles')
+            .select('balance')
+            .eq('id', appState.currentUser.id)
+            .single();
+            
+        if (profile) {
+            appState.currentUser.balance = profile.balance;
+            updateUI();
+        }
+
+        showToast(`Top-up successful! Added ${formatCurrency(amount)}`, 'success');
+        cancelBankQR();
+    }
+
+    function cancelBankQR() {
+        if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+        document.getElementById('bank-qr-details').classList.add('hidden');
+        document.getElementById('bank-input-section').classList.remove('hidden');
+        document.getElementById('qr-amount-input').value = '50000';
+    }
+    // ==========================================
+
+    async function handleCardTopUp(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-card-submit');
+        const amount = parseInt(document.getElementById('card-amount').value);
+        
+        setLoading(btn, true, 'Processing...');
+
+        setTimeout(async () => {
+            const success = Math.random() > 0.3; 
+            
+            if (success) {
+                await updateBalanceAndLogTx(amount, 'Top Up (Card)', 'success');
+                showToast(`Top up successful! Added ${formatCurrency(amount)}`, 'success');
+            } else {
+                await updateBalanceAndLogTx(amount, 'Top Up (Card)', 'failed');
+                showToast(`Card processing failed. Invalid Serial/PIN.`, 'error');
+            }
+
+            DOM.cardForm.reset();
+            setLoading(btn, false, 'Process Card');
+        }, 2500);
+    }
+
+    async function handleCheckout(e) {
+        e.preventDefault();
+        const email = document.getElementById('target-email').value;
+        const btn = document.getElementById('btn-submit-order');
+        
+        if (appState.currentUser.balance < PRICE_CANVA) {
+            showToast('Insufficient balance! Please top up.', 'error');
             closeModal();
-            showToast('Order placed successfully!', 'success');
-            switchView('orders');
-            setLoading(btn, false, 'Pay 5,000đ');
+            switchView('topup');
+            return;
         }
 
-        function renderOrders() {
-            DOM.ordersTableBody.innerHTML = '';
-            if (appState.orders.length === 0) {
-                DOM.ordersTableBody.parentElement.classList.add('hidden');
-                DOM.noOrders.classList.remove('hidden');
-            } else {
-                DOM.ordersTableBody.parentElement.classList.remove('hidden');
-                DOM.noOrders.classList.add('hidden');
-                
-                appState.orders.forEach(order => {
-                    const date = new Date(order.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-                    let sClass = '', sIcon = '';
-                    if (order.status === 'pending') { sClass = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'; sIcon = '<span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span>'; }
-                    else if (order.status === 'processing') { sClass = 'bg-blue-500/10 text-blue-400 border-blue-500/20'; sIcon = '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>'; }
-                    else if (order.status === 'approved' || order.status === 'completed') { sClass = 'bg-green-500/10 text-green-400 border-green-500/20'; sIcon = '<svg class="w-2.5 h-2.5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>'; }
-                    else if (order.status === 'rejected') { sClass = 'bg-red-500/10 text-red-400 border-red-500/20'; sIcon = '<svg class="w-2.5 h-2.5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>'; }
+        setLoading(btn, true, 'Processing...');
 
-                    const type = order.type || 'canva';
-                    let typeName = type === 'canva' ? 'Canva Pro' : (type === 'game_service' ? 'Game Boost' : 'Robux');
-                    let typeClass = type === 'canva' ? 'text-[#00C4CC]' : (type === 'game_service' ? 'text-purple-400' : 'text-green-400');
+        const orderCode = 'ORD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        
+        await supabaseClient.from('orders').insert([{
+            order_code: orderCode,
+            user_id: appState.currentUser.id,
+            type: 'canva',
+            price: PRICE_CANVA,
+            details: { target_email: email }
+        }]);
+
+        await updateBalanceAndLogTx(-PRICE_CANVA, 'Purchase Canva');
+
+        closeModal();
+        showToast('Order placed successfully!', 'success');
+        switchView('orders');
+        setLoading(btn, false, 'Pay 5,000đ');
+    }
+
+    function renderOrders() {
+        DOM.ordersTableBody.innerHTML = '';
+        if (appState.orders.length === 0) {
+            DOM.ordersTableBody.parentElement.classList.add('hidden');
+            DOM.noOrders.classList.remove('hidden');
+        } else {
+            DOM.ordersTableBody.parentElement.classList.remove('hidden');
+            DOM.noOrders.classList.add('hidden');
+            
+            appState.orders.forEach(order => {
+                const date = new Date(order.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                let sClass = '', sIcon = '';
+                if (order.status === 'pending') { sClass = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'; sIcon = '<span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span>'; }
+                else if (order.status === 'processing') { sClass = 'bg-blue-500/10 text-blue-400 border-blue-500/20'; sIcon = '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>'; }
+                else if (order.status === 'approved' || order.status === 'completed') { sClass = 'bg-green-500/10 text-green-400 border-green-500/20'; sIcon = '<svg class="w-2.5 h-2.5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>'; }
+                else if (order.status === 'rejected') { sClass = 'bg-red-500/10 text-red-400 border-red-500/20'; sIcon = '<svg class="w-2.5 h-2.5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>'; }
+
+                const type = order.type || 'canva';
+                let typeName = type === 'canva' ? 'Canva Pro' : (type === 'game_service' ? 'Game Boost' : 'Robux');
+                let typeClass = type === 'canva' ? 'text-[#00C4CC]' : (type === 'game_service' ? 'text-purple-400' : 'text-green-400');
+                
+                let targetDetail = order.details?.target_email || '';
+                if(type === 'game_service') targetDetail = `${order.details?.game} - ${order.details?.service} (User: ${order.details?.acc_user})`;
+                if(type === 'robux') targetDetail = `${order.details?.roblox_username} (${order.details?.amount} R$ - ${order.details?.method})`;
+
+                DOM.ordersTableBody.insertAdjacentHTML('beforeend', `
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="px-4 py-3 md:px-6 md:py-4 font-mono text-[10px] md:text-xs text-brand-400 font-bold">${order.order_code}</td>
+                        <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold ${typeClass}">${typeName}</td>
+                        <td class="px-4 py-3 md:px-6 md:py-4 text-[12px] md:text-sm font-medium text-white">${targetDetail}</td>
+                        <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold text-white">${formatCurrency(order.price)}</td>
+                        <td class="px-4 py-3 md:px-6 md:py-4 text-[11px] md:text-xs text-gray-400 font-medium">${date}</td>
+                        <td class="px-4 py-3 md:px-6 md:py-4"><span class="inline-flex items-center gap-1.5 px-2 py-1 md:px-2.5 md:py-1 rounded-md text-[9px] md:text-[10px] font-bold uppercase tracking-wider border ${sClass}">${sIcon} ${order.status}</span></td>
+                    </tr>
+                `);
+            });
+        }
+    }
+
+    function renderTransactions() {
+        DOM.txTableBody.innerHTML = '';
+        if (appState.transactions.length === 0) {
+            DOM.txTableBody.parentElement.classList.add('hidden');
+            DOM.noTxs.classList.remove('hidden');
+        } else {
+            DOM.txTableBody.parentElement.classList.remove('hidden');
+            DOM.noTxs.classList.add('hidden');
+            
+            appState.transactions.forEach(tx => {
+                const date = new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                const amtClass = tx.amount > 0 ? 'text-green-400' : 'text-white';
+                const sign = tx.amount > 0 ? '+' : '';
+                const sClass = tx.status === 'success' ? 'bg-green-500/10 text-green-400 border-green-500/20' : (tx.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20');
+
+                DOM.txTableBody.insertAdjacentHTML('beforeend', `
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="px-4 py-3 md:px-6 md:py-4">
+                            <div class="font-mono text-[10px] md:text-xs text-brand-400 font-bold">${tx.tx_code}</div>
+                            <div class="text-[9px] md:text-[10px] text-gray-500 font-medium">${date}</div>
+                        </td>
+                        <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold text-gray-300">${tx.type}</td>
+                        <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-extrabold ${amtClass}">${sign}${formatCurrency(tx.amount)}</td>
+                        <td class="px-4 py-3 md:px-6 md:py-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] md:text-[10px] font-bold uppercase border ${sClass}">${tx.status}</span></td>
+                    </tr>
+                `);
+            });
+        }
+    }
+
+    function updateDashboardStats() {
+        document.getElementById('stat-total').innerText = appState.orders.length;
+        document.getElementById('stat-approved').innerText = appState.orders.filter(o => o.status === 'approved' || o.status === 'completed').length;
+
+        document.getElementById('stat-canva').innerText = appState.orders.filter(o => !o.type || o.type === 'canva').length;
+        document.getElementById('stat-games').innerText = appState.orders.filter(o => o.type === 'game_service').length;
+        document.getElementById('stat-robux').innerText = appState.orders.filter(o => o.type === 'robux').length;
+
+        const pending = appState.orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
+        const badge = document.getElementById('pending-badge');
+        if (pending > 0) { badge.innerText = pending; badge.classList.remove('hidden'); } 
+        else badge.classList.add('hidden');
+    }
+
+    function generateFakeCharts() {
+        const chart = document.getElementById('fake-chart');
+        if (!chart) return;
+        chart.innerHTML = '';
+        for(let i=0; i<7; i++) {
+            const height = Math.floor(Math.random() * 80) + 20;
+            chart.innerHTML += `<div class="w-full bg-brand-500/30 rounded-t-md hover:bg-brand-400 transition-colors chart-bar relative group" style="height: ${height}%"><div class="opacity-0 group-hover:opacity-100 absolute -top-6 md:-top-8 left-1/2 -translate-x-1/2 bg-surface-950 text-[10px] md:text-xs py-0.5 px-1.5 md:py-1 md:px-2 rounded font-bold text-white transition-opacity">${height}</div></div>`;
+        }
+    }
+
+    async function handleAvatarUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const base64Avatar = event.target.result;
+            const { error } = await supabaseClient.from('profiles').update({ avatar_url: base64Avatar }).eq('id', appState.currentUser.id);
+            
+            if(!error) {
+                appState.currentUser.avatar_url = base64Avatar;
+                updateUI();
+                showToast('Avatar updated!', 'success');
+            } else {
+                showToast('Failed to update avatar', 'error');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function handleProfileUpdate(e) {
+        e.preventDefault();
+        const newName = document.getElementById('profile-username').value.trim();
+        if(newName) {
+            const { error } = await supabaseClient.from('profiles').update({ username: newName }).eq('id', appState.currentUser.id);
+            if(!error) {
+                appState.currentUser.username = newName;
+                updateUI();
+                showToast('Profile saved successfully!', 'success');
+            }
+        }
+    }
+
+    async function simulateAdminUpdates() {
+        if (!appState.currentUser) return;
+        const now = Date.now();
+        let updated = false;
+
+        for (let order of appState.orders) {
+            const orderTime = new Date(order.created_at).getTime();
+            if (order.status === 'pending') {
+                if (now - orderTime > 8000) { 
+                    let newStatus = (order.type === 'game_service' || order.type === 'robux') ? 'processing' : (Math.random() > 0.1 ? 'approved' : 'rejected');
                     
-                    let targetDetail = order.details?.target_email || '';
-                    if(type === 'game_service') targetDetail = `${order.details?.game} - ${order.details?.service} (User: ${order.details?.acc_user})`;
-                    if(type === 'robux') targetDetail = `${order.details?.roblox_username} (${order.details?.amount} R$ - ${order.details?.method})`;
-
-                    DOM.ordersTableBody.insertAdjacentHTML('beforeend', `
-                        <tr class="hover:bg-white/[0.02] transition-colors">
-                            <td class="px-4 py-3 md:px-6 md:py-4 font-mono text-[10px] md:text-xs text-brand-400 font-bold">${order.order_code}</td>
-                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold ${typeClass}">${typeName}</td>
-                            <td class="px-4 py-3 md:px-6 md:py-4 text-[12px] md:text-sm font-medium text-white">${targetDetail}</td>
-                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold text-white">${formatCurrency(order.price)}</td>
-                            <td class="px-4 py-3 md:px-6 md:py-4 text-[11px] md:text-xs text-gray-400 font-medium">${date}</td>
-                            <td class="px-4 py-3 md:px-6 md:py-4"><span class="inline-flex items-center gap-1.5 px-2 py-1 md:px-2.5 md:py-1 rounded-md text-[9px] md:text-[10px] font-bold uppercase tracking-wider border ${sClass}">${sIcon} ${order.status}</span></td>
-                        </tr>
-                    `);
-                });
-            }
-        }
-
-        function renderTransactions() {
-            DOM.txTableBody.innerHTML = '';
-            if (appState.transactions.length === 0) {
-                DOM.txTableBody.parentElement.classList.add('hidden');
-                DOM.noTxs.classList.remove('hidden');
-            } else {
-                DOM.txTableBody.parentElement.classList.remove('hidden');
-                DOM.noTxs.classList.add('hidden');
-                
-                appState.transactions.forEach(tx => {
-                    const date = new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-                    const amtClass = tx.amount > 0 ? 'text-green-400' : 'text-white';
-                    const sign = tx.amount > 0 ? '+' : '';
-                    const sClass = tx.status === 'success' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20';
-
-                    DOM.txTableBody.insertAdjacentHTML('beforeend', `
-                        <tr class="hover:bg-white/[0.02] transition-colors">
-                            <td class="px-4 py-3 md:px-6 md:py-4">
-                                <div class="font-mono text-[10px] md:text-xs text-brand-400 font-bold">${tx.tx_code}</div>
-                                <div class="text-[9px] md:text-[10px] text-gray-500 font-medium">${date}</div>
-                            </td>
-                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold text-gray-300">${tx.type}</td>
-                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-extrabold ${amtClass}">${sign}${formatCurrency(tx.amount)}</td>
-                            <td class="px-4 py-3 md:px-6 md:py-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] md:text-[10px] font-bold uppercase border ${sClass}">${tx.status}</span></td>
-                        </tr>
-                    `);
-                });
-            }
-        }
-
-        function updateDashboardStats() {
-            document.getElementById('stat-total').innerText = appState.orders.length;
-            document.getElementById('stat-approved').innerText = appState.orders.filter(o => o.status === 'approved' || o.status === 'completed').length;
-
-            document.getElementById('stat-canva').innerText = appState.orders.filter(o => !o.type || o.type === 'canva').length;
-            document.getElementById('stat-games').innerText = appState.orders.filter(o => o.type === 'game_service').length;
-            document.getElementById('stat-robux').innerText = appState.orders.filter(o => o.type === 'robux').length;
-
-            const pending = appState.orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
-            const badge = document.getElementById('pending-badge');
-            if (pending > 0) { badge.innerText = pending; badge.classList.remove('hidden'); } 
-            else badge.classList.add('hidden');
-        }
-
-        function generateFakeCharts() {
-            const chart = document.getElementById('fake-chart');
-            if (!chart) return;
-            chart.innerHTML = '';
-            for(let i=0; i<7; i++) {
-                const height = Math.floor(Math.random() * 80) + 20;
-                chart.innerHTML += `<div class="w-full bg-brand-500/30 rounded-t-md hover:bg-brand-400 transition-colors chart-bar relative group" style="height: ${height}%"><div class="opacity-0 group-hover:opacity-100 absolute -top-6 md:-top-8 left-1/2 -translate-x-1/2 bg-surface-950 text-[10px] md:text-xs py-0.5 px-1.5 md:py-1 md:px-2 rounded font-bold text-white transition-opacity">${height}</div></div>`;
-            }
-        }
-
-        async function handleAvatarUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-                const base64Avatar = event.target.result;
-                const { error } = await supabaseClient.from('profiles').update({ avatar_url: base64Avatar }).eq('id', appState.currentUser.id);
-                
-                if(!error) {
-                    appState.currentUser.avatar_url = base64Avatar;
-                    updateUI();
-                    showToast('Avatar updated!', 'success');
-                } else {
-                    showToast('Failed to update avatar', 'error');
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function handleProfileUpdate(e) {
-            e.preventDefault();
-            const newName = document.getElementById('profile-username').value.trim();
-            if(newName) {
-                const { error } = await supabaseClient.from('profiles').update({ username: newName }).eq('id', appState.currentUser.id);
-                if(!error) {
-                    appState.currentUser.username = newName;
-                    updateUI();
-                    showToast('Profile saved successfully!', 'success');
-                }
-            }
-        }
-
-        async function simulateAdminUpdates() {
-            if (!appState.currentUser) return;
-            const now = Date.now();
-            let updated = false;
-
-            for (let order of appState.orders) {
-                const orderTime = new Date(order.created_at).getTime();
-                if (order.status === 'pending') {
-                    if (now - orderTime > 8000) { 
-                        let newStatus = (order.type === 'game_service' || order.type === 'robux') ? 'processing' : (Math.random() > 0.1 ? 'approved' : 'rejected');
-                        
-                        await supabaseClient.from('orders').update({status: newStatus}).eq('id', order.id);
-                        
-                        if(newStatus === 'rejected') {
-                            await updateBalanceAndLogTx(order.price, 'Refund Order ' + order.order_code);
-                            showToast(`Order ${order.order_code} rejected. Refunded.`, 'error');
-                        } else if (newStatus === 'approved') {
-                            showToast(`Invite sent to ${order.details?.target_email}`, 'success');
-                        }
-                        updated = true;
+                    await supabaseClient.from('orders').update({status: newStatus}).eq('id', order.id);
+                    
+                    if(newStatus === 'rejected') {
+                        await updateBalanceAndLogTx(order.price, 'Refund Order ' + order.order_code);
+                        showToast(`Order ${order.order_code} rejected. Refunded.`, 'error');
+                    } else if (newStatus === 'approved') {
+                        showToast(`Invite sent to ${order.details?.target_email}`, 'success');
                     }
-                } else if (order.status === 'processing') {
-                    if (now - orderTime > 20000) { 
-                        await supabaseClient.from('orders').update({status: 'completed'}).eq('id', order.id);
-                        showToast(`Service order ${order.order_code} has been completed!`, 'success');
-                        updated = true;
-                    }
+                    updated = true;
+                }
+            } else if (order.status === 'processing') {
+                if (now - orderTime > 20000) { 
+                    await supabaseClient.from('orders').update({status: 'completed'}).eq('id', order.id);
+                    showToast(`Service order ${order.order_code} has been completed!`, 'success');
+                    updated = true;
                 }
             }
-
-            if (updated) {
-                await refreshUserData();
-            }
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            showToast('Copied to clipboard!', 'info');
+        if (updated) {
+            await refreshUserData();
         }
+    }
 
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            let icon = '', borderClass = 'border-gray-500/20', bgClass = 'bg-surface-900/95';
-            
-            if (type === 'success') { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>'; borderClass = 'border-green-500/30'; } 
-            else if (type === 'error') { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>'; borderClass = 'border-red-500/30'; } 
-            else { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>'; borderClass = 'border-brand-500/30'; }
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text);
+        showToast('Copied to clipboard!', 'info');
+    }
 
-            toast.className = `flex items-center gap-2.5 md:gap-3 p-3 md:p-4 rounded-xl md:rounded-[16px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border backdrop-blur-xl ${bgClass} ${borderClass} toast-enter`;
-            toast.innerHTML = `${icon}<p class="text-[13px] md:text-sm font-bold text-white tracking-wide">${message}</p>`;
-            
-            DOM.toastContainer.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%) scale(0.9)'; setTimeout(() => toast.remove(), 300); }, 4000);
-        }
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        let icon = '', borderClass = 'border-gray-500/20', bgClass = 'bg-surface-900/95';
+        
+        if (type === 'success') { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>'; borderClass = 'border-green-500/30'; } 
+        else if (type === 'error') { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>'; borderClass = 'border-red-500/30'; } 
+        else { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>'; borderClass = 'border-brand-500/30'; }
 
-        function setLoading(btn, isLoading, text) {
-            if (isLoading) { 
-                btn.disabled = true; 
-                btn.innerHTML = `<span class="flex items-center justify-center gap-2 w-full"><svg class="animate-spin h-5 w-5 text-white shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span>${text}</span></span>`; 
-                btn.classList.add('opacity-70', 'cursor-not-allowed'); 
-            } 
-            else { 
-                btn.disabled = false; 
-                if (text.includes('Google')) {
-                   btn.innerHTML = `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> ${text}`;
-                } else {
-                   btn.innerHTML = text; 
-                }
-                btn.classList.remove('opacity-70', 'cursor-not-allowed'); 
-            }
-        }
+        toast.className = `flex items-center gap-2.5 md:gap-3 p-3 md:p-4 rounded-xl md:rounded-[16px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border backdrop-blur-xl ${bgClass} ${borderClass} toast-enter`;
+        toast.innerHTML = `${icon}<p class="text-[13px] md:text-sm font-bold text-white tracking-wide">${message}</p>`;
+        
+        DOM.toastContainer.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%) scale(0.9)'; setTimeout(() => toast.remove(), 300); }, 4000);
+    }
 
-        document.addEventListener('DOMContentLoaded', init);
-
-        function togglePasswordVisibility(inputId, btn) {
-            const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.29 3.29m0 0a10.05 10.05 0 015.71-1.59c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0l-3.29-3.29"></path></svg>`;
+    function setLoading(btn, isLoading, text) {
+        if (isLoading) { 
+            btn.disabled = true; 
+            btn.innerHTML = `<span class="flex items-center justify-center gap-2 w-full"><svg class="animate-spin h-5 w-5 text-white shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span>${text}</span></span>`; 
+            btn.classList.add('opacity-70', 'cursor-not-allowed'); 
+        } 
+        else { 
+            btn.disabled = false; 
+            if (text.includes('Google')) {
+               btn.innerHTML = `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> ${text}`;
             } else {
-                input.type = 'password';
-                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+               btn.innerHTML = text; 
             }
+            btn.classList.remove('opacity-70', 'cursor-not-allowed'); 
         }
-    </script>
+    }
 
+    document.addEventListener('DOMContentLoaded', init);
+
+    function togglePasswordVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.29 3.29m0 0a10.05 10.05 0 015.71-1.59c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0l-3.29-3.29"></path></svg>`;
+        } else {
+            input.type = 'password';
+            btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+        }
+    }
+</script>
 
 </body>
 </html>
