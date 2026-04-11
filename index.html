@@ -579,12 +579,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <button onclick="forceCheckPayment()" id="btn-force-check" class="w-full bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-brand-500/20 flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        Already transferred? Check now
-                    </button>
-                    <button onclick="cancelBankQR()" class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-white/10">Cancel Transaction</button>
+                <div class="flex flex-col gap-2 relative">
+                    <div id="bank-action-buttons" class="flex flex-col gap-2 w-full">
+                        <button onclick="forceCheckPayment()" id="btn-force-check" class="w-full bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-brand-500/20 flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Already transferred? Check now
+                        </button>
+                        <button onclick="cancelBankQR()" class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-white/10">Cancel Transaction</button>
+                    </div>
+
+                    <button onclick="cancelBankQR()" id="btn-close-bank" class="hidden w-full bg-green-500/20 hover:bg-green-500/30 text-green-400 font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-green-500/30">Done & Close</button>
                 </div>
             </div>
         </div>
@@ -1077,9 +1081,9 @@
 
     let paymentPollingInterval = null;
     let pendingPurchaseAction = null;
-    let currentPendingTx = null; // Lưu trạng thái bill đang chờ duyệt
-    let currentTxPage = 1;       // Trang hiện tại của Lịch sử nạp
-    const txPerPage = 5;         // Số giao dịch tối đa mỗi trang
+    let currentPendingTx = null; 
+    let currentTxPage = 1;       
+    const txPerPage = 5;         
 
     async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1134,13 +1138,6 @@
         initGameServices();
         calcRobuxPrice();
     }
-
-    // Lắng nghe sự kiện "Hăng hái check": Quay lại tab là gọi API kiểm tra luôn
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === 'visible' && paymentPollingInterval && currentPendingTx) {
-            forceCheckPayment(); 
-        }
-    });
 
     function handleHashRouting() {
         if (!appState.currentUser) return;
@@ -1659,9 +1656,6 @@
         DOM.sidebar.classList.toggle('-translate-x-full');
     }
 
-    // ==========================================
-    // LOGIC TẠO MÃ QR VÀ NẠP TIỀN TỰ ĐỘNG (API VERCEL + SEPAY)
-    // ==========================================
     async function generateBankQR() {
         const btn = document.getElementById('btn-generate-qr');
         const amountStr = document.getElementById('qr-amount-input').value;
@@ -1703,12 +1697,12 @@
             document.getElementById('qr-account-name').innerText = qrData.name;
             document.getElementById('transfer-content').innerText = qrData.content;
             
-            // Render số tiền lên UI (cắt bỏ chữ ₫)
             const amountElem = document.getElementById('transfer-amount');
             if(amountElem) amountElem.innerText = formatCurrency(amount).replace('₫', '');
-
-            // Lưu trạng thái để check thủ công hoặc check "hăng hái"
+            
             currentPendingTx = { txCode: qrData.content, amount: amount };
+            
+            await refreshUserData(); // Cập nhật danh sách history ngay lập tức
 
             document.getElementById('bank-input-section').classList.add('hidden');
             document.getElementById('bank-qr-details').classList.remove('hidden');
@@ -1723,7 +1717,6 @@
         }
     }
 
-    // Nút check thủ công khi người dùng đã chuyển khoản xong nhưng web chưa cập nhật
     async function forceCheckPayment() {
         if (!currentPendingTx) return;
         const btn = document.getElementById('btn-force-check');
@@ -1742,9 +1735,21 @@
 
             if (data) {
                 if (data.status === 'success') {
-                    handlePaymentSuccess(currentPendingTx.amount);
+                    clearInterval(paymentPollingInterval);
+                    const badge = document.getElementById('payment-status-badge');
+                    if(badge) {
+                        badge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Received!`;
+                        badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-3 py-1.5 bg-green-500/10 text-green-400 rounded-full text-xs font-bold border border-green-500/20 w-full';
+                    }
+                    
+                    const actionBtns = document.getElementById('bank-action-buttons');
+                    const closeBtn = document.getElementById('btn-close-bank');
+                    if(actionBtns) actionBtns.classList.add('hidden');
+                    if(closeBtn) closeBtn.classList.remove('hidden');
+                    
+                    handlePaymentSuccess(currentPendingTx.amount, false);
                 } else if (data.status === 'error_amount') {
-                    showToast('Giao dịch sai mệnh giá! Vui lòng liên hệ Admin.', 'error');
+                    showToast('Giao dịch sai mệnh giá! Vui lòng liên hệ CSKH.', 'error');
                     cancelBankQR();
                 } else {
                     showToast('Chưa nhận được tiền. Vui lòng đợi thêm chút nhé!', 'info');
@@ -1780,8 +1785,13 @@
                         badge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Received!`;
                         badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-3 py-1.5 bg-green-500/10 text-green-400 rounded-full text-xs font-bold border border-green-500/20 w-full';
 
+                        const actionBtns = document.getElementById('bank-action-buttons');
+                        const closeBtn = document.getElementById('btn-close-bank');
+                        if(actionBtns) actionBtns.classList.add('hidden');
+                        if(closeBtn) closeBtn.classList.remove('hidden');
+
                         setTimeout(() => {
-                            handlePaymentSuccess(amount);
+                            handlePaymentSuccess(amount, false);
                         }, 1000);
 
                     } else if (data.status === 'error_amount') {
@@ -1797,7 +1807,7 @@
         }, 3000);
     }
 
-    async function handlePaymentSuccess(amount) {
+    async function handlePaymentSuccess(amount, autoClose = true) {
         await refreshUserData();
         
         const { data: profile } = await supabaseClient
@@ -1812,19 +1822,30 @@
         }
 
         showToast(`Top-up successful! Added ${formatCurrency(amount)}`, 'success');
-        cancelBankQR();
+        
+        if (autoClose) {
+            cancelBankQR();
+        }
     }
 
     function cancelBankQR() {
         if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-        currentPendingTx = null; // Reset trạng thái
+        currentPendingTx = null;
         
         document.getElementById('bank-qr-details').classList.add('hidden');
         document.getElementById('bank-input-section').classList.remove('hidden');
         document.getElementById('qr-amount-input').value = '50000';
+
+        const actionBtns = document.getElementById('bank-action-buttons');
+        const closeBtn = document.getElementById('btn-close-bank');
+        if(actionBtns) actionBtns.classList.remove('hidden');
+        if(closeBtn) closeBtn.classList.add('hidden');
         
         const btnForce = document.getElementById('btn-force-check');
-        if(btnForce) btnForce.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Already transferred? Check now`;
+        if(btnForce) {
+            btnForce.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Already transferred? Check now`;
+            btnForce.disabled = false;
+        }
     }
     // ==========================================
 
@@ -1925,14 +1946,13 @@
     async function renderTransactions() {
         DOM.txTableBody.innerHTML = '';
         
-        // 1. Tự động Hủy đơn nạp tiền nếu quá 10 phút chưa chuyển
         const now = Date.now();
         let hasUpdates = false;
         
         appState.transactions.forEach(tx => {
             if (tx.status === 'pending') {
                 const timeDiff = now - new Date(tx.created_at).getTime();
-                if (timeDiff > 10 * 60 * 1000) { // Lớn hơn 10 phút
+                if (timeDiff > 10 * 60 * 1000) { 
                     tx.status = 'cancelled';
                     supabaseClient.from('transactions').update({ status: 'cancelled' }).eq('id', tx.id).then();
                     hasUpdates = true;
@@ -1949,7 +1969,6 @@
             DOM.txTableBody.parentElement.classList.remove('hidden');
             DOM.noTxs.classList.add('hidden');
             
-            // 2. Logic Phân Trang (5 record / trang)
             const totalPages = Math.ceil(appState.transactions.length / txPerPage);
             if (currentTxPage > totalPages) currentTxPage = totalPages;
             if (currentTxPage < 1) currentTxPage = 1;
@@ -1962,7 +1981,6 @@
                 const amtClass = tx.amount > 0 ? 'text-green-400' : 'text-white';
                 const sign = tx.amount > 0 ? '+' : '';
                 
-                // Set màu Badge theo Status
                 let sClass = '';
                 if (tx.status === 'success') sClass = 'bg-green-500/10 text-green-400 border-green-500/20';
                 else if (tx.status === 'pending') sClass = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
@@ -1982,7 +2000,6 @@
                 `);
             });
 
-            // 3. Hiển thị UI Phân trang
             const pagContainer = document.getElementById('tx-pagination');
             if (pagContainer) {
                 if (totalPages > 1) {
@@ -2000,7 +2017,6 @@
         }
     }
 
-    // Hàm đổi trang Lịch sử giao dịch
     function changeTxPage(dir) {
         currentTxPage += dir;
         renderTransactions();
@@ -2147,7 +2163,6 @@
         }
     }
 </script>
-
 
 </body>
 </html>
