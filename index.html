@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celestia | Store</title>
+    <title>Celestia Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -129,117 +129,236 @@
 
     <div id="toast-container" class="fixed top-4 right-4 md:top-6 md:right-6 z-[9999] flex flex-col gap-3"></div>
 
-    <div id="landing-view" class="w-full flex-1 min-h-screen z-40 flex flex-col items-center bg-surface-950 p-4 py-16 md:p-8 view-section active relative">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[800px] h-[300px] md:h-[800px] bg-brand-600/20 rounded-full blur-[100px] md:blur-[150px] pointer-events-none"></div>
+    <div id="landing-view" class="w-full flex-1 min-h-screen z-40 flex flex-col items-center bg-surface-950 view-section active relative overflow-y-auto overflow-x-hidden">
+        <div class="absolute inset-0 z-0 opacity-[0.15] pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.8) 1px, transparent 0); background-size: 48px 48px; background-attachment: fixed;"></div>
         
-        <div class="z-10 text-center max-w-3xl w-full animate-fade-in px-4 my-auto">
-            <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-brand-500/10 text-brand-400 mb-6 md:mb-8 border border-brand-500/20 shadow-[0_0_40px_rgba(99,102,241,0.2)]">
-                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-            </div>
-            <h1 class="text-clamp-hero font-extrabold tracking-tight mb-4 md:mb-6">Celestia<span class="gradient-text">Store</span></h1>
-            <p class="text-clamp-p text-gray-400 mb-6 font-medium max-w-2xl mx-auto">
-                Premium Accounts for Teams & Individuals Unlock full premium features at affordable prices. Instant delivery, lifetime replacement guarantee, and 24/7 customer support. Used daily by thousands of happy customers.
-            </p>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[300px] md:h-[500px] bg-brand-500/20 rounded-full blur-[100px] md:blur-[150px] pointer-events-none -z-10"></div>
+
+        <div class="z-10 text-center max-w-6xl w-full animate-fade-in px-4 py-16 md:py-24 flex flex-col items-center">
             
-            <div class="relative max-w-xl mx-auto glass-card rounded-[24px] p-6 md:p-8 mt-8 border border-white/10 shadow-2xl">
-                <div class="absolute inset-0 bg-brand-500/10 blur-xl rounded-[24px] -z-10 pointer-events-none"></div>
-                
-                <h3 class="text-lg md:text-xl font-bold tracking-tight text-white mb-2">Start your premium experience</h3>
-                <p class="text-[13px] md:text-sm text-gray-400 mb-6 font-medium">Get instant access to Canva Pro with team sharing. No waiting, no hassle.</p>
-                
-                <button onclick="openAuthModal('register')" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white py-3.5 md:py-4 px-6 rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(99,102,241,0.5)] transform hover:-translate-y-1 active:translate-y-0 flex flex-col items-center justify-center">
-                    <span class="font-extrabold text-base md:text-lg">Get Canva Pro Now</span>
-                    <span class="text-[10px] md:text-[11px] text-white/80 font-medium mt-0.5 tracking-wide">Instant access • Lifetime support</span>
+            <a href="#" class="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] transition-colors text-[11px] md:text-xs font-semibold text-gray-300 mb-8 md:mb-10 backdrop-blur-md">
+                <span class="flex h-2 w-2 rounded-full bg-brand-400 shadow-[0_0_10px_rgba(129,140,248,0.8)] animate-pulse"></span>
+                CelestiaX System v1.0 is online
+                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <h1 class="text-[25px] text-clamp-hero font-extrabold tracking-tighter mb-6 text-white leading-[1.1]">
+                Celestia Store <br class="hidden md:block" /><br>
+                <span class="text-[40px] text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-purple-400 to-brand-600">Digital Service Platform</span>
+            </h1>
+            
+            <p class="text-[15px] md:text-lg text-gray-400 mb-10 md:mb-12 max-w-3xl mx-auto font-medium leading-relaxed">
+                Experience a premium service ecosystem: from licensed application accounts, in-game currency top-ups to professional boosting. Integrated with instant API processing, absolute data security, and 24/7 dedicated support.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center gap-4 mb-20 w-full justify-center sm:w-auto">
+                <button onclick="openAuthModal('register')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl bg-white text-black font-extrabold hover:bg-gray-200 transition-all shadow-[0_0_40px_rgba(255,255,255,0.15)] transform hover:-translate-y-1 text-sm md:text-base flex items-center justify-center gap-2">
+                    Get Started
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>
+                <button onclick="openAuthModal('login')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl bg-white/5 text-white border border-white/10 font-bold hover:bg-white/10 transition-all transform hover:-translate-y-1 text-sm md:text-base">
+                    Sign In to Dashboard
+                </button>
+            </div>
 
-                <ul class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 mt-5 md:mt-6 text-[11px] md:text-xs text-gray-300 font-bold">
-                    <li class="flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                        Instant access
-                    </li>
-                    <li class="flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                        Safe team sharing
-                    </li>
-                    <li class="flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                        24/7 support
-                    </li>
-                </ul>
+            <div class="w-full max-w-5xl mx-auto text-left grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-24">
+                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[40px] group-hover:bg-blue-500/20 transition-colors pointer-events-none"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Secure & Reliable</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed font-medium">End-to-end encryption for all transactions and account data. Your privacy and digital assets are our top priorities.</p>
+                </div>
+                
+                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-[40px] group-hover:bg-brand-500/20 transition-colors pointer-events-none"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Lightning Fast</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed font-medium">Automated API delivery ensures you receive your digital assets, application invites, and services within seconds, not hours.</p>
+                </div>
 
-                <div class="mt-6 pt-5 border-t border-white/5">
-                    <button onclick="openAuthModal('login')" class="text-[12px] md:text-[13px] text-gray-400 hover:text-white font-medium transition-colors w-full text-center py-2">
-                        Already have an account? <span class="text-brand-400 font-bold hover:text-brand-300 underline decoration-brand-500/30 underline-offset-2">Log in</span>
-                    </button>
+                <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-[40px] group-hover:bg-purple-500/20 transition-colors pointer-events-none"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">24/7 Support</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed font-medium">Our dedicated technical team is always online. Benefit from real-time order tracking and immediate issue resolution.</p>
                 </div>
             </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 w-full max-w-5xl text-center md:text-left border-y border-white/10 py-10 md:py-12 mb-16">
+                <div class="space-y-1.5 md:space-y-2">
+                    <div class="text-brand-400 text-3xl md:text-5xl font-extrabold tracking-tight">100%</div>
+                    <div class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Automated System</div>
+                </div>
+                <div class="space-y-1.5 md:space-y-2">
+                    <div class="text-white text-3xl md:text-5xl font-extrabold tracking-tight">24/7</div>
+                    <div class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Technical Support</div>
+                </div>
+                <div class="space-y-1.5 md:space-y-2">
+                    <div class="text-white text-3xl md:text-5xl font-extrabold tracking-tight flex items-center justify-center md:justify-start gap-2">
+                        50k<span class="text-brand-400">+</span>
+                    </div>
+                    <div class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Orders Processed</div>
+                </div>
+                <div class="space-y-1.5 md:space-y-2">
+                    <div class="text-white text-3xl md:text-5xl font-extrabold tracking-tight"><span class="text-purple-400">~</span>3s</div>
+                    <div class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Transaction Speed</div>
+                </div>
+            </div>
+            
+            <div class="w-full pt-4 pb-12 relative overflow-hidden">
+                <p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-widest mb-6 md:mb-10 text-center">Trusted by users across platforms</p>
+                <div class="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-surface-950 to-transparent z-10 mt-6 md:mt-10 pointer-events-none"></div>
+                <div class="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-surface-950 to-transparent z-10 mt-6 md:mt-10 pointer-events-none"></div>
+                <div class="flex flex-wrap items-center justify-center gap-6 md:gap-24 opacity-40 hover:opacity-70 transition-opacity duration-500 grayscale hover:grayscale-0 px-4">
+                    <span class="font-extrabold text-sm md:text-2xl tracking-tighter flex items-center gap-1.5 md:gap-2 text-white">SEPAY</span>
+                    <span class="font-extrabold text-sm md:text-2xl tracking-tighter text-white">ROBLOX</span>
+                    <span class="font-extrabold text-sm md:text-2xl tracking-tighter text-white">LIÊN QUÂN</span>
+                    <span class="font-extrabold text-sm md:text-2xl tracking-tighter text-white">VIETQR</span>
+                </div>
+            </div>
+
+
         </div>
     </div>
 
-    <div id="auth-modal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-md p-6 md:p-8 rounded-[20px] shadow-2xl relative z-10 gradient-border modal-content">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400 hover:text-white bg-white/5 p-2 rounded-xl transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+
+    <div id="auth-modal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4 sm:p-0">
+        <div class="glass-card w-full max-w-[420px] bg-surface-950/95 border border-white/10 rounded-[24px] shadow-2xl relative z-10 modal-content overflow-hidden backdrop-blur-2xl">
+            
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors z-20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
 
-            <div class="text-center mb-6 pt-2">
-                <h2 class="text-clamp-h2 font-extrabold tracking-tight" id="auth-title">Welcome Back</h2>
-                <p class="text-clamp-sm text-gray-400 mt-2 font-medium" id="auth-subtitle">Sign in to continue to your dashboard.</p>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-brand-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+
+            <div class="p-8 md:p-10 relative z-10">
+                <div class="flex justify-center mb-6">
+                    <div class="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                </div>
+
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-extrabold tracking-tight text-white mb-1.5" id="auth-title">Welcome Back</h2>
+                    <p class="text-sm text-gray-400 font-medium" id="auth-subtitle">Sign in to continue to your dashboard.</p>
+                </div>
+
+                <form id="login-form" class="space-y-4">
+                    <button type="button" onclick="handleGoogleLogin(this)" class="w-full bg-white text-black hover:bg-gray-100 font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-3 shadow-sm text-[14px]">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Continue with Google
+                    </button>
+                    
+                    <div class="flex items-center gap-3 py-2">
+                        <div class="h-px bg-white/10 flex-1"></div>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">or continue with email</span>
+                        <div class="h-px bg-white/10 flex-1"></div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1.5">Email address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <input type="email" id="login-email" required class="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-inner" placeholder="name@company.com">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="block text-xs font-bold text-gray-400">Password</label>
+                                <a href="#" class="text-[11px] text-brand-400 hover:text-brand-300 font-medium transition-colors">Forgot password?</a>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                </div>
+                                <input type="password" id="login-password" required class="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-inner" placeholder="••••••••">
+                                <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-white transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(99,102,241,0.4)] mt-2 text-[14px]">
+                        Sign In
+                    </button>
+                    
+                    <p class="text-center text-[13px] text-gray-400 mt-6 font-medium">
+                        New to CelestiaStore? 
+                        <a href="#" id="toggle-register" class="text-white hover:text-brand-400 font-bold transition-colors">Create an account</a>
+                    </p>
+                </form>
+
+                <form id="register-form" class="space-y-4 hidden">
+                    <button type="button" onclick="handleGoogleLogin(this)" class="w-full bg-white text-black hover:bg-gray-100 font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-3 shadow-sm text-[14px]">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Sign up with Google
+                    </button>
+                    
+                    <div class="flex items-center gap-3 py-2">
+                        <div class="h-px bg-white/10 flex-1"></div>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">or continue with email</span>
+                        <div class="h-px bg-white/10 flex-1"></div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1.5">Email address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <input type="email" id="reg-email" required class="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-inner" placeholder="name@company.com">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1.5">Create Password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                </div>
+                                <input type="password" id="reg-password" required minlength="6" class="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="At least 6 characters">
+                                <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-white transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                </button>
+                            </div>
+                            
+                            <div id="password-strength-container" class="overflow-hidden transition-all duration-300 ease-out max-h-0 opacity-0">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span id="password-strength-text" class="text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-colors duration-300">Strength</span>
+                                </div>
+                                <div class="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+                                    <div id="strength-bar" class="h-full w-0 transition-all duration-500 ease-out bg-red-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-register" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(99,102,241,0.4)] mt-2 text-[14px]">
+                        Create Account
+                    </button>
+                    
+                    <p class="text-center text-[13px] text-gray-400 mt-6 font-medium">
+                        Already have an account? 
+                        <a href="#" id="toggle-login" class="text-white hover:text-brand-400 font-bold transition-colors">Sign in</a>
+                    </p>
+                </form>
             </div>
-
-            <form id="login-form" class="space-y-4">
-                <button type="button" onclick="handleGoogleLogin(this)" class="w-full bg-white text-black hover:bg-gray-100 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-3 shadow-lg transform hover:-translate-y-0.5 text-sm md:text-base">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                    Continue with Google
-                </button>
-                
-                <div class="flex items-center gap-4 my-3">
-                    <div class="h-px bg-white/10 flex-1"></div>
-                    <span class="text-[11px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">OR</span>
-                    <div class="h-px bg-white/10 flex-1"></div>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email Address</label>
-                    <input type="email" id="login-email" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="name@company.com">
-                </div>
-                <div>
-                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
-                    <input type="password" id="login-password" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="••••••••">
-                </div>
-                <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-[0_10px_20px_-10px_rgba(99,102,241,0.5)] transform hover:-translate-y-0.5 active:translate-y-0 text-sm md:text-base mt-2">
-                    Sign In
-                </button>
-                <p class="text-center text-xs md:text-sm text-gray-400 mt-4 font-medium">New here? <a href="#" id="toggle-register" class="text-brand-400 hover:text-brand-300 transition-colors">Create an account</a></p>
-            </form>
-
-            <form id="register-form" class="space-y-4 hidden">
-                <button type="button" onclick="handleGoogleLogin(this)" class="w-full bg-white text-black hover:bg-gray-100 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-3 shadow-lg transform hover:-translate-y-0.5 text-sm md:text-base">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                    Continue with Google
-                </button>
-                
-                <div class="flex items-center gap-4 my-3">
-                    <div class="h-px bg-white/10 flex-1"></div>
-                    <span class="text-[11px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">OR</span>
-                    <div class="h-px bg-white/10 flex-1"></div>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email Address</label>
-                    <input type="email" id="reg-email" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="name@company.com">
-                </div>
-                <div>
-                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
-                    <input type="password" id="reg-password" required minlength="6" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="At least 6 characters">
-                </div>
-                <button type="submit" id="btn-register" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-[0_10px_20px_-10px_rgba(99,102,241,0.5)] transform hover:-translate-y-0.5 active:translate-y-0 text-sm md:text-base mt-2">
-                    Create Account
-                </button>
-                <p class="text-center text-xs md:text-sm text-gray-400 mt-4 font-medium">Already have an account? <a href="#" id="toggle-login" class="text-brand-400 hover:text-brand-300 transition-colors">Sign in</a></p>
-            </form>
+            
+            <div class="h-1.5 w-full bg-gradient-to-r from-brand-600 via-purple-500 to-brand-400"></div>
         </div>
     </div>
+
 
     <div id="app-view" class="hidden w-full flex-1 flex relative min-h-screen">
         
@@ -831,11 +950,31 @@
     </div>
 
     <script>
+        const cookieStorage = {
+            getItem: (key) => {
+                const cookies = document.cookie.split(';');
+                const cookie = cookies.find(c => c.trim().startsWith(key + '='));
+                return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
+            },
+            setItem: (key, value) => {
+                document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
+            },
+            removeItem: (key) => {
+                document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+            }
+        };
+
         const supabaseUrl = 'https://ivlkgqmmtvbfpmgssxsg.supabase.co';
         const supabaseKey = 'sb_publishable_lusXR7UeNgJ4lwo9pIEaJA_T2sJ-l6U';
         
-        // ĐÃ FIX: Đổi tên biến thành supabaseClient để không trùng với biến global của CDN Supabase gây Crash toàn bộ mã JS
-        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                storage: cookieStorage,
+                autoRefreshToken: true,
+                persistSession: true,
+                detectSessionInUrl: true
+            }
+        });
 
         const PRICE_CANVA = 5000;
 
@@ -985,6 +1124,55 @@
         }
 
         function setupEventListeners() {
+
+            // Logic đo độ mạnh mật khẩu (Hiệu ứng 1 thanh trượt + Mở ra mượt mà)
+            document.getElementById('reg-password').addEventListener('input', function(e) {
+                const val = e.target.value;
+                const container = document.getElementById('password-strength-container');
+                const text = document.getElementById('password-strength-text');
+                const bar = document.getElementById('strength-bar');
+
+                // Nếu ô mật khẩu trống, thu nhỏ và làm mờ đi
+                if (!val) {
+                    container.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
+                    container.classList.add('max-h-0', 'opacity-0');
+                    bar.style.width = '0%';
+                    return;
+                }
+                
+                // Nếu bắt đầu gõ, mở rộng chiều cao và hiện rõ ra
+                container.classList.remove('max-h-0', 'opacity-0');
+                container.classList.add('max-h-[50px]', 'opacity-100', 'mt-2.5');
+
+                // Tính điểm (tối đa 4)
+                let strength = 0;
+                if (val.length >= 6) strength++; // Dài hơn 6 ký tự
+                if (val.match(/(?=.*[a-z])(?=.*[A-Z])/)) strength++; // Có cả chữ hoa và thường
+                if (val.match(/(?=.*[0-9])/)) strength++; // Có số
+                if (val.match(/[^A-Za-z0-9]/)) strength++; // Có ký tự đặc biệt
+
+                // Xác định phần trăm độ dài và màu sắc cho thanh trượt
+                let width = '0%';
+                let colorClass = 'bg-red-500';
+                
+                if (strength === 1) { width = '25%'; colorClass = 'bg-red-500'; }
+                else if (strength === 2) { width = '50%'; colorClass = 'bg-orange-500'; }
+                else if (strength === 3) { width = '75%'; colorClass = 'bg-yellow-500'; }
+                else if (strength === 4) { width = '100%'; colorClass = 'bg-green-500'; }
+
+                // Cập nhật thanh trượt (Đổi màu và kéo dài width)
+                bar.className = `h-full transition-all duration-500 ease-out ${colorClass}`;
+                bar.style.width = width;
+
+                // Cập nhật dòng chữ text
+                text.className = 'text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ';
+                if (strength <= 1) { text.innerText = 'Weak'; text.classList.add('text-red-500'); }
+                else if (strength === 2) { text.innerText = 'Fair'; text.classList.add('text-orange-500'); }
+                else if (strength === 3) { text.innerText = 'Good'; text.classList.add('text-yellow-500'); }
+                else { text.innerText = 'Strong'; text.classList.add('text-green-500'); }
+            });
+
+
             document.getElementById('toggle-register').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('register'); });
             document.getElementById('toggle-login').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('login'); });
 
@@ -1169,23 +1357,76 @@
         }
 
         function closeAuthModal() {
+            // Đóng Modal và Reset Form
             DOM.authModal.classList.remove('active');
             DOM.loginForm.reset();
             DOM.registerForm.reset();
+
+            // Reset thanh đo độ mạnh mật khẩu về trạng thái ẩn hoàn toàn
+            const strengthContainer = document.getElementById('password-strength-container');
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('password-strength-text');
+
+            if (strengthContainer) {
+                // Thu nhỏ và làm mờ container
+                strengthContainer.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
+                strengthContainer.classList.add('max-h-0', 'opacity-0');
+            }
+            if (strengthBar) {
+                // Đưa chiều dài thanh trượt về 0%
+                strengthBar.style.width = '0%';
+            }
+            if (strengthText) {
+                // Trả lại chữ Strength màu xám mặc định
+                strengthText.innerText = 'Strength';
+                strengthText.className = 'text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-colors duration-300';
+            }
+
+            // Đưa các ô mật khẩu về dạng ẩn (đề phòng trước đó đang bật "Hiện mật khẩu")
+            const loginPass = document.getElementById('login-password');
+            const regPass = document.getElementById('reg-password');
+            if (loginPass) loginPass.type = 'password';
+            if (regPass) regPass.type = 'password';
+            
+            // Đổi SVG con mắt về trạng thái đóng
+            const closedEyeSVG = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            document.querySelectorAll('#login-form button[type="button"], #register-form button[type="button"]').forEach(btn => {
+                if(btn.hasAttribute('onclick') && btn.getAttribute('onclick').includes('togglePasswordVisibility')) {
+                    btn.innerHTML = closedEyeSVG;
+                }
+            });
         }
 
         function toggleAuthForms(type) {
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            
+            title.classList.remove('animate-fade-in');
+            subtitle.classList.remove('animate-fade-in');
+            DOM.loginForm.classList.remove('animate-fade-in');
+            DOM.registerForm.classList.remove('animate-fade-in');
+
+            void title.offsetWidth;
+            void DOM.loginForm.offsetWidth;
+
             if (type === 'login') {
                 DOM.registerForm.classList.add('hidden');
                 DOM.loginForm.classList.remove('hidden');
-                document.getElementById('auth-title').innerText = 'Welcome Back';
-                document.getElementById('auth-subtitle').innerText = 'Sign in to continue to your dashboard.';
+                DOM.loginForm.classList.add('animate-fade-in');
+                
+                title.innerText = 'Welcome Back';
+                subtitle.innerText = 'Sign in to continue to your dashboard.';
             } else {
                 DOM.loginForm.classList.add('hidden');
                 DOM.registerForm.classList.remove('hidden');
-                document.getElementById('auth-title').innerText = 'Create Account';
-                document.getElementById('auth-subtitle').innerText = 'Join us and unlock premium features.';
+                DOM.registerForm.classList.add('animate-fade-in');
+                
+                title.innerText = 'Create Account';
+                subtitle.innerText = 'Join us and unlock premium features.';
             }
+            
+            title.classList.add('animate-fade-in');
+            subtitle.classList.add('animate-fade-in');
         }
 
         function formatCurrency(amount) {
@@ -1650,11 +1891,42 @@
         }
 
         function setLoading(btn, isLoading, text) {
-            if (isLoading) { btn.disabled = true; btn.innerHTML = `<div class="spinner w-3.5 h-3.5 md:w-4 md:h-4"></div> <span class="ml-2">${text}</span>`; btn.classList.add('opacity-70', 'cursor-not-allowed'); } 
-            else { btn.disabled = false; btn.innerHTML = text; btn.classList.remove('opacity-70', 'cursor-not-allowed'); }
+            if (isLoading) { 
+                btn.disabled = true; 
+                // Bọc lại bằng 1 thẻ span flex-center để đảm bảo nó luôn nằm giữa nút bấm
+                btn.innerHTML = `<span class="flex items-center justify-center gap-2 w-full"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${text}</span>`; 
+                btn.classList.add('opacity-70', 'cursor-not-allowed'); 
+            } 
+            else { 
+                btn.disabled = false; 
+                // Phục hồi lại icon Google nếu là nút Google Login
+                if (text.includes('Google')) {
+                   btn.innerHTML = `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> ${text}`;
+                } else {
+                   btn.innerHTML = text; 
+                }
+                btn.classList.remove('opacity-70', 'cursor-not-allowed'); 
+            }
         }
 
+
         document.addEventListener('DOMContentLoaded', init);
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                // Đổi sang SVG icon Mắt bị gạch chéo
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.29 3.29m0 0a10.05 10.05 0 015.71-1.59c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0l-3.29-3.29"></path></svg>`;
+            } else {
+                input.type = 'password';
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            }
+        }
+
     </script>
+
+
+
 </body>
 </html>
