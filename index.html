@@ -1085,6 +1085,34 @@
     let currentTxPage = 1;       
     const txPerPage = 5;         
 
+    // =========================================================
+    // HÀM BỔ TRỢ: CHỐNG TREO MẠNG (TIMEOUT)
+    // =========================================================
+    const fetchWithTimeout = async (promise, ms = 8000) => {
+        let timeoutId;
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error('Request Timeout')), ms);
+        });
+        return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
+    };
+
+    let isPolling = false; // Khóa vòng lặp
+
+    // Xử lý chống kẹt nút bấm khi đổi qua lại giữa trình duyệt và app Ngân hàng
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === 'visible') {
+            isPolling = false; // Mở khóa vòng lặp để tiếp tục auto check
+            
+            // Nếu nút Check thủ công đang bị kẹt disabled thì giải phóng nó
+            const btn = document.getElementById('btn-force-check');
+            if (btn && btn.disabled) {
+                btn.disabled = false;
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Already transferred? Check now`;
+            }
+        }
+    });
+    // =========================================================
+
     async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
 
@@ -1702,7 +1730,7 @@
             
             currentPendingTx = { txCode: qrData.content, amount: amount };
             
-            await refreshUserData(); // Cập nhật danh sách history ngay lập tức
+            await refreshUserData(); // Cập nhật lại lịch sử Giao dịch ngay lập tức
 
             document.getElementById('bank-input-section').classList.add('hidden');
             document.getElementById('bank-qr-details').classList.remove('hidden');
@@ -1717,21 +1745,24 @@
         }
     }
 
+    // Hàm check thủ công khi ấn nút "Already transferred"
     async function forceCheckPayment() {
         if (!currentPendingTx) return;
         const btn = document.getElementById('btn-force-check');
-        if (!btn) return;
+        if (!btn || btn.disabled) return;
         
         const originalHtml = btn.innerHTML;
         btn.innerHTML = `<div class="spinner w-4 h-4 border-brand-400 border-l-transparent"></div> Checking...`;
-        btn.disabled = true;
+        btn.disabled = true; // Khóa nút bấm khi đang fetch để chống Spam
 
         try {
-            const { data, error } = await supabaseClient
-                .from('transactions')
-                .select('status')
-                .eq('tx_code', currentPendingTx.txCode)
-                .single();
+            // ÉP Supabase phải trả kết quả trong 8 giây, chống treo ngầm
+            const { data, error } = await fetchWithTimeout(
+                supabaseClient.from('transactions').select('status').eq('tx_code', currentPendingTx.txCode).single(),
+                8000
+            );
+
+            if (error) throw error;
 
             if (data) {
                 if (data.status === 'success') {
@@ -1756,27 +1787,35 @@
                 }
             }
         } catch (err) {
-            console.error(err);
+            console.log("Lỗi mạng hoặc Timeout:", err);
+            showToast('Mạng quá tải hoặc mất kết nối, vui lòng thử lại!', 'error');
         } finally {
-            btn.innerHTML = originalHtml;
-            btn.disabled = false;
+            if(btn) {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false; // Bắt buộc mở khóa nút để bấm lại được
+            }
         }
     }
 
+    // Hàm Polling check tự động mỗi 3 giây
     function startPaymentPolling(txCode, amount) {
         if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+        isPolling = false;
         
         const badge = document.getElementById('payment-status-badge');
         badge.innerHTML = `<div class="spinner w-2.5 h-2.5 md:w-3 md:h-3 border-yellow-500 border-l-transparent"></div> Waiting for payment...`;
         badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-3 py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-xs font-bold border border-yellow-500/20 w-full';
 
         paymentPollingInterval = setInterval(async () => {
+            if (isPolling) return; // Nếu vòng trước bị lag chưa xong thì bỏ qua vòng này
+            isPolling = true;
+
             try {
-                const { data, error } = await supabaseClient
-                    .from('transactions')
-                    .select('status')
-                    .eq('tx_code', txCode)
-                    .single();
+                // Timeout 8 giây chống treo ngầm khi đang ở background
+                const { data, error } = await fetchWithTimeout(
+                    supabaseClient.from('transactions').select('status').eq('tx_code', txCode).single(),
+                    8000
+                );
 
                 if (data) {
                     if (data.status === 'success') {
@@ -1791,7 +1830,7 @@
                         if(closeBtn) closeBtn.classList.remove('hidden');
 
                         setTimeout(() => {
-                            handlePaymentSuccess(amount, false);
+                            handlePaymentSuccess(amount, false); // False để không tự tắt QR
                         }, 1000);
 
                     } else if (data.status === 'error_amount') {
@@ -1802,7 +1841,9 @@
                     }
                 }
             } catch (err) {
-                console.log("Polling error (có thể do mạng, bỏ qua)");
+                console.log("Polling lag/timeout, bỏ qua chờ vòng sau...");
+            } finally {
+                isPolling = false; // Mở khóa cho vòng 3s tiếp theo
             }
         }, 3000);
     }
@@ -1836,6 +1877,7 @@
         document.getElementById('bank-input-section').classList.remove('hidden');
         document.getElementById('qr-amount-input').value = '50000';
 
+        // Phục hồi lại trạng thái nút ban đầu
         const actionBtns = document.getElementById('bank-action-buttons');
         const closeBtn = document.getElementById('btn-close-bank');
         if(actionBtns) actionBtns.classList.remove('hidden');
