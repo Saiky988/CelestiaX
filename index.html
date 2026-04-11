@@ -950,31 +950,11 @@
     </div>
 
     <script>
-        const cookieStorage = {
-            getItem: (key) => {
-                const cookies = document.cookie.split(';');
-                const cookie = cookies.find(c => c.trim().startsWith(key + '='));
-                return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
-            },
-            setItem: (key, value) => {
-                document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax`;
-            },
-            removeItem: (key) => {
-                document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-            }
-        };
-
+        // ĐÃ FIX: Xóa bỏ cookieStorage thủ công. Quay về LocalStorage mặc định của Supabase 
+        // -> Lưu phiên đăng nhập vĩnh viễn, không bị GitHub Pages chặn.
         const supabaseUrl = 'https://ivlkgqmmtvbfpmgssxsg.supabase.co';
         const supabaseKey = 'sb_publishable_lusXR7UeNgJ4lwo9pIEaJA_T2sJ-l6U';
-        
-        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                storage: cookieStorage,
-                autoRefreshToken: true,
-                persistSession: true,
-                detectSessionInUrl: true
-            }
-        });
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         const PRICE_CANVA = 5000;
 
@@ -1058,38 +1038,27 @@
         let pendingPurchaseAction = null;
 
         function init() {
-            // ĐÃ FIX: Chống nghẽn Login, đảm bảo luôn vào App
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
                 try {
                     if (session) {
                         const user = session.user;
                         let profile = null;
                         
-                        // Quét lấy Profile với cơ chế Retry 3 lần
+                        // Lấy Profile (Retry 3 lần nếu Trigger DB chưa chạy xong)
                         for(let i = 0; i < 3; i++) {
                             let { data } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
-                            if(data) {
-                                profile = data;
-                                break;
-                            }
+                            if(data) { profile = data; break; }
                             await new Promise(r => setTimeout(r, 1000));
                         }
 
-                        // Cơ chế Auto-Heal: Nếu Trigger Database bị xịt, Frontend tự tạo luôn Profile
                         if (!profile) {
-                            profile = {
-                                id: user.id,
-                                email: user.email,
-                                username: user.email.split('@')[0],
-                                balance: 0,
-                                avatar_url: null
-                            };
+                            profile = { id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null };
                             await supabaseClient.from('profiles').insert([profile]);
                         }
 
                         appState.currentUser = profile;
                         await refreshUserData();
-                        closeAuthModal();
+                        closeAuthModal(false);
                         showApp();
                     } else {
                         appState.currentUser = null;
@@ -1099,20 +1068,164 @@
                         DOM.landingView.classList.remove('hidden');
                         setTimeout(() => DOM.landingView.classList.add('active'), 50);
                         generateFakeCharts();
+                        
+                        // Kích hoạt Route cho khách chưa đăng nhập
+                        handleHashRoute(window.location.hash.substring(1));
                     }
                 } catch (error) {
-                    console.error("Lỗi khi xử lý session:", error);
-                    showToast('Đã có lỗi xảy ra khi đồng bộ dữ liệu!', 'error');
+                    console.error(error);
                 }
+            });
+
+            // Lắng nghe sự kiện Back/Forward của trình duyệt để đổi Hash
+            window.addEventListener('popstate', () => {
+                handleHashRoute(window.location.hash.substring(1));
             });
 
             setupEventListeners();
             setInterval(simulateAdminUpdates, 4000);
-            
             initGameServices();
             calcRobuxPrice();
         }
 
+        // ==========================================
+        // ROUTING ENGINE (ĐIỀU HƯỚNG URL HASH)
+        // ==========================================
+        function handleHashRoute(hash) {
+            // Nếu chưa đăng nhập
+            if (!appState.currentUser) {
+                if (hash === 'login' || hash === 'register') {
+                    openAuthModal(hash, false);
+                } else {
+                    closeAuthModal(false);
+                }
+                return;
+            }
+
+            const views = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile'];
+            
+            // Tắt hết Modal trước khi xét route
+            DOM.authModal.classList.remove('active');
+            DOM.checkoutModal.classList.remove('active');
+            document.getElementById('generic-checkout-modal').classList.remove('active');
+            
+            if (views.includes(hash)) {
+                switchView(hash, false); // false để không pushState đè lên
+            } else if (hash === 'checkout-canva') {
+                switchView('product', false);
+                openModal(false);
+            } else if (hash === 'checkout-service') {
+                // Do modal game cần dữ liệu truyền vào nên không mở khơi khơi bằng link được
+                switchView('games', false);
+            } else {
+                switchView('home', false);
+            }
+        }
+
+        function showApp() {
+            DOM.landingView.classList.remove('active');
+            setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
+            DOM.appView.classList.remove('hidden');
+            updateUI();
+            generateFakeCharts();
+            
+            // Xử lý Hash để nhảy tới đúng trang (hoặc đẩy về home)
+            const currentHash = window.location.hash.substring(1);
+            if (currentHash && currentHash !== 'login' && currentHash !== 'register') {
+                handleHashRoute(currentHash);
+            } else {
+                switchView('home'); 
+            }
+        }
+
+        function switchView(viewName, pushHash = true) {
+            DOM.navItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.target === viewName);
+            });
+            DOM.views.forEach(view => {
+                view.classList.toggle('active', view.id === `view-${viewName}`);
+            });
+            
+            // Thêm Hash vào URL và Cuộn lên đầu
+            if (pushHash && window.location.hash !== `#${viewName}`) {
+                history.pushState(null, null, `#${viewName}`);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // CÁC HÀM MODAL ĐƯỢC CẬP NHẬT ĐỂ ĐỔI HASH
+        // ==========================================
+        function openAuthModal(type, pushHash = true) {
+            toggleAuthForms(type);
+            DOM.authModal.classList.add('active');
+            if (pushHash && window.location.hash !== `#${type}`) {
+                history.pushState(null, null, `#${type}`);
+            }
+        }
+
+        function closeAuthModal(pushHash = true) {
+            DOM.authModal.classList.remove('active');
+            DOM.loginForm.reset();
+            DOM.registerForm.reset();
+
+            // Reset Password Strength
+            const strengthContainer = document.getElementById('password-strength-container');
+            if (strengthContainer) {
+                strengthContainer.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
+                strengthContainer.classList.add('max-h-0', 'opacity-0');
+                document.getElementById('strength-bar').style.width = '0%';
+                document.getElementById('password-strength-text').innerText = 'Strength';
+                document.getElementById('password-strength-text').className = 'text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-colors duration-300';
+            }
+
+            // Đưa các ô mật khẩu về dạng ẩn
+            if (document.getElementById('login-password')) document.getElementById('login-password').type = 'password';
+            if (document.getElementById('reg-password')) document.getElementById('reg-password').type = 'password';
+            
+            // Reset icon Mắt
+            const closedEyeSVG = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            document.querySelectorAll('#login-form button[type="button"], #register-form button[type="button"]').forEach(btn => {
+                if(btn.hasAttribute('onclick') && btn.getAttribute('onclick').includes('togglePasswordVisibility')) btn.innerHTML = closedEyeSVG;
+            });
+
+            if (pushHash) history.pushState(null, null, appState.currentUser ? '#home' : '#');
+        }
+
+        function openModal(pushHash = true) {
+            document.getElementById('target-email').value = appState.currentUser.email;
+            DOM.checkoutModal.classList.add('active');
+            if (pushHash) history.pushState(null, null, '#checkout-canva');
+        }
+
+        function closeModal(pushHash = true) {
+            DOM.checkoutModal.classList.remove('active');
+            DOM.checkoutForm.reset();
+            if (pushHash) history.pushState(null, null, '#product');
+        }
+
+        function openGenericConfirm(title, desc, price, callback, pushHash = true) {
+            document.getElementById('generic-item-name').innerText = title;
+            document.getElementById('generic-item-desc').innerText = desc;
+            document.getElementById('generic-item-price').innerText = formatCurrency(price);
+            pendingPurchaseAction = callback;
+            document.getElementById('generic-checkout-modal').classList.add('active');
+            if (pushHash) history.pushState(null, null, '#checkout-service');
+        }
+        
+        function closeGenericModal(pushHash = true) {
+            document.getElementById('generic-checkout-modal').classList.remove('active');
+            pendingPurchaseAction = null;
+            if (pushHash) {
+                let activeView = 'home';
+                DOM.views.forEach(v => { if(v.classList.contains('active')) activeView = v.id.replace('view-', ''); });
+                history.pushState(null, null, `#${activeView}`);
+            }
+        }
+
+        // ==========================================
+        // CÁC HÀM LOGIC CÒN LẠI GIỮ NGUYÊN
+        // ==========================================
         async function refreshUserData() {
             if (!appState.currentUser) return;
             const uid = appState.currentUser.id;
@@ -1130,11 +1243,7 @@
             const txCode = 'TX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
             
             await supabaseClient.from('transactions').insert([{
-                tx_code: txCode,
-                user_id: appState.currentUser.id,
-                type: type,
-                amount: amount,
-                status: status
+                tx_code: txCode, user_id: appState.currentUser.id, type: type, amount: amount, status: status
             }]);
 
             if(status === 'success') {
@@ -1145,8 +1254,6 @@
         }
 
         function setupEventListeners() {
-
-            // Logic đo độ mạnh mật khẩu
             document.getElementById('reg-password').addEventListener('input', function(e) {
                 const val = e.target.value;
                 const container = document.getElementById('password-strength-container');
@@ -1187,8 +1294,9 @@
                 else { text.innerText = 'Strong'; text.classList.add('text-green-500'); }
             });
 
-            document.getElementById('toggle-register').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('register'); });
-            document.getElementById('toggle-login').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('login'); });
+            // Sử dụng openAuthModal thay vì toggleAuthForms để có URL Hash
+            document.getElementById('toggle-register').addEventListener('click', (e) => { e.preventDefault(); openAuthModal('register'); });
+            document.getElementById('toggle-login').addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
 
             DOM.loginForm.addEventListener('submit', handleLogin);
             DOM.registerForm.addEventListener('submit', handleRegister);
@@ -1298,10 +1406,7 @@
                 const orderCode = 'RBX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
                 
                 await supabaseClient.from('orders').insert([{
-                    order_code: orderCode,
-                    user_id: appState.currentUser.id,
-                    type: 'robux',
-                    price: price,
+                    order_code: orderCode, user_id: appState.currentUser.id, type: 'robux', price: price,
                     details: { roblox_username: username, amount: amount, method: method }
                 }]);
                 
@@ -1331,10 +1436,7 @@
                 const orderCode = 'BST-' + Math.random().toString(36).substr(2, 6).toUpperCase();
                 
                 await supabaseClient.from('orders').insert([{
-                    order_code: orderCode,
-                    user_id: appState.currentUser.id,
-                    type: 'game_service',
-                    price: price,
+                    order_code: orderCode, user_id: appState.currentUser.id, type: 'game_service', price: price,
                     details: { game: gameServicesConfig[gameKey].name, service: serviceName, acc_user: username, acc_pass: password }
                 }]);
                 
@@ -1350,58 +1452,6 @@
             refreshUserData();
             switchView('orders');
             showToast(msg, 'success');
-        }
-
-        function openGenericConfirm(title, desc, price, callback) {
-            document.getElementById('generic-item-name').innerText = title;
-            document.getElementById('generic-item-desc').innerText = desc;
-            document.getElementById('generic-item-price').innerText = formatCurrency(price);
-            pendingPurchaseAction = callback;
-            document.getElementById('generic-checkout-modal').classList.add('active');
-        }
-        
-        function closeGenericModal() {
-            document.getElementById('generic-checkout-modal').classList.remove('active');
-            pendingPurchaseAction = null;
-        }
-
-        function openAuthModal(type) {
-            toggleAuthForms(type);
-            DOM.authModal.classList.add('active');
-        }
-
-        function closeAuthModal() {
-            DOM.authModal.classList.remove('active');
-            DOM.loginForm.reset();
-            DOM.registerForm.reset();
-
-            const strengthContainer = document.getElementById('password-strength-container');
-            const strengthBar = document.getElementById('strength-bar');
-            const strengthText = document.getElementById('password-strength-text');
-
-            if (strengthContainer) {
-                strengthContainer.classList.remove('max-h-[50px]', 'opacity-100', 'mt-2.5');
-                strengthContainer.classList.add('max-h-0', 'opacity-0');
-            }
-            if (strengthBar) {
-                strengthBar.style.width = '0%';
-            }
-            if (strengthText) {
-                strengthText.innerText = 'Strength';
-                strengthText.className = 'text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-colors duration-300';
-            }
-
-            const loginPass = document.getElementById('login-password');
-            const regPass = document.getElementById('reg-password');
-            if (loginPass) loginPass.type = 'password';
-            if (regPass) regPass.type = 'password';
-            
-            const closedEyeSVG = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            document.querySelectorAll('#login-form button[type="button"], #register-form button[type="button"]').forEach(btn => {
-                if(btn.hasAttribute('onclick') && btn.getAttribute('onclick').includes('togglePasswordVisibility')) {
-                    btn.innerHTML = closedEyeSVG;
-                }
-            });
         }
 
         function toggleAuthForms(type) {
@@ -1493,17 +1543,6 @@
             }
         }
 
-        function showApp() {
-            DOM.landingView.classList.remove('active');
-            setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
-            DOM.appView.classList.remove('hidden');
-            updateUI();
-            generateFakeCharts();
-            switchView('home');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         function updateUI() {
             if (!appState.currentUser) return;
             const user = appState.currentUser;
@@ -1537,17 +1576,6 @@
             renderOrders();
             renderTransactions();
             updateDashboardStats();
-        }
-
-        function switchView(viewName) {
-            DOM.navItems.forEach(item => {
-                item.classList.toggle('active', item.dataset.target === viewName);
-            });
-            DOM.views.forEach(view => {
-                view.classList.toggle('active', view.id === `view-${viewName}`);
-            });
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function switchTopUpTab(tab) {
@@ -1676,16 +1704,6 @@
                 DOM.cardForm.reset();
                 setLoading(btn, false, 'Process Card');
             }, 2500);
-        }
-
-        function openModal() {
-            document.getElementById('target-email').value = appState.currentUser.email;
-            DOM.checkoutModal.classList.add('active');
-        }
-
-        function closeModal() {
-            DOM.checkoutModal.classList.remove('active');
-            DOM.checkoutForm.reset();
         }
 
         async function handleCheckout(e) {
@@ -1900,7 +1918,6 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%) scale(0.9)'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
-        // ĐÃ FIX: Bọc SVG và Text vào thẻ span căn giữa để icon xoay không bị lệch
         function setLoading(btn, isLoading, text) {
             if (isLoading) { 
                 btn.disabled = true; 
@@ -1930,7 +1947,6 @@
                 btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
             }
         }
-
     </script>
 
 </body>
