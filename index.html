@@ -950,14 +950,18 @@
     </div>
 
     <script>
+        // ĐÃ FIX: Sửa lỗi Parser cắt nhầm token khi chuỗi có chứa nhiều dấu '='
         const cookieStorage = {
             getItem: (key) => {
                 const cookies = document.cookie.split(';');
                 const cookie = cookies.find(c => c.trim().startsWith(key + '='));
-                return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
+                if (!cookie) return null;
+                // Lấy toàn bộ giá trị sau dấu '=' đầu tiên
+                const value = cookie.substring(cookie.indexOf('=') + 1);
+                return decodeURIComponent(value);
             },
             setItem: (key, value) => {
-                document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax`;
+                document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
             },
             removeItem: (key) => {
                 document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
@@ -1057,15 +1061,16 @@
         let paymentPollingCount = 0;
         let pendingPurchaseAction = null;
 
-        function init() {
-            // ĐÃ FIX: Chống nghẽn Login, đảm bảo luôn vào App
+        async function init() {
+            // Ép Supabase đọc session từ cookie ngay lập tức để giảm độ trễ
+            const { data: { session } } = await supabaseClient.auth.getSession();
+
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
                 try {
                     if (session) {
                         const user = session.user;
                         let profile = null;
                         
-                        // Quét lấy Profile với cơ chế Retry 3 lần
                         for(let i = 0; i < 3; i++) {
                             let { data } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
                             if(data) {
@@ -1075,14 +1080,9 @@
                             await new Promise(r => setTimeout(r, 1000));
                         }
 
-                        // Cơ chế Auto-Heal: Nếu Trigger Database bị xịt, Frontend tự tạo luôn Profile
                         if (!profile) {
                             profile = {
-                                id: user.id,
-                                email: user.email,
-                                username: user.email.split('@')[0],
-                                balance: 0,
-                                avatar_url: null
+                                id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null
                             };
                             await supabaseClient.from('profiles').insert([profile]);
                         }
@@ -1099,6 +1099,9 @@
                         DOM.landingView.classList.remove('hidden');
                         setTimeout(() => DOM.landingView.classList.add('active'), 50);
                         generateFakeCharts();
+                        
+                        // Xóa hash khi chưa đăng nhập
+                        window.history.replaceState(null, null, window.location.pathname);
                     }
                 } catch (error) {
                     console.error("Lỗi khi xử lý session:", error);
@@ -1106,11 +1109,86 @@
                 }
             });
 
+            // Lắng nghe sự kiện chuyển URL Hash (Nút Back/Forward của trình duyệt)
+            window.addEventListener('hashchange', handleHashRouting);
+
             setupEventListeners();
             setInterval(simulateAdminUpdates, 4000);
             
             initGameServices();
             calcRobuxPrice();
+        }
+
+        // HỆ THỐNG ROUTER (ĐIỀU HƯỚNG BẰNG HASH)
+        function handleHashRouting() {
+            if (!appState.currentUser) return;
+
+            let hash = window.location.hash.replace('#', '');
+            
+            // Xử lý các Hash đặc biệt cho Modal
+            if (hash === 'checkout-canva') {
+                if (!DOM.checkoutModal.classList.contains('active')) openModal();
+                return;
+            } else if (hash === 'checkout-service') {
+                // Bắt buộc quay về Home vì Modal service cần truyền data động
+                closeGenericModal();
+                switchView('home', false);
+                return;
+            } else {
+                DOM.checkoutModal.classList.remove('active');
+                DOM.checkoutForm.reset();
+                closeGenericModal();
+            }
+
+            const validViews = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile'];
+            if (!validViews.includes(hash)) {
+                hash = 'home';
+            }
+
+            switchView(hash, false); // Tham số false: Không update hash lên URL nữa để tránh vòng lặp vô hạn
+        }
+
+        function showApp() {
+            DOM.landingView.classList.remove('active');
+            setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
+            DOM.appView.classList.remove('hidden');
+            updateUI();
+            generateFakeCharts();
+            
+            // Lấy hash từ URL lúc mới vào trang. Nếu người dùng mở link /#orders, sẽ nhảy thẳng vào orders.
+            let initialHash = window.location.hash.replace('#', '') || 'home';
+            const validViews = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile', 'checkout-canva'];
+            if (!validViews.includes(initialHash)) initialHash = 'home';
+            
+            // Nếu hash là modal, bật trang product đệm phía sau
+            if (initialHash === 'checkout-canva') {
+                switchView('product', false);
+                openModal();
+            } else {
+                switchView(initialHash, true);
+            }
+        }
+
+        function switchView(viewName, updateHash = true) {
+            DOM.navItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.target === viewName);
+            });
+            DOM.views.forEach(view => {
+                view.classList.toggle('active', view.id === `view-${viewName}`);
+            });
+            
+            // Đẩy state hash lên URL bar
+            if (updateHash && window.location.hash !== `#${viewName}`) {
+                window.history.pushState(null, null, `#${viewName}`);
+            }
+
+            // Tự động cuộn lên đầu cực mượt
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Tự động đóng Sidebar trên Mobile
+            if (window.innerWidth < 768 && !DOM.sidebar.classList.contains('-translate-x-full')) {
+                toggleMobileMenu();
+            }
         }
 
         async function refreshUserData() {
@@ -1146,7 +1224,6 @@
 
         function setupEventListeners() {
 
-            // Logic đo độ mạnh mật khẩu
             document.getElementById('reg-password').addEventListener('input', function(e) {
                 const val = e.target.value;
                 const container = document.getElementById('password-strength-container');
@@ -1195,9 +1272,9 @@
             document.getElementById('btn-logout').addEventListener('click', handleLogout);
 
             DOM.navItems.forEach(item => {
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
                     switchView(item.dataset.target);
-                    if (window.innerWidth < 768) toggleMobileMenu();
                 });
             });
 
@@ -1352,7 +1429,9 @@
             showToast(msg, 'success');
         }
 
+        // Tích hợp Hash vào Modals
         function openGenericConfirm(title, desc, price, callback) {
+            window.history.pushState(null, null, '#checkout-service');
             document.getElementById('generic-item-name').innerText = title;
             document.getElementById('generic-item-desc').innerText = desc;
             document.getElementById('generic-item-price').innerText = formatCurrency(price);
@@ -1361,8 +1440,25 @@
         }
         
         function closeGenericModal() {
+            if (window.location.hash === '#checkout-service') {
+                window.history.back(); // Quay về trang trước nếu đóng bằng code
+            }
             document.getElementById('generic-checkout-modal').classList.remove('active');
             pendingPurchaseAction = null;
+        }
+
+        function openModal() {
+            window.history.pushState(null, null, '#checkout-canva');
+            document.getElementById('target-email').value = appState.currentUser.email;
+            DOM.checkoutModal.classList.add('active');
+        }
+
+        function closeModal() {
+            if (window.location.hash === '#checkout-canva') {
+                window.history.back();
+            }
+            DOM.checkoutModal.classList.remove('active');
+            DOM.checkoutForm.reset();
         }
 
         function openAuthModal(type) {
@@ -1493,17 +1589,6 @@
             }
         }
 
-        function showApp() {
-            DOM.landingView.classList.remove('active');
-            setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
-            DOM.appView.classList.remove('hidden');
-            updateUI();
-            generateFakeCharts();
-            switchView('home');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         function updateUI() {
             if (!appState.currentUser) return;
             const user = appState.currentUser;
@@ -1537,17 +1622,6 @@
             renderOrders();
             renderTransactions();
             updateDashboardStats();
-        }
-
-        function switchView(viewName) {
-            DOM.navItems.forEach(item => {
-                item.classList.toggle('active', item.dataset.target === viewName);
-            });
-            DOM.views.forEach(view => {
-                view.classList.toggle('active', view.id === `view-${viewName}`);
-            });
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function switchTopUpTab(tab) {
@@ -1676,16 +1750,6 @@
                 DOM.cardForm.reset();
                 setLoading(btn, false, 'Process Card');
             }, 2500);
-        }
-
-        function openModal() {
-            document.getElementById('target-email').value = appState.currentUser.email;
-            DOM.checkoutModal.classList.add('active');
-        }
-
-        function closeModal() {
-            DOM.checkoutModal.classList.remove('active');
-            DOM.checkoutForm.reset();
         }
 
         async function handleCheckout(e) {
@@ -1900,7 +1964,6 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%) scale(0.9)'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
-        // ĐÃ FIX: Bọc SVG và Text vào thẻ span căn giữa để icon xoay không bị lệch
         function setLoading(btn, isLoading, text) {
             if (isLoading) { 
                 btn.disabled = true; 
@@ -1930,8 +1993,8 @@
                 btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
             }
         }
-
     </script>
+
 
 </body>
 </html>
