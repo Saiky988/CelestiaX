@@ -1,327 +1,1660 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Celestia | Creative Backend Developer</title>
-    <meta name="description" content="Expert Backend Developer & Automation Specialist based in Tra Vinh. Creator of Celeskry API and Celestia. High-performance solutions and stable systems.">
-    <meta name="keywords" content="Celestia, Developer, Backend, Python, FastAPI, Minecraft Server, Automation, Tra Vinh">
-    <meta name="author" content="Celestia">
-    <meta name="theme-color" content="#6366f1">
-    <link rel="canonical" href="https://celestiax.fun">
-
-    <link rel="icon" href="https://i.ibb.co/ZRvw9G9q/T-n-D-n-60.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/ZRvw9G9q/T-n-D-n-60.png">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://celestiax.fun">
-    <meta property="og:title" content="Celestia | Creative Developer">
-    <meta property="og:description" content="Architecting high-performance APIs and building stable systems with minimal latency.">
-    <meta property="og:image" content="https://i.ibb.co/ZRvw9G9q/T-n-D-n-60.png">
-
+    <title>Celestia | Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eef2ff', 100: '#e0e7ff', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 900: '#312e81' },
+                        surface: { 900: '#18181b', 950: '#09090b' }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
-            --bg: #09090b; 
-            --primary: #6366f1;
-            --border-subtle: rgba(255, 255, 255, 0.12); 
-            --card-bg: rgba(24, 24, 27, 0.65); 
+            --bg: #09090b;
+            --surface: rgba(24, 24, 27, 0.65);
+            --border: rgba(255,255,255,0.08);
         }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
             background-color: var(--bg);
             color: #ededed;
             overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             -webkit-font-smoothing: antialiased;
+            font-size: clamp(14px, 2.5vw, 16px);
         }
 
-        .noise-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.04;
-        }
+        .text-clamp-hero { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; }
+        .text-clamp-h2 { font-size: clamp(1.5rem, 5vw, 2.25rem); line-height: 1.2; }
+        .text-clamp-h3 { font-size: clamp(1.25rem, 4vw, 1.875rem); line-height: 1.3; }
+        .text-clamp-p { font-size: clamp(0.875rem, 2vw, 1.125rem); line-height: 1.6; }
+        .text-clamp-sm { font-size: clamp(0.75rem, 1.5vw, 0.875rem); }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
 
-        @keyframes meshPulse {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100%) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { border: 2px solid rgba(255,255,255,0.1); border-left-color: #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 0.8s linear infinite; }
 
-        .mesh-bg {
-            position: fixed;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
-                radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.06) 0%, transparent 35%);
-            z-index: 0;
-            pointer-events: none;
-            animation: meshPulse 10s ease-in-out infinite;
+        .glass-panel {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
-
         .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
+            background: rgba(39, 39, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
         }
-
         .glass-card:hover {
-            border-color: rgba(99, 102, 241, 0.5);
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 25px 50px -15px rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.15);
         }
-
-        .text-glow { text-shadow: 0 0 40px rgba(99, 102, 241, 0.5); }
-        .text-gradient {
-            background: linear-gradient(to right, #ffffff, #a5b4fc);
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #c084fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .copyable {
+        .gradient-border {
             position: relative;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            transform-origin: center;
+            background: var(--surface);
+            background-clip: padding-box;
+            border: 1px solid transparent;
+            border-radius: 1rem;
         }
-        
-        @keyframes jelly {
-            0% { transform: scale3d(1, 1, 1); }
-            30% { transform: scale3d(1.25, 0.75, 1); }
-            40% { transform: scale3d(0.75, 1.25, 1); }
-            50% { transform: scale3d(1.15, 0.85, 1); }
-            65% { transform: scale3d(0.95, 1.05, 1); }
-            75% { transform: scale3d(1.05, 0.95, 1); }
-            100% { transform: scale3d(1, 1, 1); }
-        }
-        .jelly-anim {
-            animation: jelly 0.9s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        
-        .copy-toast {
+        .gradient-border::before {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translate(-50%, 0) scale(0.5);
-            background: #6366f1;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 99px;
-            font-size: 9px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
-            white-space: nowrap;
-            z-index: 100;
-        }
-        .copy-toast.show {
-            opacity: 1;
-            top: -45px;
-            transform: translate(-50%, 0) scale(1.1);
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            margin: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(192,132,252,0.1), rgba(255,255,255,0.05));
         }
 
-        ::selection { background: rgba(99, 102, 241, 0.3); color: #fff; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        .nav-item { transition: all 0.3s ease; border-right: 3px solid transparent; }
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            color: #a5b4fc;
+            border-right: 3px solid #6366f1;
+        }
+
+        .view-section { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .view-section.active { display: block; opacity: 1; animation: fadeIn 0.4s ease forwards; }
+
+        .modal-overlay {
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            transform: scale(0.95) translateY(10px); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
+
+        .chart-bar { transition: height 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .avatar-overlay { opacity: 0; transition: opacity 0.2s; }
+        .avatar-container:hover .avatar-overlay { opacity: 1; }
     </style>
 </head>
-<body>
-    <div class="noise-overlay"></div>
-    <div class="mesh-bg"></div>
+<body class="min-h-screen w-full flex flex-col overflow-x-hidden">
 
-    <nav class="fixed top-0 w-full z-50 px-6 py-6" data-aos="fade-down" data-aos-duration="1000">
-        <div class="max-w-4xl mx-auto glass-card rounded-2xl px-6 py-3 flex justify-between items-center overflow-hidden">
-            <div class="flex items-center gap-3 cursor-pointer">
-                <img src="https://i.ibb.co/ZRvw9G9q/T-n-D-n-60.png" class="w-6 h-6 rounded-md object-cover opacity-90 hover:rotate-12 transition-transform duration-300" alt="Celestia Logo">
-                <span class="font-bold text-sm tracking-tight text-white">celestiax<span class="text-indigo-400">.fun</span></span>
+    <div id="toast-container" class="fixed top-4 right-4 md:top-6 md:right-6 z-[9999] flex flex-col gap-3"></div>
+
+    <div id="landing-view" class="w-full flex-1 min-h-screen z-40 flex flex-col items-center bg-surface-950 p-4 py-16 md:p-8 view-section active relative">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[800px] h-[300px] md:h-[800px] bg-brand-600/20 rounded-full blur-[100px] md:blur-[150px] pointer-events-none"></div>
+        
+        <div class="z-10 text-center max-w-3xl w-full animate-fade-in px-4 my-auto">
+            <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-brand-500/10 text-brand-400 mb-6 md:mb-8 border border-brand-500/20 shadow-[0_0_40px_rgba(99,102,241,0.2)]">
+                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             </div>
-            <div class="hidden md:flex gap-8 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-                <a href="#projects" class="hover:text-white hover:-translate-y-0.5 transition-all">Work</a>
-                <a href="#stack" class="hover:text-white hover:-translate-y-0.5 transition-all">Stack</a>
-                <a href="#contact" class="hover:text-white hover:-translate-y-0.5 transition-all">Contact</a>
-            </div>
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 hover:bg-white/10 transition-colors cursor-default">
-                <div class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                <span class="text-[9px] font-bold text-slate-200 uppercase tracking-widest">Available</span>
+            <h1 class="text-clamp-hero font-extrabold tracking-tight mb-4 md:mb-6">Celestia<span class="gradient-text">Store</span></h1>
+            <p class="text-clamp-p text-gray-400 mb-6 font-medium max-w-2xl mx-auto">
+                Premium Accounts for Teams & Individuals Unlock full premium features at affordable prices. Instant delivery, lifetime replacement guarantee, and 24/7 customer support. Used daily by thousands of happy customers.
+            </p>
+            
+            <div class="relative max-w-xl mx-auto glass-card rounded-[24px] p-6 md:p-8 mt-8 border border-white/10 shadow-2xl">
+                <div class="absolute inset-0 bg-brand-500/10 blur-xl rounded-[24px] -z-10 pointer-events-none"></div>
+                
+                <h3 class="text-lg md:text-xl font-bold tracking-tight text-white mb-2">Start your premium experience</h3>
+                <p class="text-[13px] md:text-sm text-gray-400 mb-6 font-medium">Get instant access to Canva Pro with team sharing. No waiting, no hassle.</p>
+                
+                <button onclick="openAuthModal('register')" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white py-3.5 md:py-4 px-6 rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(99,102,241,0.5)] transform hover:-translate-y-1 active:translate-y-0 flex flex-col items-center justify-center">
+                    <span class="font-extrabold text-base md:text-lg">Get Canva Pro Now</span>
+                    <span class="text-[10px] md:text-[11px] text-white/80 font-medium mt-0.5 tracking-wide">Instant access • Lifetime support</span>
+                </button>
+
+                <ul class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 mt-5 md:mt-6 text-[11px] md:text-xs text-gray-300 font-bold">
+                    <li class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Instant access
+                    </li>
+                    <li class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Safe team sharing
+                    </li>
+                    <li class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        24/7 support
+                    </li>
+                </ul>
+
+                <div class="mt-6 pt-5 border-t border-white/5">
+                    <button onclick="openAuthModal('login')" class="text-[12px] md:text-[13px] text-gray-400 hover:text-white font-medium transition-colors w-full text-center py-2">
+                        Already have an account? <span class="text-brand-400 font-bold hover:text-brand-300 underline decoration-brand-500/30 underline-offset-2">Log in</span>
+                    </button>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <main class="relative z-10 max-w-4xl mx-auto px-6 pt-40 pb-20">
+    <div id="auth-modal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md p-6 md:p-8 rounded-[20px] shadow-2xl relative z-10 gradient-border modal-content">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400 hover:text-white bg-white/5 p-2 rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="text-center mb-6 pt-2">
+                <h2 class="text-clamp-h2 font-extrabold tracking-tight" id="auth-title">Welcome Back</h2>
+                <p class="text-clamp-sm text-gray-400 mt-2 font-medium" id="auth-subtitle">Sign in to continue to your dashboard.</p>
+            </div>
+
+            <form id="login-form" class="space-y-4">
+                <button type="button" onclick="handleGoogleLogin(this)" class="w-full bg-white text-black hover:bg-gray-100 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-3 shadow-lg transform hover:-translate-y-0.5 text-sm md:text-base">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Continue with Google
+                </button>
+                
+                <div class="flex items-center gap-4 my-3">
+                    <div class="h-px bg-white/10 flex-1"></div>
+                    <span class="text-[11px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">OR</span>
+                    <div class="h-px bg-white/10 flex-1"></div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email Address</label>
+                    <input type="email" id="login-email" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="name@company.com">
+                </div>
+                <div>
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
+                    <input type="password" id="login-password" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="••••••••">
+                </div>
+                <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-[0_10px_20px_-10px_rgba(99,102,241,0.5)] transform hover:-translate-y-0.5 active:translate-y-0 text-sm md:text-base mt-2">
+                    Sign In
+                </button>
+                <p class="text-center text-xs md:text-sm text-gray-400 mt-4 font-medium">New here? <a href="#" id="toggle-register" class="text-brand-400 hover:text-brand-300 transition-colors">Create an account</a></p>
+            </form>
+
+            <form id="register-form" class="space-y-4 hidden">
+                <button type="button" onclick="handleGoogleLogin(this)" class="w-full bg-white text-black hover:bg-gray-100 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-3 shadow-lg transform hover:-translate-y-0.5 text-sm md:text-base">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Continue with Google
+                </button>
+                
+                <div class="flex items-center gap-4 my-3">
+                    <div class="h-px bg-white/10 flex-1"></div>
+                    <span class="text-[11px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">OR</span>
+                    <div class="h-px bg-white/10 flex-1"></div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email Address</label>
+                    <input type="email" id="reg-email" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="name@company.com">
+                </div>
+                <div>
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
+                    <input type="password" id="reg-password" required minlength="6" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-gray-600 shadow-inner" placeholder="At least 6 characters">
+                </div>
+                <button type="submit" id="btn-register" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-[0_10px_20px_-10px_rgba(99,102,241,0.5)] transform hover:-translate-y-0.5 active:translate-y-0 text-sm md:text-base mt-2">
+                    Create Account
+                </button>
+                <p class="text-center text-xs md:text-sm text-gray-400 mt-4 font-medium">Already have an account? <a href="#" id="toggle-login" class="text-brand-400 hover:text-brand-300 transition-colors">Sign in</a></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-view" class="hidden w-full flex-1 flex relative min-h-screen">
         
-        <section class="mb-20">
-            <div data-aos="zoom-in-up" data-aos-delay="100">
-                <h2 class="inline-block text-indigo-400 text-xs font-bold uppercase tracking-[0.2em] mb-4 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">Backend Developer</h2>
+        <div class="md:hidden fixed top-0 left-0 right-0 h-14 glass-panel z-40 flex items-center justify-between px-4 border-b border-white/5 shadow-sm">
+            <div class="font-bold text-lg tracking-tight">Celestia<span class="gradient-text">Store</span></div>
+            <div class="flex items-center gap-3">
+                <div class="text-[13px] font-bold text-green-400 user-balance-display">0đ</div>
+                <button id="mobile-menu-btn" class="text-gray-300 hover:text-white p-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
             </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1] text-glow" data-aos="zoom-in-up" data-aos-delay="200">
-                Crafting the perfect <br class="hidden md:block">
-                <span class="text-gradient">digital experience.</span>
-            </h1>
-            <p class="text-slate-300 text-sm md:text-base max-w-xl leading-relaxed mb-10" data-aos="fade-up" data-aos-delay="300">
-                Expert in Backend Development and Automation. Architecting high-performance APIs and building stable systems with minimal latency.
-            </p>
-            <div class="flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="400" data-aos-anchor-placement="top-bottom">
-                <a href="#projects" class="bg-white text-black hover:bg-indigo-50 px-6 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                    Explore Projects
-                </a>
-                <a href="https://t.me/Dev_Celeste" class="glass-card px-6 py-3 rounded-xl text-sm font-semibold hover:text-indigo-300 transition-colors">
-                    Telegram
-                </a>
-            </div>
-        </section>
+        </div>
 
-        <section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-20">
-            <div class="glass-card p-5 rounded-2xl flex flex-col justify-center border-white/10" data-aos="flip-up" data-aos-delay="100">
-                <div class="text-xl font-bold text-white mb-0.5">03+</div>
-                <div class="text-[9px] text-slate-400 font-semibold uppercase tracking-widest">Years Exp</div>
+        <aside id="sidebar" class="fixed md:sticky top-0 h-screen left-0 w-60 glass-panel z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col border-r border-white/5 bg-surface-950/95 md:bg-surface-950/80">
+            <div class="h-14 md:h-16 flex items-center px-4 md:px-5 border-b border-white/5 justify-between md:justify-start">
+                <div class="font-extrabold text-xl tracking-tight hidden md:block">Celestia<span class="text-brand-500">Store</span></div>
+                <div class="font-bold text-lg tracking-tight md:hidden">Menu</div>
+                <button id="close-sidebar" class="md:hidden text-gray-400 hover:text-white p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="glass-card p-5 rounded-2xl flex flex-col justify-center border-white/10" data-aos="flip-up" data-aos-delay="200">
-                <div class="text-xl font-bold text-white mb-0.5">20+</div>
-                <div class="text-[9px] text-slate-400 font-semibold uppercase tracking-widest">Endpoints</div>
+            
+            <div class="px-4 py-4 border-b border-white/5">
+                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Wallet Balance</p>
+                <div class="flex items-center justify-between">
+                    <p class="text-xl font-extrabold text-white user-balance-display truncate pr-2">0₫</p>
+                    <button onclick="switchView('topup')" class="bg-brand-500/20 text-brand-400 p-1.5 rounded-lg hover:bg-brand-500/30 transition-colors shrink-0" title="Top Up">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    </button>
+                </div>
             </div>
-            <div class="glass-card p-5 rounded-2xl flex flex-col justify-center border-white/10" data-aos="flip-up" data-aos-delay="300">
-                <div class="text-xl font-bold text-white mb-0.5">100k</div>
-                <div class="text-[9px] text-slate-400 font-semibold uppercase tracking-widest">Req/Day</div>
-            </div>
-            <div class="glass-card p-5 rounded-2xl flex flex-col justify-center border-white/10" data-aos="flip-up" data-aos-delay="400">
-                <div class="text-xl font-bold text-white mb-0.5">99.9%</div>
-                <div class="text-[9px] text-slate-400 font-semibold uppercase tracking-widest">Uptime</div>
-            </div>
-        </section>
 
-        <section id="projects" class="mb-20">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-6" data-aos="fade-right">Featured Work</h3>
+            <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 nav-item active" data-target="home">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Dashboard
+                </button>
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 nav-item" data-target="topup">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    Top Up Wallet
+                </button>
 
-            <div class="flex flex-col gap-4">
-                <div class="glass-card p-6 rounded-3xl md:flex items-center gap-6 group" data-aos="fade-up" data-aos-duration="800">
-                    <div class="flex-1 mb-6 md:mb-0">
-                        <div class="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 text-[9px] font-bold border border-indigo-500/20 mb-3 uppercase" data-aos="fade-up" data-aos-delay="100">
-                            Ecosystem
+                <div class="my-2 border-t border-white/5 mx-2"></div>
+
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 nav-item" data-target="product">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    Buy Canva Pro
+                </button>
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 nav-item" data-target="games">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Game Services
+                </button>
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 nav-item" data-target="robux">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Robux Shop
+                </button>
+
+                <div class="my-2 border-t border-white/5 mx-2"></div>
+
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 nav-item relative" data-target="orders">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    My Orders 
+                    <span id="pending-badge" class="absolute right-3 bg-yellow-500/20 text-yellow-500 py-0.5 px-1.5 rounded text-[9px] hidden font-bold">0</span>
+                </button>
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 nav-item" data-target="profile">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Profile Settings
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-white/5 bg-white/[0.02]">
+                <div class="flex items-center gap-3 mb-4 px-1">
+                    <img id="sidebar-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover bg-brand-600 hidden">
+                    <div class="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-xs font-bold shadow-lg" id="sidebar-initial">U</div>
+                    <div class="overflow-hidden flex-1">
+                        <p class="text-[13px] font-bold text-white truncate" id="sidebar-username">User</p>
+                        <p class="text-[10px] text-green-400 font-medium flex items-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Online</p>
+                    </div>
+                </div>
+                <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-[13px] font-bold text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 w-full min-h-screen pt-14 md:pt-0 relative flex flex-col">
+            <div class="absolute top-0 right-0 w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-brand-900/10 rounded-full blur-[100px] md:blur-[150px] pointer-events-none -z-10"></div>
+            
+            <div class="max-w-6xl mx-auto w-full p-4 md:p-8 flex-1 flex flex-col">
+                
+                <section id="view-home" class="view-section active flex-1">
+                    <header class="mb-6 md:mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div>
+                            <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Dashboard</h2>
+                            <p class="text-clamp-sm text-gray-400 font-medium">Welcome back, <span class="text-white" id="home-username">User</span>. Here's your overview.</p>
                         </div>
-                        <h4 class="text-lg font-bold text-white mb-2" data-aos="fade-up" data-aos-delay="200">Celeskry API</h4>
-                        <p class="text-xs text-slate-300 leading-relaxed mb-4 italic" data-aos="fade-up" data-aos-delay="300">Cross-platform data extraction and real-time automation. Optimized with FastAPI and Redis.</p>
-                        <a href="#" class="text-[10px] font-bold text-white hover:text-indigo-400 transition-colors flex items-center gap-1 uppercase tracking-[0.2em]" data-aos="fade-up" data-aos-delay="400">
-                            Documentation <span class="group-hover:translate-x-1 transition-transform">→</span>
+                        <button onclick="switchView('topup')" class="w-full md:w-auto bg-white text-black px-5 py-2.5 rounded-xl text-[13px] md:text-sm font-bold hover:bg-gray-200 transition-colors shadow-lg">
+                            + Top Up Wallet
+                        </button>
+                    </header>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl">
+                            <div class="flex justify-between items-start mb-3 md:mb-4">
+                                <div class="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">Available Balance</div>
+                                <div class="p-1.5 md:p-2 bg-brand-500/20 rounded-lg text-brand-400"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                            </div>
+                            <div class="text-clamp-h3 font-extrabold text-white user-balance-display truncate">0₫</div>
+                        </div>
+                        <div class="glass-card p-5 md:p-6 rounded-2xl">
+                            <div class="flex justify-between items-start mb-3 md:mb-4">
+                                <div class="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">Total Services</div>
+                                <div class="p-1.5 md:p-2 bg-blue-500/20 rounded-lg text-blue-400"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
+                            </div>
+                            <div class="text-clamp-h3 font-extrabold text-white" id="stat-total">0</div>
+                        </div>
+                        <div class="glass-card p-5 md:p-6 rounded-2xl sm:col-span-2 md:col-span-1">
+                            <div class="flex justify-between items-start mb-3 md:mb-4">
+                                <div class="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">Completed/Success</div>
+                                <div class="p-1.5 md:p-2 bg-green-500/20 rounded-lg text-green-400"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                            </div>
+                            <div class="text-clamp-h3 font-extrabold text-green-400" id="stat-approved">0</div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-base md:text-lg font-bold mb-4">Orders Breakdown</h3>
+                    <div class="grid grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+                        <div class="glass-card p-4 rounded-xl text-center border border-white/5">
+                            <div class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-2">Canva Orders</div>
+                            <div class="text-2xl font-extrabold text-white" id="stat-canva">0</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl text-center border border-white/5">
+                            <div class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-2">Game Services</div>
+                            <div class="text-2xl font-extrabold text-[#c084fc]" id="stat-games">0</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl text-center border border-white/5">
+                            <div class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-2">Robux Orders</div>
+                            <div class="text-2xl font-extrabold text-green-400" id="stat-robux">0</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-5 md:p-6 border border-white/5 hidden">
+                        <h3 class="text-base md:text-lg font-bold mb-4 md:mb-6">Activity Overview</h3>
+                        <div class="h-32 md:h-48 flex items-end justify-between gap-1 md:gap-2 px-1 md:px-2" id="fake-chart"></div>
+                        <div class="flex justify-between text-[10px] md:text-xs text-gray-500 mt-3 md:mt-4 font-medium px-1 md:px-2">
+                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-topup" class="view-section flex-1">
+                    <header class="mb-6 md:mb-8">
+                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Top Up Wallet</h2>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Add funds to purchase premium access instantly.</p>
+                    </header>
+
+                    <div class="flex border-b border-white/10 mb-6 md:mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                        <button onclick="switchTopUpTab('bank')" id="tab-btn-bank" class="px-4 md:px-6 py-2.5 md:py-3 border-b-2 border-brand-500 text-brand-400 text-[13px] md:text-sm font-bold transition-all">Bank Transfer (QR)</button>
+                        <button onclick="switchTopUpTab('card')" id="tab-btn-card" class="px-4 md:px-6 py-2.5 md:py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-300 text-[13px] md:text-sm font-bold transition-all">Telecom Card</button>
+                    </div>
+
+                    <div id="tab-content-bank" class="mb-8 md:mb-10 animate-fade-in block">
+                        <div class="glass-card rounded-2xl p-1 overflow-hidden gradient-border relative max-w-2xl mx-auto">
+                            <div class="bg-surface-900/90 rounded-[14px] md:rounded-[22px] p-5 md:p-8">
+                                <div class="inline-block bg-blue-500/20 text-blue-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 md:px-3 py-1 rounded-md mb-4 md:mb-6 border border-blue-500/30">Auto 24/7 API</div>
+                                <h3 class="text-lg md:text-2xl font-bold mb-4 md:mb-6">Bank Transfer</h3>
+                                
+                                <div id="bank-input-section" class="space-y-3 md:space-y-4 w-full">
+                                    <div>
+                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 md:mb-2">Transfer Amount (VND)</label>
+                                        <input type="number" id="qr-amount-input" value="50000" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-mono" placeholder="Enter amount">
+                                    </div>
+                                    <button id="btn-generate-qr" onclick="generateBankQR()" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 md:py-3.5 rounded-xl transition-all flex justify-center items-center gap-2 shadow-lg text-[13px] md:text-sm mt-2">
+                                        Generate QR
+                                    </button>
+                                </div>
+
+                                <div id="bank-qr-details" class="hidden flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start mb-4 md:mb-6 w-full mt-2">
+                                    <div class="flex flex-col items-center shrink-0">
+                                        <div class="bg-white p-2.5 md:p-3 rounded-2xl shadow-xl mb-4 relative">
+                                            <img id="qr-code-img" src="" alt="QR Code" class="w-32 h-32 md:w-40 md:h-40 object-contain rounded-lg">
+                                        </div>
+                                        <div id="payment-status-badge" class="flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-[10px] md:text-xs font-bold border border-yellow-500/20">
+                                            <div class="spinner w-2.5 h-2.5 md:w-3 md:h-3 border-yellow-500 border-l-transparent"></div>
+                                            Waiting...
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-3 md:space-y-4 w-full">
+                                        <div class="bg-black/30 rounded-xl p-3 md:p-4 border border-white/5 space-y-2.5 md:space-y-3">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Bank</span>
+                                                <span class="text-[13px] md:text-sm font-bold text-white" id="qr-bank-name"></span>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Account</span>
+                                                <div class="flex items-center gap-1.5 md:gap-2">
+                                                    <span class="text-[13px] md:text-sm font-bold text-white font-mono" id="qr-account-num"></span>
+                                                    <button onclick="copyToClipboard(document.getElementById('qr-account-num').innerText)" class="text-brand-400 hover:text-white"><svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Name</span>
+                                                <span class="text-[13px] md:text-sm font-bold text-white uppercase truncate ml-2 text-right" id="qr-account-name"></span>
+                                            </div>
+                                            <div class="flex justify-between items-center pt-2 border-t border-white/5">
+                                                <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Content</span>
+                                                <div class="flex items-center gap-1.5 md:gap-2">
+                                                    <span class="text-[13px] md:text-sm font-bold text-brand-400 font-mono" id="transfer-content"></span>
+                                                    <button onclick="copyToClipboard(document.getElementById('transfer-content').innerText)" class="text-brand-400 hover:text-white"><svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button onclick="cancelBankQR()" class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-white/10">Cancel Transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-content-card" class="mb-8 md:mb-10 animate-fade-in hidden">
+                        <div class="glass-card rounded-2xl p-5 md:p-8 max-w-2xl mx-auto border border-white/5 relative overflow-hidden">
+                            <div class="absolute -top-16 -right-16 md:-top-24 md:-right-24 w-40 h-40 md:w-64 md:h-64 bg-orange-500/10 rounded-full blur-[60px] md:blur-[80px] pointer-events-none"></div>
+                            <div class="inline-block bg-orange-500/20 text-orange-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 md:px-3 py-1 rounded-md mb-4 md:mb-6 border border-orange-500/30">Auto 24/7</div>
+                            <h3 class="text-lg md:text-2xl font-bold mb-4 md:mb-6">Card Top-up</h3>
+                            <p class="text-[13px] md:text-sm text-gray-400 mb-6 md:mb-8 font-medium">Use Viettel, Mobifone, or Vinaphone scratch cards.</p>
+
+                            <form id="card-topup-form" class="space-y-3 md:space-y-4 relative z-10">
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Network Provider</label>
+                                    <select required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
+                                        <option value="viettel">Viettel</option>
+                                        <option value="mobifone">Mobifone</option>
+                                        <option value="vinaphone">Vinaphone</option>
+                                    </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 md:gap-4">
+                                    <div>
+                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Value</label>
+                                        <select id="card-amount" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
+                                            <option value="10000">10,000đ</option>
+                                            <option value="20000">20,000đ</option>
+                                            <option value="50000">50,000đ</option>
+                                            <option value="100000">100,000đ</option>
+                                            <option value="200000">200,000đ</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Serial</label>
+                                        <input type="text" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-mono placeholder-gray-600" placeholder="Card Serial">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">PIN Code</label>
+                                    <input type="text" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-mono placeholder-gray-600" placeholder="Scratch Code">
+                                </div>
+                                <button type="submit" id="btn-card-submit" class="w-full bg-gradient-to-r from-orange-600 to-red-500 hover:from-orange-500 hover:to-red-400 text-white font-bold py-3 md:py-3.5 rounded-xl transition-all flex justify-center items-center gap-2 mt-2 md:mt-4 shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 text-[13px] md:text-sm">
+                                    Process Card
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl overflow-hidden border border-white/5">
+                        <div class="p-4 md:p-5 border-b border-white/5">
+                            <h3 class="text-base md:text-lg font-bold">Transaction History</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-[13px] md:text-sm whitespace-nowrap">
+                                <thead class="bg-black/20 text-gray-400 text-[10px] md:text-xs uppercase tracking-widest border-b border-white/5 font-bold">
+                                    <tr>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">ID / Time</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Type</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Amount</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tx-table-body" class="divide-y divide-white/5">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="no-txs" class="hidden p-8 md:p-10 text-center flex flex-col items-center">
+                            <div class="w-12 h-12 md:w-16 md:h-16 bg-white/5 rounded-full flex items-center justify-center mb-3 md:mb-4 text-gray-500">
+                                <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <p class="text-[13px] md:text-sm font-medium text-gray-400">No transactions found.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-product" class="view-section flex-1">
+                    <header class="mb-6 md:mb-8">
+                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Buy <span class="text-[#00C4CC]">Canva</span> Pro</h2>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Join our enterprise team to unlock all premium features.</p>
+                    </header>
+
+                    <div class="glass-card rounded-2xl md:rounded-[32px] p-1 overflow-hidden max-w-4xl mx-auto border border-white/5 relative gradient-border">
+                        <div class="absolute top-0 right-0 w-60 h-60 md:w-80 md:h-80 bg-[#00C4CC]/15 rounded-full blur-[80px] md:blur-[100px] pointer-events-none"></div>
+                        <div class="bg-surface-900/90 rounded-[14px] md:rounded-[30px] p-5 md:p-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center">
+                            <div class="w-full md:w-1/2">
+                                <div class="inline-block bg-[#00C4CC]/20 text-[#00C4CC] text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 md:px-3 py-1 rounded-md mb-4 md:mb-5 border border-[#00C4CC]/30">Month Access</div>
+                                <h3 class="text-xl md:text-3xl font-extrabold mb-3 md:mb-4">Canva Pro - Team Invite</h3>
+                                <p class="text-[13px] md:text-sm text-gray-400 mb-5 md:mb-8 leading-relaxed font-medium">Get invited to a premium team. Unlock premium templates, magic resize, background remover, and 1TB storage immediately.</p>
+                                
+                                <ul class="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                                    <li class="flex items-center gap-2.5 md:gap-3 text-[13px] md:text-sm font-bold text-gray-300"><svg class="w-4 h-4 md:w-5 md:h-5 text-[#00C4CC] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> Instant Email Invite</li>
+                                    <li class="flex items-center gap-2.5 md:gap-3 text-[13px] md:text-sm font-bold text-gray-300"><svg class="w-4 h-4 md:w-5 md:h-5 text-[#00C4CC] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> Private Workspace</li>
+                                    <li class="flex items-center gap-2.5 md:gap-3 text-[13px] md:text-sm font-bold text-gray-300"><svg class="w-4 h-4 md:w-5 md:h-5 text-[#00C4CC] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> 100% Legal & Safe</li>
+                                </ul>
+
+                                <div class="flex items-end gap-3 md:gap-4 mb-6 md:mb-8">
+                                    <span class="text-3xl md:text-5xl font-extrabold text-white">5,000đ</span>
+                                    <span class="text-gray-500 line-through text-sm md:text-lg font-medium mb-1">299,000đ</span>
+                                </div>
+
+                                <button onclick="openModal()" class="w-full bg-gradient-to-r from-brand-600 to-brand-400 hover:from-brand-500 hover:to-[#00C4CC] text-white font-bold py-3 md:py-4 rounded-xl transition-all shadow-[0_10px_30px_-10px_rgba(0,196,204,0.4)] transform hover:-translate-y-1 active:translate-y-0 text-base md:text-lg">
+                                    Buy Now
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-games" class="view-section flex-1">
+                    <header class="mb-6 md:mb-8">
+                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Game Services</h2>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Professional boosting and farming for your favorite games.</p>
+                    </header>
+
+                    <div class="glass-card rounded-2xl p-5 md:p-8 border border-white/5 max-w-2xl mx-auto relative overflow-hidden">
+                        <div class="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+                        <form id="games-form" class="space-y-4 md:space-y-5 relative z-10">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Game</label>
+                                    <select id="boost-game" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
+                                        </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Service Type</label>
+                                    <select id="boost-service" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
+                                        </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Game Username</label>
+                                    <input type="text" id="boost-username" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white" placeholder="Account username">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Game Password</label>
+                                    <input type="password" id="boost-password" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white" placeholder="Account password">
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-xl flex items-center gap-2.5">
+                                <svg class="w-5 h-5 text-yellow-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                <span class="text-[11px] md:text-xs text-yellow-500 font-bold">Account will be used for boosting service. Please ensure info is correct.</span>
+                            </div>
+
+                            <div class="flex justify-between items-end py-4 border-t border-white/10 mt-4">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Price</span>
+                                    <span id="boost-eta" class="text-xs text-brand-400 font-medium mt-1">ETA: N/A</span>
+                                </div>
+                                <span id="boost-price" class="text-2xl font-extrabold text-[#c084fc]">0đ</span>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-brand-500 hover:from-purple-500 hover:to-brand-400 text-white font-bold py-3.5 rounded-xl transition-all flex justify-center items-center shadow-[0_10px_20px_-10px_rgba(192,132,252,0.4)] transform hover:-translate-y-0.5 text-sm md:text-base">
+                                Order Service
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="view-robux" class="view-section flex-1">
+                    <header class="mb-6 md:mb-8">
+                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Robux Shop</h2>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Safe and cheap Robux via official or gift delivery.</p>
+                    </header>
+
+                    <div class="glass-card rounded-2xl p-5 md:p-8 border border-white/5 max-w-2xl mx-auto relative overflow-hidden">
+                        <div class="absolute -top-20 -right-20 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+                        <form id="robux-form" class="space-y-4 md:space-y-5 relative z-10">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Roblox Username</label>
+                                    <input type="text" id="robux-username" required placeholder="Enter exact username" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Delivery Method</label>
+                                    <select id="robux-method" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none">
+                                        <option value="official">Official Robux (Fast)</option>
+                                        <option value="gift">Gift (120h delay)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Amount to Buy (R$)</label>
+                                <input type="number" id="robux-amount" required min="10" value="100" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white">
+                                <p class="text-[11px] md:text-xs text-gray-400 mt-2 font-medium">Estimated received: <span id="robux-after-tax" class="text-green-400 font-bold">71</span> R$ (after Roblox tax)</p>
+                            </div>
+                            
+                            <div id="robux-warning" class="hidden bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex items-start gap-3">
+                                <svg class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                <div>
+                                    <p class="text-sm font-bold text-yellow-500 mb-0.5">Important Delivery Notice</p>
+                                    <p class="text-[13px] text-gray-300 font-medium">Gift method requires 120 hours (5 days) friend time before delivery due to Roblox policy.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center py-4 border-t border-white/10 mt-4">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Price</span>
+                                <span id="robux-price" class="text-2xl font-extrabold text-green-400">14,286đ</span>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-bold py-3.5 rounded-xl transition-all flex justify-center items-center shadow-[0_10px_20px_-10px_rgba(16,185,129,0.4)] transform hover:-translate-y-0.5 text-sm md:text-base">
+                                Buy Robux
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="view-orders" class="view-section flex-1">
+                    <header class="mb-6 md:mb-8">
+                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Order History</h2>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Track the status of your services and purchases.</p>
+                    </header>
+
+                    <div class="glass-card rounded-2xl overflow-hidden border border-white/5">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-[13px] md:text-sm whitespace-nowrap">
+                                <thead class="bg-black/20 text-gray-400 text-[10px] md:text-xs uppercase tracking-widest border-b border-white/5 font-bold">
+                                    <tr>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Order ID</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Service</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Details</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Price</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Date</th>
+                                        <th class="px-4 py-3 md:px-6 md:py-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-table-body" class="divide-y divide-white/5">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="no-orders" class="hidden p-10 md:p-16 text-center flex flex-col items-center">
+                            <div class="w-16 h-16 md:w-20 md:h-20 bg-white/5 rounded-full flex items-center justify-center mb-4 md:mb-6 text-gray-500">
+                                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                            </div>
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2">No orders yet</h3>
+                            <p class="text-[13px] md:text-sm text-gray-400 mb-4 md:mb-6 font-medium">You haven't purchased any items.</p>
+                            <button onclick="switchView('product')" class="bg-brand-500/20 text-brand-400 px-5 md:px-6 py-2.5 rounded-xl text-[13px] md:text-sm font-bold hover:bg-brand-500/30 transition-colors">Browse Products</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-profile" class="view-section flex-1">
+                    <header class="mb-6 md:mb-8">
+                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Profile Settings</h2>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Manage your personal information and preferences.</p>
+                    </header>
+
+                    <div class="max-w-2xl">
+                        <div class="glass-card p-5 md:p-8 rounded-2xl border border-white/5 flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 mb-4 md:mb-6 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-brand-500/10 rounded-full blur-[30px] md:blur-[40px]"></div>
+                            
+                            <div class="relative avatar-container cursor-pointer shrink-0">
+                                <img id="profile-avatar-img" src="" alt="Avatar" class="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover shadow-[0_0_20px_rgba(99,102,241,0.3)] hidden">
+                                <div id="profile-avatar-initial" class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-3xl md:text-4xl font-extrabold shadow-[0_0_20px_rgba(99,102,241,0.3)]">U</div>
+                                
+                                <label class="avatar-overlay absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center cursor-pointer backdrop-blur-sm">
+                                    <svg class="w-5 h-5 md:w-6 md:h-6 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    <span class="text-[9px] md:text-[10px] font-bold uppercase text-white">Upload</span>
+                                    <input type="file" id="avatar-upload" accept="image/*" class="hidden">
+                                </label>
+                            </div>
+
+                            <div class="flex-1 w-full text-center md:text-left z-10">
+                                <form id="profile-form" class="space-y-3 md:space-y-4">
+                                    <div class="text-left">
+                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Username</label>
+                                        <input type="text" id="profile-username" class="w-full bg-black/30 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-bold" value="User">
+                                    </div>
+                                    <div class="text-left">
+                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</label>
+                                        <input type="email" id="profile-email-input" disabled class="w-full bg-transparent border-none px-0 py-2 text-[13px] md:text-sm text-gray-400 font-medium" value="user@example.com">
+                                    </div>
+                                    <div class="flex justify-center md:justify-start">
+                                        <button type="submit" class="w-full md:w-auto bg-brand-500/20 text-brand-400 hover:bg-brand-500/30 font-bold py-2.5 md:py-2 px-6 rounded-xl transition-colors text-[13px] md:text-sm">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border border-white/5 space-y-3 md:space-y-4">
+                            <h4 class="text-base md:text-lg font-bold border-b border-white/5 pb-3 md:pb-4 mb-3 md:mb-4">Account Info</h4>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="font-bold text-[13px] md:text-sm text-white">Member Since</p>
+                                    <p class="text-[11px] md:text-xs text-gray-400 font-medium mt-0.5 md:mt-1" id="profile-date">Jan 2024</p>
+                                </div>
+                                <span class="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded-md bg-green-500/10 text-green-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest border border-green-500/20">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="mt-auto border-t border-white/5 pt-6 pb-4 mt-8 md:mt-12 w-full text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex flex-col items-center md:items-start">
+                        <div class="font-extrabold text-lg md:text-xl tracking-tight mb-1">Celestia<span class="gradient-text">Store</span></div>
+                        <p class="text-[11px] md:text-xs text-gray-500 font-medium">Premium App Team CelestiaX</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-gray-400">
+                        <a href="mailto:dev@celestiax.fun" class="hover:text-white transition-colors" title="Email Support">
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         </a>
                     </div>
-                    <div class="w-full md:w-1/3 aspect-video bg-gradient-to-br from-indigo-900/40 to-black rounded-2xl border border-white/10 flex items-center justify-center overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]" data-aos="zoom-in" data-aos-delay="200">
-                        <span class="font-mono text-[10px] text-indigo-400/50">/api/v1/core</span>
+                    <div class="text-[11px] md:text-xs text-gray-600 font-medium w-full text-center md:w-auto md:text-right mt-2 md:mt-0 border-t border-white/5 pt-3 md:border-none md:pt-0">
+                        © 2026 CelestiaStore. All rights reserved.
                     </div>
-                </div>
-
-                <div class="glass-card p-6 rounded-3xl md:flex items-center gap-6 flex-row-reverse group" data-aos="fade-up" data-aos-duration="800" data-aos-delay="150">
-                    <div class="flex-1 mb-6 md:mb-0">
-                        <div class="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 text-[9px] font-bold border border-purple-500/20 mb-3 uppercase" data-aos="fade-up" data-aos-delay="200">
-                            Game Server
-                        </div>
-                        <h4 class="text-lg font-bold text-white mb-2" data-aos="fade-up" data-aos-delay="300">CelestiaxMC</h4>
-                        <p class="text-xs text-slate-300 leading-relaxed mb-5 italic" data-aos="fade-up" data-aos-delay="400">Technical Minecraft server specialized in Redstone and Map Art.</p>
-                        
-                        <div class="inline-flex items-center rounded-xl bg-white/5 border border-white/10 p-1 group/container relative" data-aos="zoom-in" data-aos-delay="500">
-                            <div class="copyable px-3 py-2 flex items-center gap-2 hover:bg-white/10 rounded-lg" onclick="copyText('celestiax.fun', this)">
-                                <div class="copy-toast">IP Copied!</div>
-                                <span class="text-[9px] font-bold text-slate-400 uppercase">IP</span>
-                                <span class="text-xs font-mono text-white">celestiax.fun</span>
-                            </div>
-
-                            <div class="w-[1px] h-4 bg-white/20 mx-1"></div>
-
-                            <div class="copyable px-3 py-2 flex items-center gap-2 hover:bg-white/10 rounded-lg" onclick="copyText('26336', this)">
-                                <div class="copy-toast">Port Copied!</div>
-                                <span class="text-[9px] font-bold text-slate-400 uppercase">Port</span>
-                                <span class="text-xs font-mono text-purple-400">26336</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="w-full md:w-1/3 aspect-video bg-gradient-to-br from-purple-900/40 to-black rounded-2xl border border-white/10 flex items-center justify-center overflow-hidden relative transition-transform duration-500 group-hover:scale-[1.02]" data-aos="zoom-in" data-aos-delay="300">
-                        <div class="absolute inset-0 bg-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <span class="font-mono text-[9px] text-purple-400/50 uppercase tracking-[0.4em]">Connection Ready</span>
-                    </div>
-                </div>
+                </footer>
             </div>
-        </section>
+        </main>
+    </div>
 
-        <section id="stack" class="mb-20" data-aos="zoom-in-up">
-            <div class="flex flex-col items-center gap-4">
-                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.3em]">Engineered With</span>
-                <div class="glass-card px-4 py-2 rounded-full border border-white/10 flex items-center gap-5 opacity-60 hover:opacity-100 transition-all duration-700 overflow-hidden bg-white/5">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" class="w-4 h-4 grayscale hover:grayscale-0 hover:scale-125 transition-all" title="Python">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" class="w-4 h-4 grayscale hover:grayscale-0 hover:scale-125 transition-all" title="FastAPI">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" class="w-4 h-4 grayscale hover:grayscale-0 hover:scale-125 transition-all" title="Tailwind">
-                    <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="w-4 h-4 grayscale hover:grayscale-0 hover:scale-125 transition-all" title="HF">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" class="w-4 h-4 grayscale hover:grayscale-0 hover:scale-125 transition-all" title="Linux">
-                </div>
+    <div id="checkout-modal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-md bg-surface-950 border border-white/10 rounded-2xl md:rounded-[24px] shadow-2xl modal-content overflow-hidden">
+            <div class="p-5 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+                <h3 class="font-bold text-lg md:text-xl">Confirm Purchase</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white bg-white/5 p-1.5 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-        </section>
+            <div class="p-5 md:p-6">
+                <div class="flex items-center gap-3 md:gap-4 mb-5 md:mb-6 p-3 md:p-4 rounded-xl md:rounded-2xl bg-black/40 border border-white/5">
+                    <div class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#00C4CC]/20 to-brand-600/20 rounded-xl flex items-center justify-center shadow-inner shrink-0 overflow-hidden">
+                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkF7DZtGISQJPfNe5DgTMP5Jazdz4HceBljrruf3UDK32EXlWfvcXAa8A&s=10" alt="icon" class="w-full h-full object-cover">
+                     </div>
+                    <div class="overflow-hidden">
+                        <p class="font-bold text-[13px] md:text-sm text-white truncate">Canva Pro - Team Invite</p>
+                        <p class="text-[10px] md:text-[11px] font-bold text-[#00C4CC] uppercase tracking-widest mt-0.5 md:mt-1">Month</p>
+                    </div>
+                    <div class="ml-auto font-extrabold text-base md:text-lg text-white">5,000đ</div>
+                </div>
 
-        <section id="contact" class="glass-card p-10 rounded-3xl text-center border-white/10" data-aos="flip-up" data-aos-duration="1000">
-            <h2 class="text-2xl font-bold mb-3 tracking-tight">Ready to collaborate?</h2>
-            <p class="text-xs text-slate-400 mb-8 max-w-xs mx-auto italic">High-performance solutions for your next big idea.</p>
-            <a href="https://t.me/Dev_Celeste" class="text-lg font-bold text-white hover:text-indigo-400 border-b border-indigo-500/30 transition-all pb-1 hover:border-indigo-400 inline-block hover:-translate-y-1">
-                t.me/Dev_Celeste
-            </a>
-        </section>
-    </main>
+                <div class="flex justify-between items-center mb-5 md:mb-6 px-1 md:px-2">
+                    <span class="text-[13px] md:text-sm font-bold text-gray-400">Current Balance:</span>
+                    <span class="text-[13px] md:text-sm font-extrabold text-brand-400 user-balance-display">0đ</span>
+                </div>
 
-    <footer class="py-10 text-center border-t border-white/10 mt-10" data-aos="fade-in">
-        <p class="text-[9px] font-semibold text-slate-500 uppercase tracking-[0.3em]">
-            © 2026 Celestia. Built for Performance.
-        </p>
-    </footer>
+                <form id="checkout-form" class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 md:mb-2">Target Canva Email</label>
+                        <input type="email" id="target-email" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white shadow-inner" placeholder="Enter email to receive invite">
+                    </div>
+                    
+                    <button type="submit" id="btn-submit-order" class="w-full bg-gradient-to-r from-brand-600 to-brand-400 hover:from-brand-500 hover:to-brand-300 text-white font-bold py-3 md:py-3.5 rounded-xl transition-all flex justify-center items-center gap-2 mt-2 shadow-lg text-[13px] md:text-sm">
+                        Pay 5,000đ
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <div id="generic-checkout-modal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-md bg-surface-950 border border-white/10 rounded-2xl md:rounded-[24px] shadow-2xl modal-content overflow-hidden">
+            <div class="p-5 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+                <h3 class="font-bold text-lg md:text-xl">Confirm Service Purchase</h3>
+                <button onclick="closeGenericModal()" class="text-gray-400 hover:text-white bg-white/5 p-1.5 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-5 md:p-6">
+                <div class="mb-5 md:mb-6 p-4 rounded-xl md:rounded-2xl bg-black/40 border border-white/5">
+                    <p id="generic-item-name" class="font-bold text-base md:text-lg text-white mb-1"></p>
+                    <p id="generic-item-desc" class="text-[13px] md:text-sm text-gray-400"></p>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-[13px] md:text-sm font-bold text-gray-400">Current Balance:</span>
+                    <span class="text-[13px] md:text-sm font-extrabold text-brand-400 user-balance-display">0đ</span>
+                </div>
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-[13px] md:text-sm font-bold text-gray-400">Order Total:</span>
+                    <span id="generic-item-price" class="text-xl md:text-2xl font-extrabold text-white"></span>
+                </div>
+                <button id="btn-generic-pay" class="w-full bg-gradient-to-r from-brand-600 to-brand-400 hover:from-brand-500 hover:to-brand-300 text-white font-bold py-3.5 rounded-xl transition-all flex justify-center items-center shadow-lg text-[13px] md:text-sm">
+                    Confirm & Pay
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        AOS.init({ 
-            duration: 900, 
-            easing: 'ease-out-back', 
-            once: true,
-            offset: 50
-        });
+        const supabaseUrl = 'https://ivlkgqmmtvbfpmgssxsg.supabase.co';
+        const supabaseKey = 'sb_publishable_lusXR7UeNgJ4lwo9pIEaJA_T2sJ-l6U';
+        
+        // ĐÃ FIX: Đổi tên biến thành supabaseClient để không trùng với biến global của CDN Supabase gây Crash toàn bộ mã JS
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        function copyText(text, element) {
-            navigator.clipboard.writeText(text).then(() => {
-                const toast = element.querySelector('.copy-toast');
-                toast.classList.add('show');
-                
-                element.classList.remove('jelly-anim');
-                void element.offsetWidth; 
-                element.classList.add('jelly-anim');
+        const PRICE_CANVA = 5000;
 
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 1500); 
+        const gameServicesConfig = {
+            "lienquan": {
+                name: "Liên Quân",
+                services: [
+                    { id: "rank_dong_chientuong", name: "Đồng → Chiến Tướng", price: 50000, eta: "24h" },
+                    { id: "rank_caothu_chientuong", name: "Cao Thủ → Chiến Tướng", price: 35000, eta: "12h" },
+                    { id: "farm_vang", name: "Cày 10.000 Vàng", price: 20000, eta: "48h" }
+                ]
+            },
+            "roblox": {
+                name: "Roblox",
+                services: [
+                    { id: "bloxfruit_lv1_700", name: "Blox Fruit - Lv 1 > 700", price: 30000, eta: "48h" },
+                    { id: "bloxfruit_lv700_max", name: "Blox Fruit - Lv 700 > Max", price: 50000, eta: "72h" },
+                    { id: "bloxfruit_maxlevel", name: "Blox Fruit - Lv 1 > Max", price: 100000, eta: "96h" },
+                    { id: "bloxfruit_5mbeli", name: "Blox Fruit - 5M Beli", price: 15000, eta: "24h" },
+                    { id: "bloxfruit_10mbeli", name: "Blox Fruit - 10M Beli", price: 25000, eta: "24h" },
+                    { id: "bloxfruit_1gear", name: "Blox Fruit - 1 Gear V4", price: 15000, eta: "24h" },
+                    { id: "bloxfruit_pushlever", name: "Blox Fruit - Gạt Cần", price: 20000, eta: "24h" },
+                    { id: "bloxfruit_noteligible_pushlever", name: "Blox Fruit - Gạt Cần (Không điều kiện)", price: 40000, eta: "24h" },
+                    { id: "bloxfruit_up_v2fruit", name: "Blox Fruit - Nâng Fruit V2 (thường)", price: 40000, eta: "24h" },
+                    { id: "bloxfruit_up_v2fruit_mythic", name: "Blox Fruit - Nâng Fruit V2 (Đặc Biệt)", price: 75000, eta: "24h" },
+                    { id: "bloxfruit_yama_tushita", name: "Blox Fruit - Yama + Tushita", price: 70000, eta: "48h" },
+                    { id: "bloxfruit_saishi", name: "Blox Fruit - Saishi", price: 20000, eta: "24h" },
+                    { id: "bloxfruit_shizu", name: "Blox Fruit - Shizu", price: 20000, eta: "24h" },
+                    { id: "bloxfruit_oroshi", name: "Blox Fruit - Oroshi", price: 20000, eta: "24h" },
+                    { id: "bloxfruit_mirror_piece", name: "Blox Fruit - Mảnh Gương", price: 20000, eta: "24h" },
+                    { id: "bloxfruit_open_gate", name: "Blox Fruit - Mở Cổng", price: 20000, eta: "24h" },
+                    { id: "bloxfruit_Belt", name: "Blox Fruit - Full Đai", price: 60000, eta: "48h" },
+                    { id: "bloxfruit_yoruv3", name: "Blox Fruit - Yoru V3", price: 50000, eta: "24h" },
+                    { id: "bloxfruit_1k_bone", name: "Blox Fruit - 1K Bone", price: 8000, eta: "24h" },
+                    { id: "bloxfruit_5k_bone", name: "Blox Fruit - 5K Bone", price: 35000, eta: "24h" },
+                    { id: "bloxfruit_500_ectoplasm", name: "Blox Fruit - 500 Ectoplasm", price: 25000, eta: "24h" },
+                    { id: "bloxfruit_1k_ectoplasm", name: "Blox Fruit - 1K Ectoplasm", price: 45000, eta: "24h" },
+                    { id: "bloxfruit_1_300_mastery", name: "Blox Fruit - 1 > 300 Mastery", price: 20000, eta: "24h" },
+                    { id: "bloxfruit_300_600_mastery", name: "Blox Fruit - 300 > 600 Mastery", price: 25000, eta: "24h" },
+                    { id: "bloxfruit_ghoulv3", name: "Blox Fruit - Ghoul V3", price: 45000, eta: "24h" },
+                    { id: "bloxfruit_cyborg", name: "Blox Fruit - Cyborg V3", price: 60000, eta: "24h" },
+                    { id: "bloxfruit_haki_legen", name: "Blox Fruit - 1 Haki Legendery", price: 35000, eta: "24h" },
+                    { id: "bloxfruit_soul_guitar", name: "Blox Fruit - 1 Soul Guitar (Full Mastery)", price: 45000, eta: "24h" }
+                ]
+            }
+        };
+
+        let appState = {
+            currentUser: null,
+            orders: [],
+            transactions: []
+        };
+
+        const DOM = {
+            landingView: document.getElementById('landing-view'),
+            authModal: document.getElementById('auth-modal'),
+            appView: document.getElementById('app-view'),
+            loginForm: document.getElementById('login-form'),
+            registerForm: document.getElementById('register-form'),
+            views: document.querySelectorAll('.view-section:not(#landing-view)'),
+            navItems: document.querySelectorAll('.nav-item'),
+            toastContainer: document.getElementById('toast-container'),
+            checkoutModal: document.getElementById('checkout-modal'),
+            checkoutForm: document.getElementById('checkout-form'),
+            ordersTableBody: document.getElementById('orders-table-body'),
+            txTableBody: document.getElementById('tx-table-body'),
+            noOrders: document.getElementById('no-orders'),
+            noTxs: document.getElementById('no-txs'),
+            sidebar: document.getElementById('sidebar'),
+            cardForm: document.getElementById('card-topup-form'),
+            tabBtnBank: document.getElementById('tab-btn-bank'),
+            tabBtnCard: document.getElementById('tab-btn-card'),
+            tabContentBank: document.getElementById('tab-content-bank'),
+            tabContentCard: document.getElementById('tab-content-card'),
+            robuxForm: document.getElementById('robux-form'),
+            gamesForm: document.getElementById('games-form')
+        };
+
+        let paymentPollingInterval = null;
+        let paymentPollingCount = 0;
+        let pendingPurchaseAction = null;
+
+        function init() {
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                if (session) {
+                    const user = session.user;
+                    let { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
+                    
+                    if (!profile) {
+                        await new Promise(r => setTimeout(r, 1000));
+                        let res = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
+                        profile = res.data;
+                    }
+
+                    if (profile) {
+                        appState.currentUser = profile;
+                        await refreshUserData();
+                        showApp();
+                    }
+                } else {
+                    appState.currentUser = null;
+                    appState.orders = [];
+                    appState.transactions = [];
+                    DOM.appView.classList.add('hidden');
+                    DOM.landingView.classList.remove('hidden');
+                    DOM.landingView.classList.add('active');
+                    generateFakeCharts();
+                }
+            });
+
+            setupEventListeners();
+            setInterval(simulateAdminUpdates, 4000);
+            
+            initGameServices();
+            calcRobuxPrice();
+        }
+
+        async function refreshUserData() {
+            if (!appState.currentUser) return;
+            const uid = appState.currentUser.id;
+            const [ordersRes, txRes] = await Promise.all([
+                supabaseClient.from('orders').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
+                supabaseClient.from('transactions').select('*').eq('user_id', uid).order('created_at', { ascending: false })
+            ]);
+            appState.orders = ordersRes.data || [];
+            appState.transactions = txRes.data || [];
+            updateUI();
+        }
+
+        async function updateBalanceAndLogTx(amount, type, status = 'success') {
+            const newBalance = Number(appState.currentUser.balance) + Number(amount);
+            const txCode = 'TX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            await supabaseClient.from('transactions').insert([{
+                tx_code: txCode,
+                user_id: appState.currentUser.id,
+                type: type,
+                amount: amount,
+                status: status
+            }]);
+
+            if(status === 'success') {
+                await supabaseClient.from('profiles').update({ balance: newBalance }).eq('id', appState.currentUser.id);
+                appState.currentUser.balance = newBalance;
+            }
+            await refreshUserData();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('toggle-register').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('register'); });
+            document.getElementById('toggle-login').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('login'); });
+
+            DOM.loginForm.addEventListener('submit', handleLogin);
+            DOM.registerForm.addEventListener('submit', handleRegister);
+            document.getElementById('btn-logout').addEventListener('click', handleLogout);
+
+            DOM.navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    switchView(item.dataset.target);
+                    if (window.innerWidth < 768) toggleMobileMenu();
+                });
+            });
+
+            document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+            document.getElementById('close-sidebar').addEventListener('click', toggleMobileMenu);
+
+            DOM.checkoutForm.addEventListener('submit', handleCheckout);
+            DOM.cardForm.addEventListener('submit', handleCardTopUp);
+
+            document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
+            document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
+
+            document.getElementById('robux-method').addEventListener('change', (e) => {
+                const warning = document.getElementById('robux-warning');
+                if(e.target.value === 'gift') warning.classList.remove('hidden');
+                else warning.classList.add('hidden');
+            });
+
+            document.getElementById('robux-amount').addEventListener('input', calcRobuxPrice);
+            DOM.robuxForm.addEventListener('submit', handleRobuxOrder);
+
+            document.getElementById('boost-game').addEventListener('change', populateGameServices);
+            document.getElementById('boost-service').addEventListener('change', calcBoostPrice);
+            DOM.gamesForm.addEventListener('submit', handleGameBoostOrder);
+
+            document.getElementById('btn-generic-pay').addEventListener('click', () => {
+                if(pendingPurchaseAction) pendingPurchaseAction();
+                closeGenericModal();
             });
         }
-    </script>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Celeste",
-  "url": "https://celestiax.fun",
-  "jobTitle": "Backend Developer",
-  "description": "Expert Backend Developer & Automation Specialist based in Tra Vinh.",
-  "sameAs": [
-    "https://t.me/Dev_Celeste",
-    "https://github.com/saiky988"
-  ]
-}
-</script>
+        function initGameServices() {
+            const gameSelect = document.getElementById('boost-game');
+            gameSelect.innerHTML = '';
+            for (const key in gameServicesConfig) {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.innerText = gameServicesConfig[key].name;
+                gameSelect.appendChild(opt);
+            }
+            populateGameServices();
+        }
+
+        function populateGameServices() {
+            const gameKey = document.getElementById('boost-game').value;
+            const serviceSelect = document.getElementById('boost-service');
+            serviceSelect.innerHTML = '';
+            
+            if (gameServicesConfig[gameKey]) {
+                gameServicesConfig[gameKey].services.forEach(srv => {
+                    const opt = document.createElement('option');
+                    opt.value = srv.id;
+                    opt.innerText = srv.name;
+                    opt.dataset.price = srv.price;
+                    opt.dataset.eta = srv.eta;
+                    serviceSelect.appendChild(opt);
+                });
+            }
+            calcBoostPrice();
+        }
+
+        function calcRobuxPrice() {
+            const amount = parseInt(document.getElementById('robux-amount').value) || 0;
+            const price = Math.ceil((amount / 70) * 10000);
+            const afterTax = Math.floor(amount * (50/70));
+
+            document.getElementById('robux-after-tax').innerText = afterTax;
+            document.getElementById('robux-price').innerText = formatCurrency(price);
+            return price;
+        }
+
+        function calcBoostPrice() {
+            const serviceSelect = document.getElementById('boost-service');
+            const selectedOpt = serviceSelect.options[serviceSelect.selectedIndex];
+            if (!selectedOpt) return 0;
+
+            const price = parseInt(selectedOpt.dataset.price) || 0;
+            const eta = selectedOpt.dataset.eta || "N/A";
+
+            document.getElementById('boost-price').innerText = formatCurrency(price);
+            document.getElementById('boost-eta').innerText = `ETA: ${eta}`;
+            return price;
+        }
+
+        function handleRobuxOrder(e) {
+            e.preventDefault();
+            const username = document.getElementById('robux-username').value;
+            const amount = parseInt(document.getElementById('robux-amount').value);
+            const method = document.getElementById('robux-method').value;
+            const methodText = document.getElementById('robux-method').options[document.getElementById('robux-method').selectedIndex].text;
+            const price = calcRobuxPrice();
+
+            if(!amount || amount < 10 || !username) return showToast('Invalid input amount or username', 'error');
+
+            openGenericConfirm('Robux Purchase', `${amount} R$ for Roblox user: ${username} (${methodText})`, price, async () => {
+                if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
+                
+                const orderCode = 'RBX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                
+                await supabaseClient.from('orders').insert([{
+                    order_code: orderCode,
+                    user_id: appState.currentUser.id,
+                    type: 'robux',
+                    price: price,
+                    details: { roblox_username: username, amount: amount, method: method }
+                }]);
+                
+                await updateBalanceAndLogTx(-price, 'Robux Purchase');
+                
+                finalizeOrder('Robux order placed successfully!');
+                DOM.robuxForm.reset();
+                calcRobuxPrice();
+                document.getElementById('robux-warning').classList.add('hidden');
+            });
+        }
+
+        function handleGameBoostOrder(e) {
+            e.preventDefault();
+            const gameKey = document.getElementById('boost-game').value;
+            const serviceSelect = document.getElementById('boost-service');
+            const serviceName = serviceSelect.options[serviceSelect.selectedIndex].text;
+            const username = document.getElementById('boost-username').value;
+            const password = document.getElementById('boost-password').value;
+            const price = calcBoostPrice();
+
+            if (!username || !password) return showToast('Username and password are required', 'error');
+
+            openGenericConfirm('Game Service', `${serviceName} for ${gameServicesConfig[gameKey].name}`, price, async () => {
+                if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
+                
+                const orderCode = 'BST-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                
+                await supabaseClient.from('orders').insert([{
+                    order_code: orderCode,
+                    user_id: appState.currentUser.id,
+                    type: 'game_service',
+                    price: price,
+                    details: { game: gameServicesConfig[gameKey].name, service: serviceName, acc_user: username, acc_pass: password }
+                }]);
+                
+                await updateBalanceAndLogTx(-price, 'Game Boost Service');
+                
+                finalizeOrder('Game boosting service ordered!');
+                DOM.gamesForm.reset();
+                populateGameServices();
+            });
+        }
+
+        function finalizeOrder(msg) {
+            refreshUserData();
+            switchView('orders');
+            showToast(msg, 'success');
+        }
+
+        function openGenericConfirm(title, desc, price, callback) {
+            document.getElementById('generic-item-name').innerText = title;
+            document.getElementById('generic-item-desc').innerText = desc;
+            document.getElementById('generic-item-price').innerText = formatCurrency(price);
+            pendingPurchaseAction = callback;
+            document.getElementById('generic-checkout-modal').classList.add('active');
+        }
+        
+        function closeGenericModal() {
+            document.getElementById('generic-checkout-modal').classList.remove('active');
+            pendingPurchaseAction = null;
+        }
+
+        function openAuthModal(type) {
+            toggleAuthForms(type);
+            DOM.authModal.classList.add('active');
+        }
+
+        function closeAuthModal() {
+            DOM.authModal.classList.remove('active');
+            DOM.loginForm.reset();
+            DOM.registerForm.reset();
+        }
+
+        function toggleAuthForms(type) {
+            if (type === 'login') {
+                DOM.registerForm.classList.add('hidden');
+                DOM.loginForm.classList.remove('hidden');
+                document.getElementById('auth-title').innerText = 'Welcome Back';
+                document.getElementById('auth-subtitle').innerText = 'Sign in to continue to your dashboard.';
+            } else {
+                DOM.loginForm.classList.add('hidden');
+                DOM.registerForm.classList.remove('hidden');
+                document.getElementById('auth-title').innerText = 'Create Account';
+                document.getElementById('auth-subtitle').innerText = 'Join us and unlock premium features.';
+            }
+        }
+
+        function formatCurrency(amount) {
+            return Number(amount).toLocaleString('vi-VN') + '₫';
+        }
+
+        async function handleGoogleLogin(btn) {
+            setLoading(btn, true, 'Redirecting...');
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin }
+            });
+
+            if (error) {
+                showToast('Login failed: ' + error.message, 'error');
+                setLoading(btn, false, 'Continue with Google');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const btn = document.getElementById('btn-register');
+
+            setLoading(btn, true, 'Creating...');
+            const { error } = await supabaseClient.auth.signUp({ email, password });
+            
+            if (error) {
+                showToast(error.message, 'error');
+            } else {
+                showToast('Account created! Logging in...', 'success');
+                closeAuthModal();
+            }
+            setLoading(btn, false, 'Create Account');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-login');
+            
+            setLoading(btn, true, 'Signing In...');
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (error) showToast('Invalid email or password', 'error');
+            else closeAuthModal();
+            
+            setLoading(btn, false, 'Sign In');
+        }
+
+        async function handleLogout() {
+            const { error } = await supabaseClient.auth.signOut();
+            if (!error) {
+                cancelBankQR();
+                showToast('Logged out successfully', 'info');
+            }
+        }
+
+        function showApp() {
+            DOM.landingView.classList.remove('active');
+            setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
+            DOM.appView.classList.remove('hidden');
+            updateUI();
+            generateFakeCharts();
+            switchView('home');
+        }
+
+        function updateUI() {
+            if (!appState.currentUser) return;
+            const user = appState.currentUser;
+            
+            const balanceStr = formatCurrency(user.balance);
+            document.querySelectorAll('.user-balance-display').forEach(el => el.innerText = balanceStr);
+            
+            document.getElementById('sidebar-username').innerText = user.username;
+            document.getElementById('home-username').innerText = user.username;
+            document.getElementById('profile-username').value = user.username;
+            document.getElementById('profile-email-input').value = user.email;
+            
+            const dateStr = new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            document.getElementById('profile-date').innerText = dateStr;
+
+            const initial = user.username.charAt(0).toUpperCase();
+            
+            const sbImg = document.getElementById('sidebar-avatar');
+            const sbInit = document.getElementById('sidebar-initial');
+            const prImg = document.getElementById('profile-avatar-img');
+            const prInit = document.getElementById('profile-avatar-initial');
+
+            if (user.avatar_url) {
+                sbImg.src = user.avatar_url; sbImg.classList.remove('hidden'); sbInit.classList.add('hidden');
+                prImg.src = user.avatar_url; prImg.classList.remove('hidden'); prInit.classList.add('hidden');
+            } else {
+                sbImg.classList.add('hidden'); sbInit.classList.remove('hidden'); sbInit.innerText = initial;
+                prImg.classList.add('hidden'); prInit.classList.remove('hidden'); prInit.innerText = initial;
+            }
+
+            renderOrders();
+            renderTransactions();
+            updateDashboardStats();
+        }
+
+        function switchView(viewName) {
+            DOM.navItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.target === viewName);
+            });
+            DOM.views.forEach(view => {
+                view.classList.toggle('active', view.id === `view-${viewName}`);
+            });
+        }
+
+        function switchTopUpTab(tab) {
+            if (tab === 'bank') {
+                DOM.tabBtnBank.classList.replace('border-transparent', 'border-brand-500');
+                DOM.tabBtnBank.classList.replace('text-gray-500', 'text-brand-400');
+                DOM.tabBtnCard.classList.replace('border-brand-500', 'border-transparent');
+                DOM.tabBtnCard.classList.replace('text-brand-400', 'text-gray-500');
+                DOM.tabContentBank.classList.remove('hidden');
+                DOM.tabContentCard.classList.add('hidden');
+            } else {
+                DOM.tabBtnCard.classList.replace('border-transparent', 'border-brand-500');
+                DOM.tabBtnCard.classList.replace('text-gray-500', 'text-brand-400');
+                DOM.tabBtnBank.classList.replace('border-brand-500', 'border-transparent');
+                DOM.tabBtnBank.classList.replace('text-brand-400', 'text-gray-500');
+                DOM.tabContentCard.classList.remove('hidden');
+                DOM.tabContentBank.classList.add('hidden');
+            }
+        }
+
+        function toggleMobileMenu() {
+            DOM.sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function generateBankQR() {
+            const btn = document.getElementById('btn-generate-qr');
+            const amountStr = document.getElementById('qr-amount-input').value;
+            const amount = parseInt(amountStr);
+            
+            if (!amount || amount < 10000) {
+                showToast('Minimum amount is 10,000đ', 'error');
+                return;
+            }
+
+            setLoading(btn, true, 'Generating...');
+
+            setTimeout(() => {
+                const txId = 'TX' + Math.random().toString(36).substr(2, 8).toUpperCase();
+                const content = `NAPTIEN ${txId}`;
+                const qrData = encodeURIComponent(`Bank: Vietcombank|Acc: 0123456789|Name: NGUYEN VAN A|Amount: ${amount}|Content: ${content}`);
+                
+                const apiResponse = {
+                    success: true,
+                    data: {
+                        qr_url: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${qrData}&color=000000&bgcolor=ffffff`,
+                        transaction_id: txId,
+                        amount: amount,
+                        content: content,
+                        account_name: "NGUYEN VAN A",
+                        account_number: "0123456789",
+                        bank: "Vietcombank"
+                    }
+                };
+
+                document.getElementById('qr-code-img').src = apiResponse.data.qr_url;
+                document.getElementById('qr-bank-name').innerText = apiResponse.data.bank;
+                document.getElementById('qr-account-num').innerText = apiResponse.data.account_number;
+                document.getElementById('qr-account-name').innerText = apiResponse.data.account_name;
+                document.getElementById('transfer-content').innerText = apiResponse.data.content;
+
+                document.getElementById('bank-input-section').classList.add('hidden');
+                document.getElementById('bank-qr-details').classList.remove('hidden');
+
+                setLoading(btn, false, 'Generate QR');
+                
+                startPaymentPolling(apiResponse.data);
+
+            }, 1500);
+        }
+
+        function startPaymentPolling(txData) {
+            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+            paymentPollingCount = 0;
+            
+            const badge = document.getElementById('payment-status-badge');
+            badge.innerHTML = `<div class="spinner w-2.5 h-2.5 md:w-3 md:h-3 border-yellow-500 border-l-transparent"></div> Waiting...`;
+            badge.className = 'flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-[10px] md:text-xs font-bold border border-yellow-500/20';
+
+            paymentPollingInterval = setInterval(() => {
+                paymentPollingCount++;
+                
+                if (paymentPollingCount >= 2 && Math.random() > 0.6) {
+                    clearInterval(paymentPollingInterval);
+                    
+                    badge.innerHTML = `<svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Received`;
+                    badge.className = 'flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-green-500/10 text-green-400 rounded-full text-[10px] md:text-xs font-bold border border-green-500/20';
+
+                    setTimeout(() => {
+                        handlePaymentSuccess(txData);
+                    }, 1000);
+                }
+            }, 3000);
+        }
+
+        async function handlePaymentSuccess(txData) {
+            await updateBalanceAndLogTx(txData.amount, 'Top Up (Bank)', 'success');
+            showToast(`Top-up successful! Added ${formatCurrency(txData.amount)}`, 'success');
+            cancelBankQR();
+        }
+
+        function cancelBankQR() {
+            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+            document.getElementById('bank-qr-details').classList.add('hidden');
+            document.getElementById('bank-input-section').classList.remove('hidden');
+            document.getElementById('qr-amount-input').value = '50000';
+        }
+
+        async function handleCardTopUp(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-card-submit');
+            const amount = parseInt(document.getElementById('card-amount').value);
+            
+            setLoading(btn, true, 'Processing...');
+
+            setTimeout(async () => {
+                const success = Math.random() > 0.3; 
+                
+                if (success) {
+                    await updateBalanceAndLogTx(amount, 'Top Up (Card)', 'success');
+                    showToast(`Top up successful! Added ${formatCurrency(amount)}`, 'success');
+                } else {
+                    await updateBalanceAndLogTx(amount, 'Top Up (Card)', 'failed');
+                    showToast(`Card processing failed. Invalid Serial/PIN.`, 'error');
+                }
+
+                DOM.cardForm.reset();
+                setLoading(btn, false, 'Process Card');
+            }, 2500);
+        }
+
+        function openModal() {
+            document.getElementById('target-email').value = appState.currentUser.email;
+            DOM.checkoutModal.classList.add('active');
+        }
+
+        function closeModal() {
+            DOM.checkoutModal.classList.remove('active');
+            DOM.checkoutForm.reset();
+        }
+
+        async function handleCheckout(e) {
+            e.preventDefault();
+            const email = document.getElementById('target-email').value;
+            const btn = document.getElementById('btn-submit-order');
+            
+            if (appState.currentUser.balance < PRICE_CANVA) {
+                showToast('Insufficient balance! Please top up.', 'error');
+                closeModal();
+                switchView('topup');
+                return;
+            }
+
+            setLoading(btn, true, 'Processing...');
+
+            const orderCode = 'ORD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            await supabaseClient.from('orders').insert([{
+                order_code: orderCode,
+                user_id: appState.currentUser.id,
+                type: 'canva',
+                price: PRICE_CANVA,
+                details: { target_email: email }
+            }]);
+
+            await updateBalanceAndLogTx(-PRICE_CANVA, 'Purchase Canva');
+
+            closeModal();
+            showToast('Order placed successfully!', 'success');
+            switchView('orders');
+            setLoading(btn, false, 'Pay 5,000đ');
+        }
+
+        function renderOrders() {
+            DOM.ordersTableBody.innerHTML = '';
+            if (appState.orders.length === 0) {
+                DOM.ordersTableBody.parentElement.classList.add('hidden');
+                DOM.noOrders.classList.remove('hidden');
+            } else {
+                DOM.ordersTableBody.parentElement.classList.remove('hidden');
+                DOM.noOrders.classList.add('hidden');
+                
+                appState.orders.forEach(order => {
+                    const date = new Date(order.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                    let sClass = '', sIcon = '';
+                    if (order.status === 'pending') { sClass = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'; sIcon = '<span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span>'; }
+                    else if (order.status === 'processing') { sClass = 'bg-blue-500/10 text-blue-400 border-blue-500/20'; sIcon = '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>'; }
+                    else if (order.status === 'approved' || order.status === 'completed') { sClass = 'bg-green-500/10 text-green-400 border-green-500/20'; sIcon = '<svg class="w-2.5 h-2.5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>'; }
+                    else if (order.status === 'rejected') { sClass = 'bg-red-500/10 text-red-400 border-red-500/20'; sIcon = '<svg class="w-2.5 h-2.5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>'; }
+
+                    const type = order.type || 'canva';
+                    let typeName = type === 'canva' ? 'Canva Pro' : (type === 'game_service' ? 'Game Boost' : 'Robux');
+                    let typeClass = type === 'canva' ? 'text-[#00C4CC]' : (type === 'game_service' ? 'text-purple-400' : 'text-green-400');
+                    
+                    let targetDetail = order.details?.target_email || '';
+                    if(type === 'game_service') targetDetail = `${order.details?.game} - ${order.details?.service} (User: ${order.details?.acc_user})`;
+                    if(type === 'robux') targetDetail = `${order.details?.roblox_username} (${order.details?.amount} R$ - ${order.details?.method})`;
+
+                    DOM.ordersTableBody.insertAdjacentHTML('beforeend', `
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="px-4 py-3 md:px-6 md:py-4 font-mono text-[10px] md:text-xs text-brand-400 font-bold">${order.order_code}</td>
+                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold ${typeClass}">${typeName}</td>
+                            <td class="px-4 py-3 md:px-6 md:py-4 text-[12px] md:text-sm font-medium text-white">${targetDetail}</td>
+                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold text-white">${formatCurrency(order.price)}</td>
+                            <td class="px-4 py-3 md:px-6 md:py-4 text-[11px] md:text-xs text-gray-400 font-medium">${date}</td>
+                            <td class="px-4 py-3 md:px-6 md:py-4"><span class="inline-flex items-center gap-1.5 px-2 py-1 md:px-2.5 md:py-1 rounded-md text-[9px] md:text-[10px] font-bold uppercase tracking-wider border ${sClass}">${sIcon} ${order.status}</span></td>
+                        </tr>
+                    `);
+                });
+            }
+        }
+
+        function renderTransactions() {
+            DOM.txTableBody.innerHTML = '';
+            if (appState.transactions.length === 0) {
+                DOM.txTableBody.parentElement.classList.add('hidden');
+                DOM.noTxs.classList.remove('hidden');
+            } else {
+                DOM.txTableBody.parentElement.classList.remove('hidden');
+                DOM.noTxs.classList.add('hidden');
+                
+                appState.transactions.forEach(tx => {
+                    const date = new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                    const amtClass = tx.amount > 0 ? 'text-green-400' : 'text-white';
+                    const sign = tx.amount > 0 ? '+' : '';
+                    const sClass = tx.status === 'success' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20';
+
+                    DOM.txTableBody.insertAdjacentHTML('beforeend', `
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="px-4 py-3 md:px-6 md:py-4">
+                                <div class="font-mono text-[10px] md:text-xs text-brand-400 font-bold">${tx.tx_code}</div>
+                                <div class="text-[9px] md:text-[10px] text-gray-500 font-medium">${date}</div>
+                            </td>
+                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-bold text-gray-300">${tx.type}</td>
+                            <td class="px-4 py-3 md:px-6 md:py-4 text-[13px] md:text-sm font-extrabold ${amtClass}">${sign}${formatCurrency(tx.amount)}</td>
+                            <td class="px-4 py-3 md:px-6 md:py-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] md:text-[10px] font-bold uppercase border ${sClass}">${tx.status}</span></td>
+                        </tr>
+                    `);
+                });
+            }
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('stat-total').innerText = appState.orders.length;
+            document.getElementById('stat-approved').innerText = appState.orders.filter(o => o.status === 'approved' || o.status === 'completed').length;
+
+            document.getElementById('stat-canva').innerText = appState.orders.filter(o => !o.type || o.type === 'canva').length;
+            document.getElementById('stat-games').innerText = appState.orders.filter(o => o.type === 'game_service').length;
+            document.getElementById('stat-robux').innerText = appState.orders.filter(o => o.type === 'robux').length;
+
+            const pending = appState.orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
+            const badge = document.getElementById('pending-badge');
+            if (pending > 0) { badge.innerText = pending; badge.classList.remove('hidden'); } 
+            else badge.classList.add('hidden');
+        }
+
+        function generateFakeCharts() {
+            const chart = document.getElementById('fake-chart');
+            if (!chart) return;
+            chart.innerHTML = '';
+            for(let i=0; i<7; i++) {
+                const height = Math.floor(Math.random() * 80) + 20;
+                chart.innerHTML += `<div class="w-full bg-brand-500/30 rounded-t-md hover:bg-brand-400 transition-colors chart-bar relative group" style="height: ${height}%"><div class="opacity-0 group-hover:opacity-100 absolute -top-6 md:-top-8 left-1/2 -translate-x-1/2 bg-surface-950 text-[10px] md:text-xs py-0.5 px-1.5 md:py-1 md:px-2 rounded font-bold text-white transition-opacity">${height}</div></div>`;
+            }
+        }
+
+        async function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const base64Avatar = event.target.result;
+                const { error } = await supabaseClient.from('profiles').update({ avatar_url: base64Avatar }).eq('id', appState.currentUser.id);
+                
+                if(!error) {
+                    appState.currentUser.avatar_url = base64Avatar;
+                    updateUI();
+                    showToast('Avatar updated!', 'success');
+                } else {
+                    showToast('Failed to update avatar', 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            const newName = document.getElementById('profile-username').value.trim();
+            if(newName) {
+                const { error } = await supabaseClient.from('profiles').update({ username: newName }).eq('id', appState.currentUser.id);
+                if(!error) {
+                    appState.currentUser.username = newName;
+                    updateUI();
+                    showToast('Profile saved successfully!', 'success');
+                }
+            }
+        }
+
+        async function simulateAdminUpdates() {
+            if (!appState.currentUser) return;
+            const now = Date.now();
+            let updated = false;
+
+            for (let order of appState.orders) {
+                const orderTime = new Date(order.created_at).getTime();
+                if (order.status === 'pending') {
+                    if (now - orderTime > 8000) { 
+                        let newStatus = (order.type === 'game_service' || order.type === 'robux') ? 'processing' : (Math.random() > 0.1 ? 'approved' : 'rejected');
+                        
+                        await supabaseClient.from('orders').update({status: newStatus}).eq('id', order.id);
+                        
+                        if(newStatus === 'rejected') {
+                            await updateBalanceAndLogTx(order.price, 'Refund Order ' + order.order_code);
+                            showToast(`Order ${order.order_code} rejected. Refunded.`, 'error');
+                        } else if (newStatus === 'approved') {
+                            showToast(`Invite sent to ${order.details?.target_email}`, 'success');
+                        }
+                        updated = true;
+                    }
+                } else if (order.status === 'processing') {
+                    if (now - orderTime > 20000) { 
+                        await supabaseClient.from('orders').update({status: 'completed'}).eq('id', order.id);
+                        showToast(`Service order ${order.order_code} has been completed!`, 'success');
+                        updated = true;
+                    }
+                }
+            }
+
+            if (updated) {
+                await refreshUserData();
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            showToast('Copied to clipboard!', 'info');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            let icon = '', borderClass = 'border-gray-500/20', bgClass = 'bg-surface-900/95';
+            
+            if (type === 'success') { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>'; borderClass = 'border-green-500/30'; } 
+            else if (type === 'error') { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>'; borderClass = 'border-red-500/30'; } 
+            else { icon = '<div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>'; borderClass = 'border-brand-500/30'; }
+
+            toast.className = `flex items-center gap-2.5 md:gap-3 p-3 md:p-4 rounded-xl md:rounded-[16px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border backdrop-blur-xl ${bgClass} ${borderClass} toast-enter`;
+            toast.innerHTML = `${icon}<p class="text-[13px] md:text-sm font-bold text-white tracking-wide">${message}</p>`;
+            
+            DOM.toastContainer.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%) scale(0.9)'; setTimeout(() => toast.remove(), 300); }, 4000);
+        }
+
+        function setLoading(btn, isLoading, text) {
+            if (isLoading) { btn.disabled = true; btn.innerHTML = `<div class="spinner w-3.5 h-3.5 md:w-4 md:h-4"></div> <span class="ml-2">${text}</span>`; btn.classList.add('opacity-70', 'cursor-not-allowed'); } 
+            else { btn.disabled = false; btn.innerHTML = text; btn.classList.remove('opacity-70', 'cursor-not-allowed'); }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
