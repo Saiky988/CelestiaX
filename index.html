@@ -869,48 +869,86 @@
                 <section id="view-robux" class="view-section flex-1">
                     <header class="mb-6 md:mb-8">
                         <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Robux Shop</h2>
-                        <p class="text-clamp-sm text-gray-400 font-medium">Safe and cheap Robux via official or gift delivery.</p>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Safe and cheap Robux via official or gamepass delivery.</p>
                     </header>
 
                     <div class="glass-card rounded-2xl p-5 md:p-8 border border-white/5 max-w-2xl mx-auto relative overflow-hidden">
                         <div class="absolute -top-20 -right-20 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-                        <form id="robux-form" class="space-y-4 md:space-y-5 relative z-10">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Roblox Username</label>
-                                    <input type="text" id="robux-username" required placeholder="Enter exact username" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Delivery Method</label>
-                                    <select id="robux-method" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none">
-                                        <option value="official">Official Robux (Fast)</option>
-                                        <option value="gift">Gift (120h delay)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Amount to Buy (R$)</label>
-                                <input type="number" id="robux-amount" required min="10" value="100" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white">
-                                <p class="text-[11px] md:text-xs text-gray-400 mt-2 font-medium">Estimated received: <span id="robux-after-tax" class="text-green-400 font-bold">71</span> R$ (after Roblox tax)</p>
-                            </div>
-                            
-                            <div id="robux-warning" class="hidden bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex items-start gap-3">
-                                <svg class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                                <div>
-                                    <p class="text-sm font-bold text-yellow-500 mb-0.5">Important Delivery Notice</p>
-                                    <p class="text-[13px] text-gray-300 font-medium">Gift method requires 120 hours (5 days) friend time before delivery due to Roblox policy.</p>
-                                </div>
-                            </div>
+<form id="robux-form" class="space-y-4 md:space-y-5 relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Delivery Method</label>
+            <select id="robux-method" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none transition-all">
+                <option value="official">Official</option>
+                <option value="gift">Gamepass</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Roblox Username</label>
+            <input type="text" id="robux-username" required placeholder="Username" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white transition-all">
+        </div>
+    </div>
 
-                            <div class="flex justify-between items-center py-4 border-t border-white/10 mt-4">
-                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Price</span>
-                                <span id="robux-price" class="text-2xl font-extrabold text-green-400">14,286đ</span>
-                            </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-bold py-3.5 rounded-xl transition-all flex justify-center items-center shadow-[0_10px_20px_-10px_rgba(16,185,129,0.4)] transform hover:-translate-y-0.5 text-sm md:text-base">
-                                Buy Robux
-                            </button>
-                        </form>
+    <div id="robux-gamepass-area" class="hidden space-y-4">
+        <div>
+            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 flex justify-between">
+                <span>Select Gamepass</span>
+                <span id="gp-loading" class="hidden text-green-400 animate-pulse">...</span>
+            </label>
+            <select id="robux-gamepass-select" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none disabled:opacity-50">
+                <option value="">Please enter Username first...</option>
+            </select>
+            <p class="text-[11px] md:text-xs text-gray-400 mt-2 font-medium">Thực nhận: <span id="robux-after-tax" class="text-green-400 font-bold">0</span> R$ (Sau thuế Roblox)</p>
+        </div>
+        
+<div class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex items-start gap-3">
+    <svg class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+        </path>
+    </svg>
+    <div>
+        <p class="text-sm font-bold text-yellow-500 mb-0.5">Giao Robux qua Gamepass</p>
+        <p class="text-[13px] text-gray-300 font-medium">
+            Robux sẽ về trong <span class="text-yellow-400 font-semibold">5 ngày (120h)</span> theo quy định Roblox.
+        </p>
+    </div>
+</div>
+    </div>
+
+    <div id="robux-official-area" class="space-y-4">
+        <div>
+            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Chọn gói Robux</label>
+            <select id="robux-official-package" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none">
+                <option value="80" data-price="40000">Robux 80</option>
+                <option value="500" data-price="200000">Robux 500</option>
+                <option value="1000" data-price="390000">Robux 1000</option>
+                <option value="2000" data-price="780000">Robux 2000</option>
+                <option value="5250" data-price="1900000">Robux 5250</option>
+                <option value="11000" data-price="3800000">Robux 11000</option>
+                <option value="24000" data-price="7600000">Robux 24000</option>
+            </select>
+        </div>
+        
+        <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl">
+            <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" id="robux-official-terms" class="mt-1 w-4 h-4 rounded border-gray-600 bg-black/40 text-green-500 focus:ring-green-500/20" required>
+                <span class="text-[12px] md:text-[13px] text-gray-300 font-medium leading-relaxed">
+                    Việc giao robux diễn ra sớm nhất trong vòng 15 phút và có thể chậm nhất 24 giờ (thời gian làm việc từ 8h-22h). <strong class="text-white">Tôi xác nhận rằng tôi đã tắt xác minh 2 bước và tài khoản được tạo trên 10 ngày.</strong>
+                </span>
+            </label>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center py-4 border-t border-white/10 mt-4">
+        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tổng thanh toán</span>
+        <span id="robux-price" class="text-2xl font-extrabold text-green-400">0đ</span>
+    </div>
+    <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-bold py-3.5 rounded-xl transition-all flex justify-center items-center shadow-[0_10px_20px_-10px_rgba(16,185,129,0.4)] transform hover:-translate-y-0.5 text-sm md:text-base">
+        Mua Robux
+    </button>
+</form>
+
                     </div>
                 </section>
 
@@ -1130,6 +1168,8 @@
     });
 
     const PRICE_CANVA = 5000;
+    const ROBLOX_API_KEY = "bfbcb8f2-fd2a-464d-adfe-e687a11dbe0c";
+    const ROBLOX_BASE_URL = "https://dev.celestiax.fun";
 
     const gameServicesConfig = {
         "lienquan": {
@@ -1203,7 +1243,6 @@
         tabBtnCard: document.getElementById('tab-btn-card'),
         tabContentBank: document.getElementById('tab-content-bank'),
         tabContentCard: document.getElementById('tab-content-card'),
-        robuxForm: document.getElementById('robux-form'),
         gamesForm: document.getElementById('games-form')
     };
 
@@ -1300,7 +1339,6 @@
         setInterval(simulateAdminUpdates, 4000);
         
         initGameServices();
-        calcRobuxPrice();
     }
 
     function handleHashRouting() {
@@ -1468,14 +1506,8 @@
         document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
         document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
 
-        document.getElementById('robux-method').addEventListener('change', (e) => {
-            const warning = document.getElementById('robux-warning');
-            if(e.target.value === 'gift') warning.classList.remove('hidden');
-            else warning.classList.add('hidden');
-        });
-
-        document.getElementById('robux-amount').addEventListener('input', calcRobuxPrice);
-        DOM.robuxForm.addEventListener('submit', handleRobuxOrder);
+        // Kích hoạt sự kiện Robux
+        setupRobuxEvents();
 
         document.getElementById('boost-game').addEventListener('change', populateGameServices);
         document.getElementById('boost-service').addEventListener('change', calcBoostPrice);
@@ -1561,15 +1593,161 @@
         calcBoostPrice();
     }
 
-    function calcRobuxPrice() {
-        const amount = parseInt(document.getElementById('robux-amount').value) || 0;
-        const price = Math.ceil((amount / 70) * 10000);
-        const afterTax = Math.floor(amount * (50/70));
+    // ====== BẮT ĐẦU LOGIC ROBUX MỚI ======
+    function setupRobuxEvents() {
+        const methodSelect = document.getElementById('robux-method');
+        const officialArea = document.getElementById('robux-official-area');
+        const gamepassArea = document.getElementById('robux-gamepass-area');
+        const termsCheckbox = document.getElementById('robux-official-terms');
+        const gamepassSelect = document.getElementById('robux-gamepass-select');
+        const officialSelect = document.getElementById('robux-official-package');
+        const usernameInput = document.getElementById('robux-username');
 
-        document.getElementById('robux-after-tax').innerText = afterTax;
+        methodSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'official') {
+                officialArea.classList.remove('hidden');
+                gamepassArea.classList.add('hidden');
+                termsCheckbox.required = true;
+                gamepassSelect.required = false;
+            } else {
+                officialArea.classList.add('hidden');
+                gamepassArea.classList.remove('hidden');
+                termsCheckbox.required = false;
+                gamepassSelect.required = true;
+            }
+            calcRobuxPrice();
+        });
+
+        officialSelect.addEventListener('change', calcRobuxPrice);
+        gamepassSelect.addEventListener('change', calcRobuxPrice);
+
+        const triggerFetch = () => {
+            const username = usernameInput.value.trim();
+            if (methodSelect.value === 'gift' && username) fetchGamepasses(username);
+        };
+        
+        usernameInput.addEventListener('blur', triggerFetch);
+        usernameInput.addEventListener('keyup', (e) => { if(e.key === 'Enter') triggerFetch(); });
+
+        document.getElementById('robux-form').onsubmit = handleRobuxOrder;
+        
+        calcRobuxPrice();
+    }
+
+    async function fetchGamepasses(username) {
+        const loading = document.getElementById('gp-loading');
+        const select = document.getElementById('robux-gamepass-select');
+        
+        loading.classList.remove('hidden');
+        select.innerHTML = '<option value="">Loading data...</option>';
+        select.disabled = true;
+
+        try {
+            const userUrl = `${ROBLOX_BASE_URL}/api/v1/roblox/user?username=${username}&apikey=${ROBLOX_API_KEY}`;
+            const userRes = await fetch(userUrl).then(r => r.json());
+
+            if (userRes.ok && userRes.data) {
+                const { placeId, universeId, userID } = userRes.data;
+                const gpUrl = `${ROBLOX_BASE_URL}/api/v1/roblox/gamepass?placeId=${placeId}&universeId=${universeId}&userID=${userID}&apikey=${ROBLOX_API_KEY}`;
+                const gpRes = await fetch(gpUrl).then(r => r.json());
+                
+                if (gpRes.ok && gpRes.data && gpRes.data.length > 0) {
+                    select.innerHTML = '<option value="">Select Gamepass</option>';
+                    gpRes.data.forEach(gp => {
+                        const opt = document.createElement('option');
+                        opt.value = gp.price; 
+                        opt.dataset.gpId = gp.gamepass_id;
+                        opt.dataset.gpName = gp.name;
+                        opt.innerText = gp.label;
+                        select.appendChild(opt);
+                    });
+                    select.disabled = false;
+                } else {
+                    select.innerHTML = '<option value="">User chưa tạo Gamepass nào</option>';
+                }
+            } else {
+                select.innerHTML = '<option value="">Không tìm thấy Username này</option>';
+            }
+        } catch (e) {
+            select.innerHTML = '<option value="">Lỗi kết nối API máy chủ</option>';
+        } finally {
+            loading.classList.add('hidden');
+            calcRobuxPrice();
+        }
+    }
+
+    function calcRobuxPrice() {
+        const method = document.getElementById('robux-method').value;
+        let price = 0;
+
+        if (method === 'official') {
+            const officialSelect = document.getElementById('robux-official-package');
+            const selectedOpt = officialSelect.options[officialSelect.selectedIndex];
+            if (selectedOpt) price = parseInt(selectedOpt.dataset.price) || 0;
+        } else {
+            const gpSelect = document.getElementById('robux-gamepass-select');
+            const gpPrice = parseInt(gpSelect.value) || 0;
+            
+            price = Math.ceil((gpPrice / 71) * 10000);
+            document.getElementById('robux-after-tax').innerText = Math.floor(gpPrice * 0.7);
+        }
+
         document.getElementById('robux-price').innerText = formatCurrency(price);
         return price;
     }
+
+    function handleRobuxOrder(e) {
+        e.preventDefault();
+        const method = document.getElementById('robux-method').value;
+        const username = document.getElementById('robux-username').value;
+        const price = calcRobuxPrice();
+
+        if(!username) return showToast('Vui lòng nhập Username Roblox', 'error');
+
+        let desc = '';
+        let amount = 0;
+        let details = { roblox_username: username, method: method };
+
+        if (method === 'official') {
+            const termsChecked = document.getElementById('robux-official-terms').checked;
+            if(!termsChecked) return showToast('Vui lòng đồng ý điều khoản giao hàng.', 'error');
+            
+            amount = parseInt(document.getElementById('robux-official-package').value);
+            desc = `Gói ${amount} R$ (Chính hãng) cho User: ${username}`;
+            details.amount = amount;
+        } else {
+            const gpSelect = document.getElementById('robux-gamepass-select');
+            amount = parseInt(gpSelect.value);
+            if(!amount) return showToast('Vui lòng chọn 1 Gamepass cần nạp', 'error');
+            
+            const selectedOpt = gpSelect.options[gpSelect.selectedIndex];
+            desc = `Mua Gamepass "${selectedOpt.dataset.gpName}" (${amount} R$) cho User: ${username}`;
+            details.amount = amount;
+            details.gamepass_id = selectedOpt.dataset.gpId;
+            details.gamepass_name = selectedOpt.dataset.gpName;
+        }
+
+        openGenericConfirm('Thanh Toán Robux', desc, price, async () => {
+            if (appState.currentUser.balance < price) return showToast('Số dư không đủ! Vui lòng nạp quỹ.', 'error');
+            
+            const orderCode = 'RBX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            await supabaseClient.from('orders').insert([{
+                order_code: orderCode,
+                user_id: appState.currentUser.id,
+                type: 'robux',
+                price: price,
+                details: details
+            }]);
+            
+            await updateBalanceAndLogTx(-price, 'Mua Robux');
+            
+            finalizeOrder('Tạo đơn mua Robux thành công!');
+            document.getElementById('robux-form').reset();
+            calcRobuxPrice();
+        });
+    }
+    // ====== KẾT THÚC LOGIC ROBUX MỚI ======
 
     function calcBoostPrice() {
         const serviceSelect = document.getElementById('boost-service');
@@ -1582,38 +1760,6 @@
         document.getElementById('boost-price').innerText = formatCurrency(price);
         document.getElementById('boost-eta').innerText = `ETA: ${eta}`;
         return price;
-    }
-
-    function handleRobuxOrder(e) {
-        e.preventDefault();
-        const username = document.getElementById('robux-username').value;
-        const amount = parseInt(document.getElementById('robux-amount').value);
-        const method = document.getElementById('robux-method').value;
-        const methodText = document.getElementById('robux-method').options[document.getElementById('robux-method').selectedIndex].text;
-        const price = calcRobuxPrice();
-
-        if(!amount || amount < 10 || !username) return showToast('Invalid input amount or username', 'error');
-
-        openGenericConfirm('Robux Purchase', `${amount} R$ for Roblox user: ${username} (${methodText})`, price, async () => {
-            if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
-            
-            const orderCode = 'RBX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            
-            await supabaseClient.from('orders').insert([{
-                order_code: orderCode,
-                user_id: appState.currentUser.id,
-                type: 'robux',
-                price: price,
-                details: { roblox_username: username, amount: amount, method: method }
-            }]);
-            
-            await updateBalanceAndLogTx(-price, 'Robux Purchase');
-            
-            finalizeOrder('Robux order placed successfully!');
-            DOM.robuxForm.reset();
-            calcRobuxPrice();
-            document.getElementById('robux-warning').classList.add('hidden');
-        });
     }
 
     function handleGameBoostOrder(e) {
@@ -2592,7 +2738,6 @@
         }
     }
 </script>
-
 
 
 </body>
