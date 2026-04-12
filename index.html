@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celestia | Store</title>
+    <title>Celestia Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -227,7 +227,6 @@
         </div>
     </div>
 
-
     <div id="auth-modal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4 sm:p-0">
         <div class="glass-card w-full max-w-[420px] bg-surface-950/95 border border-white/10 rounded-[24px] shadow-2xl relative z-10 modal-content overflow-hidden backdrop-blur-2xl">
             
@@ -275,7 +274,7 @@
                         <div>
                             <div class="flex justify-between items-center mb-1.5">
                                 <label class="block text-xs font-bold text-gray-400">Password</label>
-                                <a href="#" class="text-[11px] text-brand-400 hover:text-brand-300 font-medium transition-colors">Forgot password?</a>
+                                <a href="javascript:void(0)" onclick="toggleAuthForms('forgot-password')" class="text-[11px] text-brand-400 hover:text-brand-300 font-medium transition-colors">Forgot password?</a>
                             </div>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
@@ -295,7 +294,7 @@
                     
                     <p class="text-center text-[13px] text-gray-400 mt-6 font-medium">
                         New to CelestiaStore? 
-                        <a href="#" id="toggle-register" class="text-white hover:text-brand-400 font-bold transition-colors">Create an account</a>
+                        <a href="javascript:void(0)" onclick="toggleAuthForms('register')" class="text-white hover:text-brand-400 font-bold transition-colors">Create an account</a>
                     </p>
                 </form>
 
@@ -350,11 +349,32 @@
                     
                     <p class="text-center text-[13px] text-gray-400 mt-6 font-medium">
                         Already have an account? 
-                        <a href="#" id="toggle-login" class="text-white hover:text-brand-400 font-bold transition-colors">Sign in</a>
+                        <a href="javascript:void(0)" onclick="toggleAuthForms('login')" class="text-white hover:text-brand-400 font-bold transition-colors">Sign in</a>
                     </p>
                 </form>
+
+                <form id="forgot-password-form" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">Email address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <input type="email" id="forgot-email" required class="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-inner" placeholder="name@company.com">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-forgot-password" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(99,102,241,0.4)] mt-2 text-[14px]">
+                        Send Reset Link
+                    </button>
+                    
+                    <p class="text-center text-[13px] text-gray-400 mt-6 font-medium">
+                        Remember your password? 
+                        <a href="javascript:void(0)" onclick="toggleAuthForms('login')" class="text-white hover:text-brand-400 font-bold transition-colors">Sign in</a>
+                    </p>
+                </form>
+
             </div>
-            
             <div class="h-1.5 w-full bg-gradient-to-r from-brand-600 via-purple-500 to-brand-400"></div>
         </div>
     </div>
@@ -741,34 +761,56 @@
 
                 <section id="view-product" class="view-section flex-1">
                     <header class="mb-6 md:mb-8">
-                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Buy <span class="text-[#00C4CC]">Canva</span> Pro</h2>
+                        <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Buy <span class="text-[#00C4CC] opacity-50 grayscale">Canva</span> Pro</h2>
                         <p class="text-clamp-sm text-gray-400 font-medium">Join our enterprise team to unlock all premium features.</p>
                     </header>
 
-                    <div class="glass-card rounded-2xl md:rounded-[32px] p-1 overflow-hidden max-w-4xl mx-auto border border-white/5 relative gradient-border">
-                        <div class="absolute top-0 right-0 w-60 h-60 md:w-80 md:h-80 bg-[#00C4CC]/15 rounded-full blur-[80px] md:blur-[100px] pointer-events-none"></div>
-                        <div class="bg-surface-900/90 rounded-[14px] md:rounded-[30px] p-5 md:p-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center">
-                            <div class="w-full md:w-1/2">
-                                <div class="inline-block bg-[#00C4CC]/20 text-[#00C4CC] text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 md:px-3 py-1 rounded-md mb-4 md:mb-5 border border-[#00C4CC]/30">Month Access</div>
-                                <h3 class="text-xl md:text-3xl font-extrabold mb-3 md:mb-4">Canva Pro - Team Invite</h3>
-                                <p class="text-[13px] md:text-sm text-gray-400 mb-5 md:mb-8 leading-relaxed font-medium">Get invited to a premium team. Unlock premium templates, magic resize, background remover, and 1TB storage immediately.</p>
-                                
-                                <ul class="space-y-3 md:space-y-4 mb-6 md:mb-8">
-                                    <li class="flex items-center gap-2.5 md:gap-3 text-[13px] md:text-sm font-bold text-gray-300"><svg class="w-4 h-4 md:w-5 md:h-5 text-[#00C4CC] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> Instant Email Invite</li>
-                                    <li class="flex items-center gap-2.5 md:gap-3 text-[13px] md:text-sm font-bold text-gray-300"><svg class="w-4 h-4 md:w-5 md:h-5 text-[#00C4CC] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> Private Workspace</li>
-                                    <li class="flex items-center gap-2.5 md:gap-3 text-[13px] md:text-sm font-bold text-gray-300"><svg class="w-4 h-4 md:w-5 md:h-5 text-[#00C4CC] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> 100% Legal & Safe</li>
-                                </ul>
-
-                                <div class="flex items-end gap-3 md:gap-4 mb-6 md:mb-8">
-                                    <span class="text-3xl md:text-5xl font-extrabold text-white">5,000đ</span>
-                                    <span class="text-gray-500 line-through text-sm md:text-lg font-medium mb-1">299,000đ</span>
-                                </div>
-
-                                <button onclick="openModal()" class="w-full bg-gradient-to-r from-brand-600 to-brand-400 hover:from-brand-500 hover:to-[#00C4CC] text-white font-bold py-3 md:py-4 rounded-xl transition-all shadow-[0_10px_30px_-10px_rgba(0,196,204,0.4)] transform hover:-translate-y-1 active:translate-y-0 text-base md:text-lg">
-                                    Buy Now
-                                </button>
+                    <div class="glass-card rounded-2xl p-5 md:p-8 max-w-2xl mx-auto border border-white/5 relative overflow-hidden">
+                        <div class="absolute -top-16 -right-16 md:-top-24 md:-right-24 w-40 h-40 md:w-64 md:h-64 bg-[#00C4CC]/10 rounded-full blur-[60px] md:blur-[80px] pointer-events-none grayscale opacity-50"></div>
+                        
+                        <div class="flex justify-between items-start mb-4 md:mb-6 relative z-10">
+                            <div class="inline-block bg-gray-500/10 text-gray-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 md:px-3 py-1 rounded-md border border-gray-500/20">1 Month Access</div>
+                            
+                            <div class="flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 text-red-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                Sold Out
                             </div>
+                        </div>
+                        
+                        <h3 class="text-lg md:text-2xl font-bold mb-3 md:mb-4 relative z-10 text-white/70">Canva Pro - Team Invite</h3>
+                        <p class="text-[13px] md:text-sm text-gray-500 mb-5 md:mb-6 font-medium relative z-10">Get invited to a premium team. Unlock premium templates, magic resize, background remover, and 1TB storage immediately.</p>
+                        
+                        <div class="bg-black/30 rounded-xl p-4 md:p-5 border border-white/5 space-y-3.5 mb-5 md:mb-6 relative z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 rounded-full bg-gray-500/10 flex items-center justify-center shrink-0 border border-gray-500/20">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <span class="text-[12px] md:text-[13px] font-bold text-gray-500">Instant Email Invite</span>
+                            </div>
+                            <div class="flex items-center gap-3 border-t border-white/5 pt-3.5">
+                                <div class="w-6 h-6 rounded-full bg-gray-500/10 flex items-center justify-center shrink-0 border border-gray-500/20">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                </div>
+                                <span class="text-[12px] md:text-[13px] font-bold text-gray-500">Private Workspace</span>
+                            </div>
+                            <div class="flex items-center gap-3 border-t border-white/5 pt-3.5">
+                                <div class="w-6 h-6 rounded-full bg-gray-500/10 flex items-center justify-center shrink-0 border border-gray-500/20">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <span class="text-[12px] md:text-[13px] font-bold text-gray-500">100% Legal & Safe</span>
+                            </div>
+                        </div>
 
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+                            <div class="flex items-end gap-2 md:gap-3 opacity-50 grayscale">
+                                <span class="text-3xl md:text-4xl font-extrabold text-white">5,000đ</span>
+                                <span class="text-gray-500 line-through text-xs md:text-sm font-medium mb-1">299,000đ</span>
+                            </div>
+                            
+                            <button disabled class="w-full md:w-auto bg-black/40 border border-white/10 text-gray-500 font-bold py-3 md:py-3.5 px-6 rounded-xl cursor-not-allowed flex justify-center items-center gap-2 text-[13px] md:text-sm transition-all">
+                                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                                Out of Stock
+                            </button>
                         </div>
                     </div>
                 </section>
@@ -1040,29 +1082,47 @@
         </div>
     </div>
 
-<script>
-    const cookieStorage = {
-        getItem: (key) => {
-            const cookies = document.cookie.split(';');
-            const cookie = cookies.find(c => c.trim().startsWith(key + '='));
-            if (!cookie) return null;
-            const value = cookie.substring(cookie.indexOf('=') + 1);
-            return decodeURIComponent(value);
-        },
-        setItem: (key, value) => {
-            document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
-        },
-        removeItem: (key) => {
-            document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        }
-    };
 
+    <div id="reset-password-modal" class="fixed inset-0 z-[200] modal-overlay flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-md bg-surface-950/95 border border-white/10 rounded-[24px] shadow-2xl relative z-10 modal-content overflow-hidden backdrop-blur-2xl">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-brand-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+            
+            <div class="p-8 md:p-10 relative z-10">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-extrabold tracking-tight text-white mb-1.5">Set New Password</h2>
+                    <p class="text-sm text-gray-400 font-medium">Please enter your new password below.</p>
+                </div>
+
+                <form id="reset-password-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">New Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </div>
+                            <input type="password" id="new-password" required minlength="6" class="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white placeholder-gray-600 shadow-inner" placeholder="At least 6 characters">
+                            <button type="button" onclick="togglePasswordVisibility('new-password', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-update-password" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold py-3 rounded-xl transition-all mt-4 text-[14px]">
+                        Update Password
+                    </button>
+                </form>
+            </div>
+            <div class="h-1.5 w-full bg-gradient-to-r from-brand-600 via-purple-500 to-brand-400"></div>
+        </div>
+    </div>
+
+
+<script>
     const supabaseUrl = 'https://ivlkgqmmtvbfpmgssxsg.supabase.co';
     const supabaseKey = 'sb_publishable_lusXR7UeNgJ4lwo9pIEaJA_T2sJ-l6U';
     
     const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
         auth: {
-            storage: cookieStorage,
+            storage: window.localStorage,
             autoRefreshToken: true,
             persistSession: true,
             detectSessionInUrl: true
@@ -1127,6 +1187,7 @@
         appView: document.getElementById('app-view'),
         loginForm: document.getElementById('login-form'),
         registerForm: document.getElementById('register-form'),
+        forgotForm: document.getElementById('forgot-password-form'),
         views: document.querySelectorAll('.view-section:not(#landing-view)'),
         navItems: document.querySelectorAll('.nav-item'),
         toastContainer: document.getElementById('toast-container'),
@@ -1186,6 +1247,11 @@
 
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
             try {
+                if (event === 'PASSWORD_RECOVERY') {
+                    const resetModal = document.getElementById('reset-password-modal');
+                    if (resetModal) resetModal.classList.add('active');
+                }
+
                 if (session) {
                     const user = session.user;
                     let profile = null;
@@ -1209,7 +1275,10 @@
                     appState.currentUser = profile;
                     await refreshUserData();
                     closeAuthModal();
-                    showApp();
+                    
+                    if (event !== 'PASSWORD_RECOVERY') {
+                        showApp();
+                    }
                 } else {
                     appState.currentUser = null;
                     appState.orders = [];
@@ -1223,7 +1292,6 @@
                 }
             } catch (error) {
                 console.error("Lỗi khi xử lý session:", error);
-                showToast('Đã có lỗi xảy ra khi đồng bộ dữ liệu!', 'error');
             }
         });
 
@@ -1371,11 +1439,13 @@
             else { text.innerText = 'Strong'; text.classList.add('text-green-500'); }
         });
 
-        document.getElementById('toggle-register').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('register'); });
-        document.getElementById('toggle-login').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForms('login'); });
-
         DOM.loginForm.addEventListener('submit', handleLogin);
         DOM.registerForm.addEventListener('submit', handleRegister);
+        if(DOM.forgotForm) DOM.forgotForm.addEventListener('submit', handleForgotPassword);
+        
+        const resetForm = document.getElementById('reset-password-form');
+        if(resetForm) resetForm.addEventListener('submit', handleUpdatePassword);
+
         document.getElementById('btn-logout').addEventListener('click', handleLogout);
 
         DOM.navItems.forEach(item => {
@@ -1415,6 +1485,50 @@
             if(pendingPurchaseAction) pendingPurchaseAction();
             closeGenericModal();
         });
+    }
+
+    async function handleForgotPassword(e) {
+        e.preventDefault();
+        const email = document.getElementById('forgot-email').value;
+        const btn = document.getElementById('btn-forgot-password');
+        
+        setLoading(btn, true, 'Sending link...');
+
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin, 
+        });
+
+        if (error) {
+            showToast(error.message, 'error');
+        } else {
+            showToast('Recovery link sent! Please check your email.', 'success');
+            document.getElementById('forgot-password-form').reset();
+            toggleAuthForms('login');
+        }
+        
+        setLoading(btn, false, 'Send Reset Link');
+    }
+
+    async function handleUpdatePassword(e) {
+        e.preventDefault();
+        const newPassword = document.getElementById('new-password').value;
+        const btn = document.getElementById('btn-update-password');
+        
+        setLoading(btn, true, 'Updating...');
+
+        const { error } = await supabaseClient.auth.updateUser({
+            password: newPassword
+        });
+
+        if (error) {
+            showToast(error.message, 'error');
+            setLoading(btn, false, 'Update Password');
+        } else {
+            showToast('Password updated successfully!', 'success');
+            document.getElementById('reset-password-modal').classList.remove('active');
+            document.getElementById('reset-password-form').reset();
+            showApp();
+        }
     }
 
     function initGameServices() {
@@ -1580,6 +1694,7 @@
         DOM.authModal.classList.remove('active');
         DOM.loginForm.reset();
         DOM.registerForm.reset();
+        if(DOM.forgotForm) DOM.forgotForm.reset();
 
         const strengthContainer = document.getElementById('password-strength-container');
         const strengthBar = document.getElementById('strength-bar');
@@ -1603,7 +1718,7 @@
         if (regPass) regPass.type = 'password';
         
         const closedEyeSVG = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-        document.querySelectorAll('#login-form button[type="button"], #register-form button[type="button"]').forEach(btn => {
+        document.querySelectorAll('button[type="button"]').forEach(btn => {
             if(btn.hasAttribute('onclick') && btn.getAttribute('onclick').includes('togglePasswordVisibility')) {
                 btn.innerHTML = closedEyeSVG;
             }
@@ -1618,24 +1733,36 @@
         subtitle.classList.remove('animate-fade-in');
         DOM.loginForm.classList.remove('animate-fade-in');
         DOM.registerForm.classList.remove('animate-fade-in');
+        if(DOM.forgotForm) DOM.forgotForm.classList.remove('animate-fade-in');
 
         void title.offsetWidth;
-        void DOM.loginForm.offsetWidth;
 
         if (type === 'login') {
             DOM.registerForm.classList.add('hidden');
+            if(DOM.forgotForm) DOM.forgotForm.classList.add('hidden');
             DOM.loginForm.classList.remove('hidden');
             DOM.loginForm.classList.add('animate-fade-in');
             
             title.innerText = 'Welcome Back';
             subtitle.innerText = 'Sign in to continue to your dashboard.';
-        } else {
+        } else if (type === 'register') {
             DOM.loginForm.classList.add('hidden');
+            if(DOM.forgotForm) DOM.forgotForm.classList.add('hidden');
             DOM.registerForm.classList.remove('hidden');
             DOM.registerForm.classList.add('animate-fade-in');
             
             title.innerText = 'Create Account';
             subtitle.innerText = 'Join us and unlock premium features.';
+        } else if (type === 'forgot-password') {
+            DOM.loginForm.classList.add('hidden');
+            DOM.registerForm.classList.add('hidden');
+            if(DOM.forgotForm) {
+                DOM.forgotForm.classList.remove('hidden');
+                DOM.forgotForm.classList.add('animate-fade-in');
+            }
+            
+            title.innerText = 'Reset Password';
+            subtitle.innerText = 'Enter your email to receive a recovery link.';
         }
         
         title.classList.add('animate-fade-in');
@@ -2465,6 +2592,7 @@
         }
     }
 </script>
+
 
 
 </body>
