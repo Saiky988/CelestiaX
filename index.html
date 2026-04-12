@@ -621,49 +621,89 @@
     </div>
 </div>
 
-                    <div id="tab-content-card" class="mb-8 md:mb-10 animate-fade-in hidden">
-                        <div class="glass-card rounded-2xl p-5 md:p-8 max-w-2xl mx-auto border border-white/5 relative overflow-hidden">
-                            <div class="absolute -top-16 -right-16 md:-top-24 md:-right-24 w-40 h-40 md:w-64 md:h-64 bg-orange-500/10 rounded-full blur-[60px] md:blur-[80px] pointer-events-none"></div>
-                            <div class="inline-block bg-orange-500/20 text-orange-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 md:px-3 py-1 rounded-md mb-4 md:mb-6 border border-orange-500/30">Auto 24/7</div>
-                            <h3 class="text-lg md:text-2xl font-bold mb-4 md:mb-6">Card Top-up</h3>
-                            <p class="text-[13px] md:text-sm text-gray-400 mb-6 md:mb-8 font-medium">Use Viettel, Mobifone, or Vinaphone scratch cards.</p>
+<div id="tab-content-card" class="mb-8 md:mb-10 animate-fade-in hidden">
+    <div class="glass-card rounded-2xl p-5 md:p-8 max-w-2xl mx-auto border border-white/5 relative overflow-hidden">
+        <div class="absolute -top-16 -right-16 md:-top-24 md:-right-24 w-40 h-40 md:w-64 md:h-64 bg-orange-500/10 rounded-full blur-[60px] md:blur-[80px] pointer-events-none"></div>
+        <div class="inline-block bg-orange-500/20 text-orange-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 md:px-3 py-1 rounded-md mb-4 md:mb-6 border border-orange-500/30 relative z-10">Auto 24/7 API</div>
+        <h3 class="text-lg md:text-2xl font-bold mb-4 md:mb-6 relative z-10">Card Top-up</h3>
+        <p class="text-[13px] md:text-sm text-gray-400 mb-6 md:mb-8 font-medium relative z-10">Use Viettel, Mobifone, or Vinaphone scratch cards.</p>
 
-                            <form id="card-topup-form" class="space-y-3 md:space-y-4 relative z-10">
-                                <div>
-                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Network Provider</label>
-                                    <select id="card-telco" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
-                                        <option value="VIETTEL">Viettel</option>
-                                        <option value="MOBIFONE">Mobifone</option>
-                                        <option value="VINAPHONE">Vinaphone</option>
-                                    </select>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3 md:gap-4">
-                                    <div>
-                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Value</label>
-                                        <select id="card-amount" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
-                                            <option value="10000">10,000đ</option>
-                                            <option value="20000">20,000đ</option>
-                                            <option value="50000">50,000đ</option>
-                                            <option value="100000">100,000đ</option>
-                                            <option value="200000">200,000đ</option>
-                                            <option value="500000">500,000đ</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Serial</label>
-                                        <input type="text" id="card-serial" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-mono placeholder-gray-600" placeholder="Card Serial">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">PIN Code</label>
-                                    <input type="text" id="card-pin" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-mono placeholder-gray-600" placeholder="Scratch Code">
-                                </div>
-                                <button type="submit" id="btn-card-submit" class="w-full bg-gradient-to-r from-orange-600 to-red-500 hover:from-orange-500 hover:to-red-400 text-white font-bold py-3 md:py-3.5 rounded-xl transition-all flex justify-center items-center gap-2 mt-2 md:mt-4 shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 text-[13px] md:text-sm">
-                                    Submit Card
-                                </button>
-                            </form>
-                        </div>
+        <div id="card-input-section" class="relative z-10">
+            <form id="card-topup-form" class="space-y-3 md:space-y-4">
+                <div>
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Network Provider</label>
+                    <select id="card-telco" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
+                        <option value="VIETTEL">Viettel</option>
+                        <option value="MOBIFONE">Mobifone</option>
+                        <option value="VINAPHONE">Vinaphone</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Value</label>
+                        <select id="card-amount" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white appearance-none">
+                            <option value="10000">10,000đ</option>
+                            <option value="20000">20,000đ</option>
+                            <option value="50000">50,000đ</option>
+                            <option value="100000">100,000đ</option>
+                            <option value="200000">200,000đ</option>
+                            <option value="500000">500,000đ</option>
+                        </select>
                     </div>
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Serial</label>
+                        <input type="text" id="card-serial" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-mono placeholder-gray-600" placeholder="Card Serial">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">PIN Code</label>
+                    <input type="text" id="card-pin" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 md:py-3 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-mono placeholder-gray-600" placeholder="Scratch Code">
+                </div>
+                <button type="submit" id="btn-card-submit" class="w-full bg-gradient-to-r from-orange-600 to-red-500 hover:from-orange-500 hover:to-red-400 text-white font-bold py-3 md:py-3.5 rounded-xl transition-all flex justify-center items-center gap-2 mt-2 md:mt-4 shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 text-[13px] md:text-sm">
+                    Submit Card
+                </button>
+            </form>
+        </div>
+
+        <div id="card-processing-details" class="hidden flex flex-col gap-5 items-center w-full relative z-10 mt-2">
+            <div id="card-status-badge" class="flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-full text-xs font-bold border border-yellow-500/20 w-full max-w-sm">
+                <div class="spinner w-4 h-4 border-yellow-500 border-l-transparent"></div>
+                Processing card...
+            </div>
+
+            <div class="space-y-3 w-full max-w-sm bg-black/30 rounded-xl p-4 border border-white/5">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Network</span>
+                    <span class="text-[13px] md:text-sm font-bold text-white uppercase" id="display-card-telco"></span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Value</span>
+                    <span class="text-[13px] md:text-sm font-extrabold text-orange-400 font-mono" id="display-card-amount"></span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-2">
+                    <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Serial</span>
+                    <span class="text-[13px] md:text-sm font-bold text-white font-mono" id="display-card-serial"></span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">PIN Code</span>
+                    <span class="text-[13px] md:text-sm font-bold text-white font-mono" id="display-card-pin"></span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 w-full max-w-sm relative">
+                <div id="card-action-buttons" class="flex flex-col gap-2 w-full">
+                    <button onclick="forceCheckCard()" id="btn-force-check-card" class="w-full bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-orange-500/20 flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Check Status Now
+                    </button>
+                    <button onclick="cancelCardTopUp()" class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-white/10">Submit Another Card</button>
+                </div>
+
+                <button onclick="cancelCardTopUp()" id="btn-close-card" class="hidden w-full bg-green-500/20 hover:bg-green-500/30 text-green-400 font-bold py-2.5 md:py-3 rounded-xl transition-all text-[13px] md:text-sm border border-green-500/30">Done & Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="glass-card rounded-2xl overflow-hidden border border-white/5">
     <div class="p-4 md:p-5 border-b border-white/5">
@@ -1107,15 +1147,13 @@
     };
 
     let paymentPollingInterval = null;
-    let cardPollingInterval = null; // Thêm biến dùng riêng cho thẻ cào
+    let cardPollingInterval = null;
     let pendingPurchaseAction = null;
     let currentPendingTx = null; 
+    let currentPendingCardTx = null;
     let currentTxPage = 1;       
     const txPerPage = 5;         
 
-    // =========================================================
-    // HÀM BỔ TRỢ: CHỐNG TREO MẠNG (TIMEOUT)
-    // =========================================================
     const fetchWithTimeout = async (promise, ms = 8000) => {
         let timeoutId;
         const timeoutPromise = new Promise((_, reject) => {
@@ -1124,22 +1162,24 @@
         return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
     };
 
-    let isPolling = false; // Khóa vòng lặp
-
-    // Xử lý chống kẹt nút bấm khi đổi qua lại giữa trình duyệt và app Ngân hàng
+    let isPolling = false;
     document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === 'visible') {
-            isPolling = false; // Mở khóa vòng lặp để tiếp tục auto check
+            isPolling = false;
             
-            // Nếu nút Check thủ công đang bị kẹt disabled thì giải phóng nó
-            const btn = document.getElementById('btn-force-check');
-            if (btn && btn.disabled) {
-                btn.disabled = false;
-                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Already transferred? Check now`;
+            const btnBank = document.getElementById('btn-force-check');
+            if (btnBank && btnBank.disabled) {
+                btnBank.disabled = false;
+                btnBank.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Already transferred? Check now`;
+            }
+
+            const btnCard = document.getElementById('btn-force-check-card');
+            if (btnCard && btnCard.disabled) {
+                btnCard.disabled = false;
+                btnCard.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Check Status Now`;
             }
         }
     });
-    // =========================================================
 
     async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1349,7 +1389,11 @@
         document.getElementById('close-sidebar').addEventListener('click', toggleMobileMenu);
 
         DOM.checkoutForm.addEventListener('submit', handleCheckout);
-        DOM.cardForm.addEventListener('submit', handleCardTopUp); // Vẫn gọi hàm mới ở dưới
+        
+        const cardFormElement = document.getElementById('card-topup-form');
+        if (cardFormElement) {
+            cardFormElement.addEventListener('submit', handleCardTopUp);
+        }
 
         document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
         document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
@@ -1758,7 +1802,7 @@
             
             currentPendingTx = { txCode: qrData.content, amount: amount };
             
-            await refreshUserData(); // Cập nhật lại lịch sử Giao dịch ngay lập tức
+            await refreshUserData();
 
             document.getElementById('bank-input-section').classList.add('hidden');
             document.getElementById('bank-qr-details').classList.remove('hidden');
@@ -1773,7 +1817,6 @@
         }
     }
 
-    // Hàm check thủ công khi ấn nút "Already transferred"
     async function forceCheckPayment() {
         if (!currentPendingTx) return;
         const btn = document.getElementById('btn-force-check');
@@ -1781,10 +1824,9 @@
         
         const originalHtml = btn.innerHTML;
         btn.innerHTML = `<div class="spinner w-4 h-4 border-brand-400 border-l-transparent"></div> Checking...`;
-        btn.disabled = true; // Khóa nút bấm khi đang fetch để chống Spam
+        btn.disabled = true; 
 
         try {
-            // ÉP Supabase phải trả kết quả trong 8 giây, chống treo ngầm
             const { data, error } = await fetchWithTimeout(
                 supabaseClient.from('transactions').select('status').eq('tx_code', currentPendingTx.txCode).single(),
                 8000
@@ -1820,12 +1862,11 @@
         } finally {
             if(btn) {
                 btn.innerHTML = originalHtml;
-                btn.disabled = false; // Bắt buộc mở khóa nút để bấm lại được
+                btn.disabled = false; 
             }
         }
     }
 
-    // Hàm Polling check tự động mỗi 3 giây
     function startPaymentPolling(txCode, amount) {
         if (paymentPollingInterval) clearInterval(paymentPollingInterval);
         isPolling = false;
@@ -1835,11 +1876,10 @@
         badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-3 py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-xs font-bold border border-yellow-500/20 w-full';
 
         paymentPollingInterval = setInterval(async () => {
-            if (isPolling) return; // Nếu vòng trước bị lag chưa xong thì bỏ qua vòng này
+            if (isPolling) return; 
             isPolling = true;
 
             try {
-                // Timeout 8 giây chống treo ngầm khi đang ở background
                 const { data, error } = await fetchWithTimeout(
                     supabaseClient.from('transactions').select('status').eq('tx_code', txCode).single(),
                     8000
@@ -1858,7 +1898,7 @@
                         if(closeBtn) closeBtn.classList.remove('hidden');
 
                         setTimeout(() => {
-                            handlePaymentSuccess(amount, false); // False để không tự tắt QR
+                            handlePaymentSuccess(amount, false); 
                         }, 1000);
 
                     } else if (data.status === 'error_amount') {
@@ -1871,7 +1911,7 @@
             } catch (err) {
                 console.log("Polling lag/timeout, bỏ qua chờ vòng sau...");
             } finally {
-                isPolling = false; // Mở khóa cho vòng 3s tiếp theo
+                isPolling = false; 
             }
         }, 3000);
     }
@@ -1905,7 +1945,6 @@
         document.getElementById('bank-input-section').classList.remove('hidden');
         document.getElementById('qr-amount-input').value = '50000';
 
-        // Phục hồi lại trạng thái nút ban đầu
         const actionBtns = document.getElementById('bank-action-buttons');
         const closeBtn = document.getElementById('btn-close-bank');
         if(actionBtns) actionBtns.classList.remove('hidden');
@@ -1918,21 +1957,17 @@
         }
     }
 
-    // ==========================================
-    // LOGIC NẠP THẺ CÀO (TSR)
-    // ==========================================
     async function handleCardTopUp(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-card-submit');
         
-        // Lấy dữ liệu từ form
         const telcoElem = document.getElementById('card-telco');
         const amountElem = document.getElementById('card-amount');
         const serialElem = document.getElementById('card-serial');
         const pinElem = document.getElementById('card-pin');
 
         if (!telcoElem || !amountElem || !serialElem || !pinElem) {
-            return showToast('Cấu trúc HTML thẻ chưa đúng, vui lòng kiểm tra lại.', 'error');
+            return showToast('Lỗi cấu trúc HTML thẻ.', 'error');
         }
 
         const telco = telcoElem.value;
@@ -1941,13 +1976,12 @@
         const pin = pinElem.value.trim();
 
         if (!telco || !amount || !serial || !pin) {
-            return showToast('Vui lòng nhập đầy đủ thông tin thẻ', 'error');
+            return showToast('Vui lòng nhập đầy đủ mã thẻ và serial', 'error');
         }
 
-        setLoading(btn, true, 'Đang gửi thẻ...');
+        setLoading(btn, true, 'Đang gửi TSR...');
 
         try {
-            // Nhớ thay domain API chuẩn xác của bạn
             const response = await fetch('https://dev.celestiax.fun/api/v1/payment/submit-card', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1963,18 +1997,32 @@
             const result = await response.json();
 
             if (!result.success) {
-                throw new Error(result.message || "Lỗi gửi thẻ lên hệ thống");
+                throw new Error(result.message || "Thẻ lỗi hoặc bị hệ thống từ chối");
             }
 
-            // Gửi thành công -> Reset form và báo user chờ
             document.getElementById('card-topup-form').reset();
-            showToast('Gửi thẻ thành công! Hệ thống đang xử lý...', 'success');
+            showToast('Gửi thẻ thành công! Hệ thống đang chờ xử lý...', 'success');
             
-            // Cập nhật lại lịch sử để hiện chữ "Pending"
-            await refreshUserData();
+            currentPendingCardTx = { txCode: result.data.txCode, amount: amount };
             
-            // Bật vòng lặp kiểm tra trạng thái thẻ ngầm
-            startCardPolling();
+            const dispTelco = document.getElementById('display-card-telco');
+            const dispAmount = document.getElementById('display-card-amount');
+            const dispSerial = document.getElementById('display-card-serial');
+            const dispPin = document.getElementById('display-card-pin');
+            
+            if(dispTelco) dispTelco.innerText = telco;
+            if(dispAmount) dispAmount.innerText = formatCurrency(amount).replace('₫', '');
+            if(dispSerial) dispSerial.innerText = serial;
+            if(dispPin) dispPin.innerText = pin;
+            
+            await refreshUserData(); 
+
+            const inputSec = document.getElementById('card-input-section');
+            const processSec = document.getElementById('card-processing-details');
+            if(inputSec) inputSec.classList.add('hidden');
+            if(processSec) processSec.classList.remove('hidden');
+
+            startCardPolling(result.data.txCode);
 
         } catch (error) {
             console.error("Lỗi nạp thẻ:", error);
@@ -1984,39 +2032,147 @@
         }
     }
 
-    // Hàm check ngầm: Mỗi 5s check Database xem thẻ đã duyệt xong chưa để update UI
-    function startCardPolling() {
-        if (cardPollingInterval) return; // Nếu đang chạy thì thôi
+    async function forceCheckCard() {
+        if (!currentPendingCardTx) return;
+        const btn = document.getElementById('btn-force-check-card');
+        if (!btn || btn.disabled) return;
         
-        cardPollingInterval = setInterval(async () => {
-            // Chỉ check nếu trong list đang có thẻ ở trạng thái 'pending'
-            const hasPendingCard = appState.transactions.some(tx => tx.type.includes('Thẻ') && tx.status === 'pending');
-            
-            if (!hasPendingCard) {
-                clearInterval(cardPollingInterval);
-                cardPollingInterval = null;
-                return; // Không còn thẻ nào pending thì tắt vòng lặp
-            }
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = `<div class="spinner w-4 h-4 border-orange-400 border-l-transparent"></div> Checking...`;
+        btn.disabled = true;
 
-            // Load lại Database ngầm để so sánh
-            const previousPendingCount = appState.transactions.filter(t => t.type.includes('Thẻ') && t.status === 'pending').length;
-            await refreshUserData(); 
-            const newPendingCount = appState.transactions.filter(t => t.type.includes('Thẻ') && t.status === 'pending').length;
+        try {
+            const { data, error } = await fetchWithTimeout(
+                supabaseClient.from('transactions').select('status').eq('tx_code', currentPendingCardTx.txCode).single(),
+                8000
+            );
 
-            // Nếu số đơn pending giảm xuống (nghĩa là có đơn vừa được duyệt xong callback từ TSR)
-            if (newPendingCount < previousPendingCount) {
-                const { data: profile } = await supabaseClient.from('profiles').select('balance').eq('id', appState.currentUser.id).single();
-                if (profile && profile.balance > appState.currentUser.balance) {
-                    appState.currentUser.balance = profile.balance;
-                    updateUI();
-                    showToast('Thẻ cào đã được duyệt thành công! Tiền đã được cộng.', 'success');
-                } else if (profile) {
-                    showToast('Một thẻ cào đã bị từ chối do sai mệnh giá hoặc lỗi.', 'error');
+            if (error) throw error;
+
+            if (data) {
+                if (data.status === 'success') {
+                    clearInterval(cardPollingInterval);
+                    const badge = document.getElementById('card-status-badge');
+                    if(badge) {
+                        badge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Card Accepted!`;
+                        badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-full text-xs font-bold border border-green-500/20 w-full max-w-md';
+                    }
+                    
+                    const actionBtns = document.getElementById('card-action-buttons');
+                    const closeBtn = document.getElementById('btn-close-card');
+                    if(actionBtns) actionBtns.classList.add('hidden');
+                    if(closeBtn) closeBtn.classList.remove('hidden');
+                    
+                    handleCardSuccess(currentPendingCardTx.amount, false);
+                } else if (data.status === 'cancelled' || data.status === 'error' || data.status === 'error_amount') {
+                    clearInterval(cardPollingInterval);
+                    const badge = document.getElementById('card-status-badge');
+                    if(badge) {
+                        badge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Card Rejected`;
+                        badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-full text-xs font-bold border border-red-500/20 w-full max-w-md';
+                    }
+                    showToast('Thẻ bị từ chối do sai mệnh giá hoặc thẻ đã sử dụng.', 'error');
+                } else {
+                    showToast('Thẻ vẫn đang được xử lý. Hệ thống TSR đang duyệt!', 'info');
                 }
             }
-        }, 5000); // Lặp lại mỗi 5 giây
+        } catch (err) {
+            showToast('Mạng quá tải hoặc mất kết nối, vui lòng thử lại!', 'error');
+        } finally {
+            if(btn) {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
     }
-    // ==========================================
+
+    function startCardPolling(txCode) {
+        if (cardPollingInterval) clearInterval(cardPollingInterval);
+        let isCardPolling = false;
+        
+        const badge = document.getElementById('card-status-badge');
+        if(badge) {
+            badge.innerHTML = `<div class="spinner w-4 h-4 border-yellow-500 border-l-transparent"></div> Processing card...`;
+            badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-full text-xs font-bold border border-yellow-500/20 w-full max-w-md';
+        }
+
+        cardPollingInterval = setInterval(async () => {
+            if (isCardPolling) return;
+            isCardPolling = true;
+
+            try {
+                const { data, error } = await fetchWithTimeout(
+                    supabaseClient.from('transactions').select('status').eq('tx_code', txCode).single(),
+                    8000
+                );
+
+                if (data) {
+                    if (data.status === 'success') {
+                        clearInterval(cardPollingInterval);
+                        
+                        if(badge) {
+                            badge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Card Accepted!`;
+                            badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-full text-xs font-bold border border-green-500/20 w-full max-w-md';
+                        }
+
+                        const actionBtns = document.getElementById('card-action-buttons');
+                        const closeBtn = document.getElementById('btn-close-card');
+                        if(actionBtns) actionBtns.classList.add('hidden');
+                        if(closeBtn) closeBtn.classList.remove('hidden');
+
+                        setTimeout(() => {
+                            handleCardSuccess(currentPendingCardTx.amount, false);
+                        }, 1000);
+
+                    } else if (data.status === 'cancelled' || data.status === 'error' || data.status === 'error_amount') {
+                        clearInterval(cardPollingInterval);
+                        if(badge) {
+                            badge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Card Rejected`;
+                            badge.className = 'flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-full text-xs font-bold border border-red-500/20 w-full max-w-md';
+                        }
+                        showToast('Thẻ bị từ chối do sai mệnh giá hoặc thẻ lỗi.', 'error');
+                    }
+                }
+            } catch (err) {
+                console.log("Card polling lag/timeout");
+            } finally {
+                isCardPolling = false;
+            }
+        }, 5000);
+    }
+
+    async function handleCardSuccess(amount, autoClose = true) {
+        await refreshUserData();
+        const { data: profile } = await supabaseClient.from('profiles').select('balance').eq('id', appState.currentUser.id).single();
+        if (profile) {
+            appState.currentUser.balance = profile.balance;
+            updateUI();
+        }
+        showToast(`Nạp thẻ thành công! Đã cộng ${formatCurrency(amount)}`, 'success');
+        if (autoClose) cancelCardTopUp();
+    }
+
+    function cancelCardTopUp() {
+        if (cardPollingInterval) clearInterval(cardPollingInterval);
+        currentPendingCardTx = null;
+        
+        const cardDetails = document.getElementById('card-processing-details');
+        const cardInput = document.getElementById('card-input-section');
+        
+        if(cardDetails) cardDetails.classList.add('hidden');
+        if(cardInput) cardInput.classList.remove('hidden');
+        
+        const actionBtns = document.getElementById('card-action-buttons');
+        const closeBtn = document.getElementById('btn-close-card');
+        if(actionBtns) actionBtns.classList.remove('hidden');
+        if(closeBtn) closeBtn.classList.add('hidden');
+        
+        const btnForce = document.getElementById('btn-force-check-card');
+        if(btnForce) {
+            btnForce.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Check Status Now`;
+            btnForce.disabled = false;
+        }
+    }
 
     async function handleCheckout(e) {
         e.preventDefault();
