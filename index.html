@@ -1072,7 +1072,7 @@
                                             <a href="https://discord.com/oauth2/authorize?client_id=1449742738869325834&response_type=code&redirect_uri=https%3A%2F%2Fdev.celestiax.fun%2Fapi%2Fv1%2Fdiscord%2Fcallback&scope=identify" class="px-4 py-2 bg-white/5 hover:bg-[#5865F2] text-white text-[11px] md:text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-[#5865F2]">Connect</a>
                                         </div>
 
-                                        <div id="discord-linked-box" class="hidden flex-col bg-[#5865F2]/5 p-3 rounded-xl border border-[#5865F2]/20">
+                                                                                <div id="discord-linked-box" class="hidden flex-col bg-[#5865F2]/5 p-3 rounded-xl border border-[#5865F2]/20">
                                             <div class="flex items-center justify-between">
                                                 <div class="flex items-center gap-3.5">
                                                     <img id="discord-link-avatar" src="" class="w-10 h-10 rounded-full border border-[#5865F2]/30 object-cover">
@@ -1085,13 +1085,22 @@
                                             </div>
                                             
                                             <div class="flex items-center justify-between border-t border-white/5 mt-3 pt-3">
-                                                <span class="text-[11px] md:text-xs text-gray-300 font-medium">Sử dụng Avatar & Khung Discord</span>
+                                                <span class="text-[11px] md:text-xs text-gray-300 font-medium">Use Discord Avatar</span>
                                                 <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" id="toggle-discord-sync" class="sr-only peer" onchange="toggleDiscordSync(event)">
+                                                    <input type="checkbox" id="toggle-discord-avatar" class="sr-only peer" onchange="toggleDiscordSetting('avatar', event)">
+                                                    <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#5865F2]"></div>
+                                                </label>
+                                            </div>
+
+                                            <div class="flex items-center justify-between mt-2">
+                                                <span class="text-[11px] md:text-xs text-gray-300 font-medium">Use Decoration Discord</span>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" id="toggle-discord-deco" class="sr-only peer" onchange="toggleDiscordSetting('deco', event)">
                                                     <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#5865F2]"></div>
                                                 </label>
                                             </div>
                                         </div>
+
 
                                     </div>
                                 </div>
@@ -1393,12 +1402,16 @@
 
                     if (!profile) {
                         profile = {
-                            id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null, use_discord_avatar: true
+                            id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null, use_discord_avatar: true, use_discord_decoration: true
                         };
                         await supabaseClient.from('profiles').insert([profile]);
                     }
 
                     appState.currentUser = profile;
+                    
+                    // Gọi hàm đồng bộ ngầm Avatar/Khung Discord mới nhất
+                    syncFreshDiscordData();
+
                     await refreshUserData();
                     closeAuthModal();
                     
@@ -1440,7 +1453,7 @@
         initGameServices();
     }
 
-    // --- HÀM DISCORD ---
+    // --- CÁC HÀM XỬ LÝ DISCORD ---
     async function saveDiscordData(data) {
         if (!appState.currentUser) return;
         
@@ -1449,7 +1462,8 @@
             discord_username: data.user.username,
             discord_avatar: data.user.avatar,
             discord_decoration: data.decorationUrl,
-            use_discord_avatar: true
+            use_discord_avatar: true,
+            use_discord_decoration: true
         };
 
         const { error } = await supabaseClient.from('profiles').update(updates).eq('id', appState.currentUser.id);
@@ -1476,22 +1490,54 @@
         }
     }
 
-    async function toggleDiscordSync(e) {
+    async function toggleDiscordSetting(type, e) {
         if (!appState.currentUser) return;
         const isChecked = e.target.checked;
+        const fieldName = type === 'avatar' ? 'use_discord_avatar' : 'use_discord_decoration';
         
-        const { error } = await supabaseClient.from('profiles').update({ use_discord_avatar: isChecked }).eq('id', appState.currentUser.id);
+        const { error } = await supabaseClient.from('profiles').update({ [fieldName]: isChecked }).eq('id', appState.currentUser.id);
             
         if (!error) {
-            appState.currentUser.use_discord_avatar = isChecked;
+            appState.currentUser[fieldName] = isChecked;
             updateUI();
-            showToast(isChecked ? 'Đã bật đồng bộ Discord!' : 'Đã tắt Discord, đang dùng ảnh tải lên.', 'success');
+            showToast(`${isChecked ? 'Enabled' : 'Disabled'} ${type === 'avatar' ? 'Avatar' : 'Decoration'} Discord.`, 'success');
         } else {
-            e.target.checked = !isChecked;
-            showToast('Lỗi khi lưu cài đặt.', 'error');
+            e.target.checked = !isChecked; 
+            showToast('Error when saving settings.', 'error');
         }
     }
-    // -------------------
+
+    async function syncFreshDiscordData() {
+        if (!appState.currentUser || !appState.currentUser.discord_id) return;
+        
+        try {
+            const res = await fetch(`https://dev.celestiax.fun/api/v1/discord/refresh?userId=${appState.currentUser.discord_id}`);
+            const data = await res.json();
+            
+            if (data.success) {
+                let updates = {};
+                let changed = false;
+                
+                if (data.discord_avatar !== appState.currentUser.discord_avatar) {
+                    updates.discord_avatar = data.discord_avatar;
+                    changed = true;
+                }
+                if (data.discord_decoration !== appState.currentUser.discord_decoration) {
+                    updates.discord_decoration = data.discord_decoration;
+                    changed = true;
+                }
+                
+                if (changed) {
+                    await supabaseClient.from('profiles').update(updates).eq('id', appState.currentUser.id);
+                    Object.assign(appState.currentUser, updates);
+                    updateUI();
+                    console.log("Automaticly updated Avatar/Frame from Discord.");
+                }
+            }
+        } catch (e) {
+            console.log("Không thể refresh Discord data lúc này.", e);
+        }
+    }
 
     function handleHashRouting() {
         if (!appState.currentUser) return;
@@ -2054,7 +2100,7 @@
         if (loginPass) loginPass.type = 'password';
         if (regPass) regPass.type = 'password';
         
-        const closedEyeSVG = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+        const closedEyeSVG = `<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 12a3 3 0 11-6 0 3 3 0 016 0z\"></path><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z\"></path></svg>`;
         document.querySelectorAll('button[type="button"]').forEach(btn => {
             if(btn.hasAttribute('onclick') && btn.getAttribute('onclick').includes('togglePasswordVisibility')) {
                 btn.innerHTML = closedEyeSVG;
@@ -2189,11 +2235,12 @@
         const prInit = document.getElementById('profile-avatar-initial');
         const prDeco = document.getElementById('profile-decoration');
 
-        // LOGIC CHỌN AVATAR
-        const useDiscord = user.use_discord_avatar !== false; 
+        // LOGIC CHỌN AVATAR VÀ DECO ĐỘC LẬP
+        const useDiscordAvatar = user.use_discord_avatar !== false; 
+        const useDiscordDeco = user.use_discord_decoration !== false; 
         
-        const displayAvatar = (useDiscord && user.discord_avatar) ? user.discord_avatar : user.avatar_url;
-        const displayDecoration = (useDiscord && user.discord_decoration) ? user.discord_decoration : null;
+        const displayAvatar = (useDiscordAvatar && user.discord_avatar) ? user.discord_avatar : user.avatar_url;
+        const displayDecoration = (useDiscordDeco && user.discord_decoration) ? user.discord_decoration : null;
 
         if (displayAvatar) {
             if(sbImg) { sbImg.src = displayAvatar; sbImg.classList.remove('hidden'); }
@@ -2215,7 +2262,7 @@
             if(prDeco) prDeco.classList.add('hidden');
         }
 
-        // GIAO DIỆN DISCORD CONNECTION 
+        // Cập nhật giao diện Discord Connection 
         const unlinkedBox = document.getElementById('discord-unlinked-box');
         const linkedBox = document.getElementById('discord-linked-box');
         
@@ -2228,8 +2275,11 @@
                 document.getElementById('discord-link-name').innerText = user.discord_username;
                 document.getElementById('discord-link-avatar').src = user.discord_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
                 
-                const toggleBtn = document.getElementById('toggle-discord-sync');
-                if (toggleBtn) toggleBtn.checked = useDiscord;
+                const toggleAv = document.getElementById('toggle-discord-avatar');
+                if (toggleAv) toggleAv.checked = useDiscordAvatar;
+                
+                const toggleDeco = document.getElementById('toggle-discord-deco');
+                if (toggleDeco) toggleDeco.checked = useDiscordDeco;
             } else {
                 unlinkedBox.classList.remove('hidden');
                 linkedBox.classList.add('hidden');
@@ -2725,7 +2775,6 @@
             DOM.ordersTableBody.parentElement.classList.remove('hidden');
             DOM.noOrders.classList.add('hidden');
             
-            // Logic tính tổng số trang
             const totalPages = Math.ceil(appState.orders.length / ordersPerPage);
             if (currentOrderPage > totalPages) currentOrderPage = totalPages;
             if (currentOrderPage < 1) currentOrderPage = 1;
@@ -2761,7 +2810,6 @@
                 `);
             });
 
-            // Logic hiển thị / ẩn thanh phân trang
             const pagContainer = document.getElementById('orders-pagination');
             if (pagContainer) {
                 if (totalPages > 1) {
@@ -2890,7 +2938,6 @@
         reader.onload = async (event) => {
             try {
                 const base64Avatar = event.target.result;
-                
                 const oldAvatarUrl = appState.currentUser.avatar_url; 
                 
                 const uploadRes = await fetch('https://dev.celestiax.fun/cdn/v1/img/upload', {
@@ -2916,7 +2963,6 @@
                 if(!error) {
                     appState.currentUser.avatar_url = imageUrl;
                     
-                    // Nếu user đang bật Discord mà upload hình mới -> Gợi ý tắt Discord sync
                     if (appState.currentUser.use_discord_avatar && appState.currentUser.discord_id) {
                         showToast('Đã tải ảnh lên! Tắt đồng bộ Discord để hiển thị ảnh này nhé.', 'info');
                     } else {
@@ -2940,7 +2986,6 @@
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({ fileId: oldFile.fileId })
                                     });
-                                    console.log('Successfully cleaned up the old avatar on CDN!');
                                 }
                             }
                         } catch (err) {
@@ -3060,7 +3105,6 @@
         }
     }
 </script>
-
 
 </body>
 </html>
