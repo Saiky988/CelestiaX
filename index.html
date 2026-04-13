@@ -1015,76 +1015,86 @@
                     </div>
                 </section>
 
-                <section id="view-profile" class="view-section flex-1">
+                <section id="view-profile" class="view-section flex-1 hidden">
                     <header class="mb-6 md:mb-8">
                         <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Profile Settings</h2>
                         <p class="text-clamp-sm text-gray-400 font-medium">Manage your personal information and preferences.</p>
                     </header>
 
                     <div class="max-w-2xl">
-                        <div class="glass-card p-5 md:p-8 rounded-2xl border border-white/5 flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 mb-4 md:mb-6 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-brand-500/10 rounded-full blur-[30px] md:blur-[40px]"></div>
+                        <div class="glass-card p-5 md:p-8 rounded-2xl border border-white/5 mb-4 md:mb-6 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-brand-500/10 rounded-full blur-[30px] md:blur-[40px] pointer-events-none"></div>
                             
-<div class="relative avatar-container cursor-pointer shrink-0">
-    <img id="profile-avatar-img" src="" alt="Avatar" class="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover shadow-[0_0_20px_rgba(99,102,241,0.3)] hidden absolute inset-0">
-    
-    <img id="profile-decoration" src="" class="absolute w-[120%] h-[120%] max-w-none hidden pointer-events-none z-10" style="top: -10%; left: -10%;">
-    
-    <div id="profile-avatar-initial" class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-3xl md:text-4xl font-extrabold shadow-[0_0_20px_rgba(99,102,241,0.3)]">U</div>
-    
-    <label class="avatar-overlay absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center cursor-pointer backdrop-blur-sm z-20">
-        </label>
-</div>
-                                    <svg class="w-5 h-5 md:w-6 md:h-6 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    <span class="text-[9px] md:text-[10px] font-bold uppercase text-white">Upload</span>
-                                    <input type="file" id="avatar-upload" accept="image/*" class="hidden">
-                                </label>
-                            </div>
-
-                            <div class="flex-1 w-full text-center md:text-left z-10">
-                                <form id="profile-form" class="space-y-3 md:space-y-4">
-                                    <div class="text-left">
-                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Username</label>
-                                        <input type="text" id="profile-username" class="w-full bg-black/30 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-bold" value="User">
-                                    </div>
-                                    <div class="text-left">
-                                        <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</label>
-                                        <input type="email" id="profile-email-input" disabled class="w-full bg-transparent border-none px-0 py-2 text-[13px] md:text-sm text-gray-400 font-medium" value="user@example.com">
-                                    </div>
-                                    <div class="flex justify-center md:justify-start">
-                                        <button type="submit" class="w-full md:w-auto bg-brand-500/20 text-brand-400 hover:bg-brand-500/30 font-bold py-2.5 md:py-2 px-6 rounded-xl transition-colors text-[13px] md:text-sm">Save Changes</button>
-                                    </div>
-
-                                </form>
-                                </form>
-
-                                <div class="mt-6 md:mt-8 pt-5 md:pt-6 border-t border-white/5 text-left">
-                                    <h4 class="text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 md:mb-4">Connections</h4>
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 relative z-10">
+                                
+                                <div class="relative w-20 h-20 md:w-28 md:h-28 cursor-pointer shrink-0 group">
+                                    <img id="profile-avatar-img" src="" alt="Avatar" class="w-full h-full rounded-full object-cover shadow-[0_0_20px_rgba(99,102,241,0.3)] hidden relative z-0">
                                     
-                                    <div class="space-y-3">
-                                        <div class="flex items-center justify-between bg-black/20 hover:bg-black/40 transition-colors p-3 rounded-xl border border-white/5 group">
+                                    <img id="profile-decoration" src="" class="absolute w-[120%] h-[120%] max-w-none hidden pointer-events-none z-10" style="top: -10%; left: -10%;">
+                                    
+                                    <div id="profile-avatar-initial" class="w-full h-full rounded-full bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-3xl md:text-4xl font-extrabold shadow-[0_0_20px_rgba(99,102,241,0.3)] relative z-0">U</div>
+                                    
+                                    <label class="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center cursor-pointer backdrop-blur-sm z-20 transition-opacity opacity-0 group-hover:opacity-100">
+                                        <svg class="w-5 h-5 md:w-6 md:h-6 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                        <span class="text-[9px] md:text-[10px] font-bold uppercase text-white">Upload</span>
+                                        <input type="file" id="avatar-upload" accept="image/*" class="hidden">
+                                    </label>
+                                </div>
+
+                                <div class="flex-1 w-full text-center md:text-left">
+                                    <form id="profile-form" class="space-y-3 md:space-y-4">
+                                        <div class="text-left">
+                                            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Username</label>
+                                            <input type="text" id="profile-username" class="w-full bg-black/30 border border-white/10 rounded-xl px-3.5 md:px-4 py-2.5 text-[13px] md:text-sm focus:outline-none focus:border-brand-500 text-white font-bold" value="User">
+                                        </div>
+                                        <div class="text-left">
+                                            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</label>
+                                            <input type="email" id="profile-email-input" disabled class="w-full bg-transparent border-none px-0 py-2 text-[13px] md:text-sm text-gray-400 font-medium" value="user@example.com">
+                                        </div>
+                                        <div class="flex justify-center md:justify-start">
+                                            <button type="submit" class="w-full md:w-auto bg-brand-500/20 text-brand-400 hover:bg-brand-500/30 font-bold py-2.5 md:py-2 px-6 rounded-xl transition-colors text-[13px] md:text-sm">Save Changes</button>
+                                        </div>
+                                    </form>
+
+                                    <div class="mt-6 md:mt-8 pt-5 md:pt-6 border-t border-white/5 text-left">
+                                        <h4 class="text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 md:mb-4">Connections</h4>
+                                        
+                                        <div id="discord-unlinked-box" class="flex items-center justify-between bg-black/20 hover:bg-black/40 transition-colors p-3 rounded-xl border border-white/5">
                                             <div class="flex items-center gap-3.5">
-                                                <div class="w-10 h-10 rounded-full bg-[#5865F2]/10 flex items-center justify-center shrink-0 border border-[#5865F2]/20 relative overflow-hidden">
-                                                    <svg id="discord-icon-unlinked" class="w-5 h-5 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
-                                                    <img id="discord-link-avatar" src="" class="w-full h-full object-cover hidden">
+                                                <div class="w-10 h-10 rounded-full bg-[#5865F2]/10 flex items-center justify-center shrink-0 border border-[#5865F2]/20">
+                                                    <svg class="w-5 h-5 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
                                                 </div>
                                                 <div>
-                                                    <p class="font-bold text-[13px] md:text-sm text-white" id="discord-link-name">Discord</p>
-                                                    <p class="text-[11px] text-gray-500 font-medium mt-0.5" id="discord-link-status">Sync Avatar & Decoration</p>
+                                                    <p class="font-bold text-[13px] md:text-sm text-white">Discord</p>
+                                                    <p class="text-[11px] text-gray-500 font-medium mt-0.5">Sync Avatar & Decoration</p>
                                                 </div>
                                             </div>
+                                            <a href="https://discord.com/oauth2/authorize?client_id=1449742738869325834&response_type=code&redirect_uri=https%3A%2F%2Fdev.celestiax.fun%2Fapi%2Fv1%2Fdiscord%2Fcallback&scope=identify" class="px-4 py-2 bg-white/5 hover:bg-[#5865F2] text-white text-[11px] md:text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-[#5865F2]">Connect</a>
+                                        </div>
+
+                                        <div id="discord-linked-box" class="hidden flex-col bg-[#5865F2]/5 p-3 rounded-xl border border-[#5865F2]/20">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-3.5">
+                                                    <img id="discord-link-avatar" src="" class="w-10 h-10 rounded-full border border-[#5865F2]/30 object-cover">
+                                                    <div>
+                                                        <p class="font-bold text-[13px] md:text-sm text-white" id="discord-link-name">Username</p>
+                                                        <p class="text-[10px] text-[#5865F2] font-bold uppercase tracking-widest mt-0.5">Linked</p>
+                                                    </div>
+                                                </div>
+                                                <button onclick="unlinkDiscord()" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] md:text-xs font-bold rounded-lg transition-colors">Unlink</button>
+                                            </div>
                                             
-                                            <div>
-                                                <a id="btn-link-discord" href="https://discord.com/oauth2/authorize?client_id=1449742738869325834&response_type=code&redirect_uri=https%3A%2F%2Fdev.celestiax.fun%2Fapi%2Fv1%2Fdiscord%2Fcallback&scope=identify" class="px-4 py-2 bg-white/5 hover:bg-[#5865F2] text-white text-[11px] md:text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-[#5865F2]">Connect</a>
-                                                <button id="btn-unlink-discord" onclick="unlinkDiscord()" class="hidden px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] md:text-xs font-bold rounded-lg transition-colors border border-red-500/20">Disconnect</button>
+                                            <div class="flex items-center justify-between border-t border-white/5 mt-3 pt-3">
+                                                <span class="text-[11px] md:text-xs text-gray-300 font-medium">Sử dụng Avatar & Khung Discord</span>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" id="toggle-discord-sync" class="sr-only peer" onchange="toggleDiscordSync(event)">
+                                                    <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#5865F2]"></div>
+                                                </label>
                                             </div>
                                         </div>
-                                        
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
 
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1113,6 +1123,7 @@
 
                     </div>
                 </section>
+
 
                 <footer class="mt-auto border-t border-white/5 pt-6 pb-4 mt-8 md:mt-12 w-full text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-4">
                     <div class="flex flex-col items-center md:items-start">
@@ -1382,7 +1393,7 @@
 
                     if (!profile) {
                         profile = {
-                            id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null
+                            id: user.id, email: user.email, username: user.email.split('@')[0], balance: 0, avatar_url: null, use_discord_avatar: true
                         };
                         await supabaseClient.from('profiles').insert([profile]);
                     }
@@ -1391,20 +1402,18 @@
                     await refreshUserData();
                     closeAuthModal();
                     
-                    // --- BẮT ĐẦU: XỬ LÝ DỮ LIỆU DISCORD CALLBACK ---
+                    // --- XỬ LÝ DỮ LIỆU DISCORD CALLBACK ---
                     const urlParams = new URLSearchParams(window.location.search);
                     const discordDataStr = urlParams.get('discord_data');
                     if (discordDataStr) {
                         try {
                             const data = JSON.parse(decodeURIComponent(discordDataStr));
                             await saveDiscordData(data);
-                            // Xóa param khỏi URL
                             window.history.replaceState({}, document.title, window.location.pathname + '#profile');
                         } catch(e) {
                             console.error("Lỗi parse Discord data", e);
                         }
                     }
-                    // --- KẾT THÚC: XỬ LÝ DỮ LIỆU DISCORD ---
 
                     if (event !== 'PASSWORD_RECOVERY') {
                         showApp();
@@ -1431,7 +1440,7 @@
         initGameServices();
     }
 
-    // --- HÀM LƯU VÀ XÓA DISCORD LINK ---
+    // --- HÀM DISCORD ---
     async function saveDiscordData(data) {
         if (!appState.currentUser) return;
         
@@ -1439,7 +1448,8 @@
             discord_id: data.user.id,
             discord_username: data.user.username,
             discord_avatar: data.user.avatar,
-            discord_decoration: data.decorationUrl
+            discord_decoration: data.decorationUrl,
+            use_discord_avatar: true
         };
 
         const { error } = await supabaseClient.from('profiles').update(updates).eq('id', appState.currentUser.id);
@@ -1465,7 +1475,23 @@
             showToast('Discord unlinked', 'info');
         }
     }
-    // ------------------------------------
+
+    async function toggleDiscordSync(e) {
+        if (!appState.currentUser) return;
+        const isChecked = e.target.checked;
+        
+        const { error } = await supabaseClient.from('profiles').update({ use_discord_avatar: isChecked }).eq('id', appState.currentUser.id);
+            
+        if (!error) {
+            appState.currentUser.use_discord_avatar = isChecked;
+            updateUI();
+            showToast(isChecked ? 'Đã bật đồng bộ Discord!' : 'Đã tắt Discord, đang dùng ảnh tải lên.', 'success');
+        } else {
+            e.target.checked = !isChecked;
+            showToast('Lỗi khi lưu cài đặt.', 'error');
+        }
+    }
+    // -------------------
 
     function handleHashRouting() {
         if (!appState.currentUser) return;
@@ -1631,7 +1657,6 @@
         document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
         document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
 
-        // Kích hoạt sự kiện Robux
         setupRobuxEvents();
 
         document.getElementById('boost-game').addEventListener('change', populateGameServices);
@@ -2164,8 +2189,11 @@
         const prInit = document.getElementById('profile-avatar-initial');
         const prDeco = document.getElementById('profile-decoration');
 
-        // Ưu tiên hiển thị Avatar: Discord > Upload tự do
-        const displayAvatar = user.discord_avatar || user.avatar_url;
+        // LOGIC CHỌN AVATAR
+        const useDiscord = user.use_discord_avatar !== false; 
+        
+        const displayAvatar = (useDiscord && user.discord_avatar) ? user.discord_avatar : user.avatar_url;
+        const displayDecoration = (useDiscord && user.discord_decoration) ? user.discord_decoration : null;
 
         if (displayAvatar) {
             if(sbImg) { sbImg.src = displayAvatar; sbImg.classList.remove('hidden'); }
@@ -2179,45 +2207,33 @@
             if(prInit) { prInit.classList.remove('hidden'); prInit.innerText = initial; }
         }
 
-        // Xử lý hiển thị Khung viền (Decoration)
-        if (user.discord_decoration) {
-            if(sbDeco) { sbDeco.src = user.discord_decoration; sbDeco.classList.remove('hidden'); }
-            if(prDeco) { prDeco.src = user.discord_decoration; prDeco.classList.remove('hidden'); }
+        if (displayDecoration) {
+            if(sbDeco) { sbDeco.src = displayDecoration; sbDeco.classList.remove('hidden'); }
+            if(prDeco) { prDeco.src = displayDecoration; prDeco.classList.remove('hidden'); }
         } else {
             if(sbDeco) sbDeco.classList.add('hidden');
             if(prDeco) prDeco.classList.add('hidden');
         }
 
-        // Cập nhật giao diện mục Discord Connection
-        const iconUnlinked = document.getElementById('discord-icon-unlinked');
-        const linkAvatar = document.getElementById('discord-link-avatar');
-        const linkName = document.getElementById('discord-link-name');
-        const linkStatus = document.getElementById('discord-link-status');
-        const btnLink = document.getElementById('btn-link-discord');
-        const btnUnlink = document.getElementById('btn-unlink-discord');
+        // GIAO DIỆN DISCORD CONNECTION 
+        const unlinkedBox = document.getElementById('discord-unlinked-box');
+        const linkedBox = document.getElementById('discord-linked-box');
         
-        if (iconUnlinked && linkName) {
+        if (unlinkedBox && linkedBox) {
             if (user.discord_id) {
-                // Đã liên kết
-                iconUnlinked.classList.add('hidden');
-                linkAvatar.src = user.discord_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
-                linkAvatar.classList.remove('hidden');
+                unlinkedBox.classList.add('hidden');
+                linkedBox.classList.remove('hidden');
+                linkedBox.classList.add('flex');
                 
-                linkName.innerText = user.discord_username;
-                linkStatus.innerHTML = '<span class="text-green-400 font-bold uppercase tracking-widest text-[9px]">Linked</span>';
+                document.getElementById('discord-link-name').innerText = user.discord_username;
+                document.getElementById('discord-link-avatar').src = user.discord_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
                 
-                btnLink.classList.add('hidden');
-                btnUnlink.classList.remove('hidden');
+                const toggleBtn = document.getElementById('toggle-discord-sync');
+                if (toggleBtn) toggleBtn.checked = useDiscord;
             } else {
-                // Chưa liên kết
-                iconUnlinked.classList.remove('hidden');
-                linkAvatar.classList.add('hidden');
-                
-                linkName.innerText = 'Discord';
-                linkStatus.innerText = 'Sync Avatar & Decoration';
-                
-                btnLink.classList.remove('hidden');
-                btnUnlink.classList.add('hidden');
+                unlinkedBox.classList.remove('hidden');
+                linkedBox.classList.add('hidden');
+                linkedBox.classList.remove('flex');
             }
         }
 
@@ -2899,8 +2915,14 @@
                 
                 if(!error) {
                     appState.currentUser.avatar_url = imageUrl;
-                    updateUI(); 
-                    showToast('Avatar updated successfully!', 'success');
+                    
+                    // Nếu user đang bật Discord mà upload hình mới -> Gợi ý tắt Discord sync
+                    if (appState.currentUser.use_discord_avatar && appState.currentUser.discord_id) {
+                        showToast('Đã tải ảnh lên! Tắt đồng bộ Discord để hiển thị ảnh này nhé.', 'info');
+                    } else {
+                        showToast('Avatar updated successfully!', 'success');
+                        updateUI(); 
+                    }
 
                     if (oldAvatarUrl && oldAvatarUrl.includes('/avatars/')) {
                         try {
@@ -3038,6 +3060,7 @@
         }
     }
 </script>
+
 
 </body>
 </html>
