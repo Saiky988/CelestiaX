@@ -449,8 +449,11 @@
 
             <div class="px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-white/5 bg-white/[0.02]">
                 <div class="flex items-center gap-3 mb-4 px-1">
-                    <img id="sidebar-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover bg-brand-600 hidden">
-                    <div class="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-xs font-bold shadow-lg" id="sidebar-initial">U</div>
+<div class="relative w-9 h-9 shrink-0 flex items-center justify-center">
+    <img id="sidebar-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover hidden absolute inset-0">
+    <img id="sidebar-decoration" src="" class="absolute w-[120%] h-[120%] max-w-none hidden pointer-events-none z-10" style="top: -10%; left: -10%;">
+    <div class="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-xs font-bold shadow-lg" id="sidebar-initial">U</div>
+</div>
                     <div class="overflow-hidden flex-1">
                         <p class="text-[13px] font-bold text-white truncate" id="sidebar-username">User</p>
                         <p class="text-[10px] text-green-400 font-medium flex items-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Online</p>
@@ -516,14 +519,6 @@
                         <div class="glass-card p-4 rounded-xl text-center border border-white/5">
                             <div class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-2">Robux Orders</div>
                             <div class="text-2xl font-extrabold text-green-400" id="stat-robux">0</div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-2xl p-5 md:p-6 border border-white/5 hidden">
-                        <h3 class="text-base md:text-lg font-bold mb-4 md:mb-6">Activity Overview</h3>
-                        <div class="h-32 md:h-48 flex items-end justify-between gap-1 md:gap-2 px-1 md:px-2" id="fake-chart"></div>
-                        <div class="flex justify-between text-[10px] md:text-xs text-gray-500 mt-3 md:mt-4 font-medium px-1 md:px-2">
-                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
                         </div>
                     </div>
                 </section>
@@ -869,88 +864,116 @@
                 <section id="view-robux" class="view-section flex-1">
                     <header class="mb-6 md:mb-8">
                         <h2 class="text-clamp-h2 font-extrabold tracking-tight mb-1 md:mb-2">Robux Shop</h2>
-                        <p class="text-clamp-sm text-gray-400 font-medium">Safe and cheap Robux via official or gamepass delivery.</p>
+                        <p class="text-clamp-sm text-gray-400 font-medium">Secure and affordable Robux via Official Top-up or Gamepass Transfer.</p>
                     </header>
 
-                    <div class="glass-card rounded-2xl p-5 md:p-8 border border-white/5 max-w-2xl mx-auto relative overflow-hidden">
+                    <div class="glass-card rounded-2xl p-6 md:p-8 border border-white/5 max-w-2xl mx-auto relative overflow-hidden">
                         <div class="absolute -top-20 -right-20 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-<form id="robux-form" class="space-y-4 md:space-y-5 relative z-10">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Delivery Method</label>
-            <select id="robux-method" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none transition-all">
-                <option value="official">Official</option>
-                <option value="gift">Gamepass</option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Roblox Username</label>
-            <input type="text" id="robux-username" required placeholder="Username" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white transition-all">
-        </div>
-    </div>
+                        
+                        <form id="robux-form" class="space-y-5 md:space-y-6 relative z-10">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Delivery Method</label>
+                                    <div class="relative">
+                                        <select id="robux-method" required class="w-full bg-surface-950/50 border border-white/10 rounded-xl pl-4 pr-10 py-3.5 text-[13px] md:text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/50 text-white appearance-none transition-all shadow-inner">
+                                            <option value="official">Official Direct (Fast)</option>
+                                            <option value="gift">Gamepass Transfer</option>
+                                        </select>
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Roblox Username</label>
+                                    <input type="text" id="robux-username" required placeholder="Enter exact username" class="w-full bg-surface-950/50 border border-white/10 rounded-xl px-4 py-3.5 text-[13px] md:text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/50 text-white transition-all shadow-inner placeholder-gray-600">
+                                </div>
+                            </div>
 
-    <div id="robux-gamepass-area" class="hidden space-y-4">
-        <div>
-            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 flex justify-between">
-                <span>Select Gamepass</span>
-                <span id="gp-loading" class="hidden text-green-400 animate-pulse">...</span>
-            </label>
-            <select id="robux-gamepass-select" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none disabled:opacity-50">
-                <option value="">Please enter Username first...</option>
-            </select>
-            <p class="text-[11px] md:text-xs text-gray-400 mt-2 font-medium">Thực nhận: <span id="robux-after-tax" class="text-green-400 font-bold">0</span> R$ (Sau thuế Roblox)</p>
-        </div>
-        
-<div class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex items-start gap-3">
-    <svg class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-        </path>
-    </svg>
-    <div>
-        <p class="text-sm font-bold text-yellow-500 mb-0.5">Giao Robux qua Gamepass</p>
-        <p class="text-[13px] text-gray-300 font-medium">
-            Robux sẽ về trong <span class="text-yellow-400 font-semibold">5 ngày (120h)</span> theo quy định Roblox.
-        </p>
-    </div>
-</div>
-    </div>
+                            <div id="robux-gamepass-area" class="hidden space-y-5">
+                                <div class="bg-black/20 p-4 md:p-5 rounded-xl border border-white/5">
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex justify-between items-center">
+                                        <span>Target Gamepass</span>
+                                        <span id="gp-loading" class="hidden text-green-400 animate-pulse flex items-center gap-1.5"><div class="spinner w-3 h-3 border-green-500 border-l-transparent"></div> Fetching...</span>
+                                    </label>
+                                    <div class="relative">
+                                        <select id="robux-gamepass-select" class="w-full bg-surface-950/50 border border-white/10 rounded-xl pl-4 pr-10 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none disabled:opacity-40 disabled:cursor-not-allowed transition-all">
+                                            <option value="">Waiting for username...</option>
+                                        </select>
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between mt-3">
+                                        <span class="text-[11px] md:text-xs text-gray-500 font-medium">After 30% Roblox Tax:</span>
+                                        <span class="text-[12px] md:text-[13px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20"><span id="robux-after-tax">0</span> R$</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex items-start gap-3.5">
+                                    <div class="bg-yellow-500/20 p-1.5 rounded-lg shrink-0 mt-0.5">
+                                        <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[13px] md:text-sm font-bold text-yellow-500 mb-1">Gamepass Transfer Policy</p>
+                                        <p class="text-[12px] md:text-[13px] text-gray-300 font-medium leading-relaxed">
+                                            Robux transferred via Gamepass will be held in a pending state for <span class="text-yellow-400 font-bold">5 days (120 hours)</span> in accordance with official Roblox security guidelines.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
-    <div id="robux-official-area" class="space-y-4">
-        <div>
-            <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Chọn gói Robux</label>
-            <select id="robux-official-package" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[13px] md:text-sm focus:outline-none focus:border-green-500 text-white appearance-none">
-                <option value="80" data-price="40000">Robux 80</option>
-                <option value="500" data-price="200000">Robux 500</option>
-                <option value="1000" data-price="390000">Robux 1000</option>
-                <option value="2000" data-price="780000">Robux 2000</option>
-                <option value="5250" data-price="1900000">Robux 5250</option>
-                <option value="11000" data-price="3800000">Robux 11000</option>
-                <option value="24000" data-price="7600000">Robux 24000</option>
-            </select>
-        </div>
-        
-        <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl">
-            <label class="flex items-start gap-3 cursor-pointer">
-                <input type="checkbox" id="robux-official-terms" class="mt-1 w-4 h-4 rounded border-gray-600 bg-black/40 text-green-500 focus:ring-green-500/20" required>
-                <span class="text-[12px] md:text-[13px] text-gray-300 font-medium leading-relaxed">
-                    Việc giao robux diễn ra sớm nhất trong vòng 15 phút và có thể chậm nhất 24 giờ (thời gian làm việc từ 8h-22h). <strong class="text-white">Tôi xác nhận rằng tôi đã tắt xác minh 2 bước và tài khoản được tạo trên 10 ngày.</strong>
-                </span>
-            </label>
-        </div>
-    </div>
+                            <div id="robux-official-area" class="space-y-5">
+                                <div>
+                                    <label class="block text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Select Package</label>
+                                    <div class="relative">
+                                        <select id="robux-official-package" class="w-full bg-surface-950/50 border border-white/10 rounded-xl pl-4 pr-10 py-3.5 text-[13px] md:text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/50 text-white appearance-none font-bold tracking-wide transition-all shadow-inner">
+                                            <option value="80" data-price="40000">80 Robux</option>
+                                            <option value="500" data-price="200000">500 Robux</option>
+                                            <option value="1000" data-price="390000">1,000 Robux</option>
+                                            <option value="2000" data-price="780000">2,000 Robux</option>
+                                            <option value="5250" data-price="1900000">5,250 Robux</option>
+                                            <option value="11000" data-price="3800000">11,000 Robux</option>
+                                            <option value="24000" data-price="7600000">24,000 Robux</option>
+                                        </select>
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-green-500">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-blue-500/10 border border-blue-500/20 p-4 md:p-5 rounded-xl">
+                                    <label class="flex items-start gap-3.5 cursor-pointer group">
+                                        <div class="relative flex items-center justify-center shrink-0 mt-0.5">
+                                            <input type="checkbox" id="robux-official-terms" class="peer appearance-none w-5 h-5 border border-gray-500 rounded bg-surface-950/50 checked:bg-green-500 checked:border-green-500 transition-colors cursor-pointer" required>
+                                            <svg class="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                        <span class="text-[12px] md:text-[13px] text-gray-300 font-medium leading-relaxed group-hover:text-gray-200 transition-colors">
+                                            Delivery usually takes between 15 minutes and 24 hours (Operating hours: 08:00 - 22:00). <strong class="text-white font-bold block mt-1">I confirm that 2-Step Verification is disabled and my account is at least 10 days old.</strong>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
 
-    <div class="flex justify-between items-center py-4 border-t border-white/10 mt-4">
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tổng thanh toán</span>
-        <span id="robux-price" class="text-2xl font-extrabold text-green-400">0đ</span>
-    </div>
-    <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-bold py-3.5 rounded-xl transition-all flex justify-center items-center shadow-[0_10px_20px_-10px_rgba(16,185,129,0.4)] transform hover:-translate-y-0.5 text-sm md:text-base">
-        Mua Robux
-    </button>
-</form>
+                            <div class="pt-2">
+                                <div class="flex justify-between items-end mb-4 md:mb-5">
+                                    <span class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider">Total Payment</span>
+                                    <span id="robux-price" class="text-3xl md:text-4xl font-extrabold text-green-400 tracking-tight">0đ</span>
+                                </div>
+                                
+                                <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-bold py-3.5 md:py-4 rounded-xl transition-all flex justify-center items-center gap-2 shadow-[0_10px_20px_-10px_rgba(16,185,129,0.5)] transform hover:-translate-y-0.5 active:translate-y-0 text-sm md:text-base">
+                                    <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    Purchase Robux
+                                </button>
+                            </div>
+                        </form>
 
                     </div>
                 </section>
+
 
                 <section id="view-orders" class="view-section flex-1">
                     <header class="mb-6 md:mb-8">
@@ -983,6 +1006,12 @@
                             <p class="text-[13px] md:text-sm text-gray-400 mb-4 md:mb-6 font-medium">You haven't purchased any items.</p>
                             <button onclick="switchView('product')" class="bg-brand-500/20 text-brand-400 px-5 md:px-6 py-2.5 rounded-xl text-[13px] md:text-sm font-bold hover:bg-brand-500/30 transition-colors">Browse Products</button>
                         </div>
+                        
+                        <div id="orders-pagination" class="hidden flex justify-center items-center gap-2 p-4 border-t border-white/5 bg-black/20">
+                            <button onclick="changeOrderPage(-1)" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-white disabled:opacity-30 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                            <span id="orders-page-info" class="text-[11px] md:text-xs font-bold text-gray-400 mx-2 uppercase tracking-widest">Page 1 / 1</span>
+                            <button onclick="changeOrderPage(1)" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-white disabled:opacity-30 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                        </div>
                     </div>
                 </section>
 
@@ -996,11 +1025,16 @@
                         <div class="glass-card p-5 md:p-8 rounded-2xl border border-white/5 flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 mb-4 md:mb-6 relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-brand-500/10 rounded-full blur-[30px] md:blur-[40px]"></div>
                             
-                            <div class="relative avatar-container cursor-pointer shrink-0">
-                                <img id="profile-avatar-img" src="" alt="Avatar" class="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover shadow-[0_0_20px_rgba(99,102,241,0.3)] hidden">
-                                <div id="profile-avatar-initial" class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-3xl md:text-4xl font-extrabold shadow-[0_0_20px_rgba(99,102,241,0.3)]">U</div>
-                                
-                                <label class="avatar-overlay absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center cursor-pointer backdrop-blur-sm">
+<div class="relative avatar-container cursor-pointer shrink-0">
+    <img id="profile-avatar-img" src="" alt="Avatar" class="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover shadow-[0_0_20px_rgba(99,102,241,0.3)] hidden absolute inset-0">
+    
+    <img id="profile-decoration" src="" class="absolute w-[120%] h-[120%] max-w-none hidden pointer-events-none z-10" style="top: -10%; left: -10%;">
+    
+    <div id="profile-avatar-initial" class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-3xl md:text-4xl font-extrabold shadow-[0_0_20px_rgba(99,102,241,0.3)]">U</div>
+    
+    <label class="avatar-overlay absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center cursor-pointer backdrop-blur-sm z-20">
+        </label>
+</div>
                                     <svg class="w-5 h-5 md:w-6 md:h-6 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                     <span class="text-[9px] md:text-[10px] font-bold uppercase text-white">Upload</span>
                                     <input type="file" id="avatar-upload" accept="image/*" class="hidden">
@@ -1020,13 +1054,43 @@
                                     <div class="flex justify-center md:justify-start">
                                         <button type="submit" class="w-full md:w-auto bg-brand-500/20 text-brand-400 hover:bg-brand-500/30 font-bold py-2.5 md:py-2 px-6 rounded-xl transition-colors text-[13px] md:text-sm">Save Changes</button>
                                     </div>
+
                                 </form>
+                                </form>
+
+                                <div class="mt-6 md:mt-8 pt-5 md:pt-6 border-t border-white/5 text-left">
+                                    <h4 class="text-[11px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 md:mb-4">Connections</h4>
+                                    
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between bg-black/20 hover:bg-black/40 transition-colors p-3 rounded-xl border border-white/5 group">
+                                            <div class="flex items-center gap-3.5">
+                                                <div class="w-10 h-10 rounded-full bg-[#5865F2]/10 flex items-center justify-center shrink-0 border border-[#5865F2]/20 relative overflow-hidden">
+                                                    <svg id="discord-icon-unlinked" class="w-5 h-5 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+                                                    <img id="discord-link-avatar" src="" class="w-full h-full object-cover hidden">
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-[13px] md:text-sm text-white" id="discord-link-name">Discord</p>
+                                                    <p class="text-[11px] text-gray-500 font-medium mt-0.5" id="discord-link-status">Sync Avatar & Decoration</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div>
+                                                <a id="btn-link-discord" href="https://discord.com/oauth2/authorize?client_id=1449742738869325834&response_type=code&redirect_uri=https%3A%2F%2Fdev.celestiax.fun%2Fapi%2Fv1%2Fdiscord%2Fcallback&scope=identify" class="px-4 py-2 bg-white/5 hover:bg-[#5865F2] text-white text-[11px] md:text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-[#5865F2]">Connect</a>
+                                                <button id="btn-unlink-discord" onclick="unlinkDiscord()" class="hidden px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] md:text-xs font-bold rounded-lg transition-colors border border-red-500/20">Disconnect</button>
+                                            </div>
+                                        </div>
+                                        
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+
                             </div>
                         </div>
 
                         <div class="glass-card p-5 md:p-6 rounded-2xl border border-white/5 space-y-3 md:space-y-4">
                             <h4 class="text-base md:text-lg font-bold border-b border-white/5 pb-3 md:pb-4 mb-3 md:mb-4">Account Info</h4>
-                            <div class="flex justify-between items-center">
+                            <div class="flex justify-between items-center mb-3">
                                 <div>
                                     <p class="font-bold text-[13px] md:text-sm text-white">Member Since</p>
                                     <p class="text-[11px] md:text-xs text-gray-400 font-medium mt-0.5 md:mt-1" id="profile-date">Jan 2024</p>
@@ -1035,7 +1099,18 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active
                                 </span>
                             </div>
+                            
+                            <div class="flex justify-between items-center border-t border-white/5 pt-3 md:pt-4">
+                                <div class="overflow-hidden pr-4">
+                                    <p class="font-bold text-[13px] md:text-sm text-white">User ID (UID)</p>
+                                    <p class="text-[10px] md:text-[11px] text-gray-500 font-mono mt-1 truncate" id="profile-uid">...loading...</p>
+                                </div>
+                                <button onclick="copyToClipboard(document.getElementById('profile-uid').innerText)" class="text-brand-400 hover:text-white p-2 bg-brand-500/10 rounded-lg transition-colors shrink-0" title="Copy UID">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </button>
+                            </div>
                         </div>
+
                     </div>
                 </section>
 
@@ -1153,7 +1228,6 @@
         </div>
     </div>
 
-
 <script>
     const supabaseUrl = 'https://ivlkgqmmtvbfpmgssxsg.supabase.co';
     const supabaseKey = 'sb_publishable_lusXR7UeNgJ4lwo9pIEaJA_T2sJ-l6U';
@@ -1252,7 +1326,9 @@
     let currentPendingTx = null; 
     let currentPendingCardTx = null;
     let currentTxPage = 1;       
-    const txPerPage = 5;         
+    const txPerPage = 5;
+    let currentOrderPage = 1;
+    const ordersPerPage = 5;
 
     const fetchWithTimeout = async (promise, ms = 8000) => {
         let timeoutId;
@@ -1315,6 +1391,21 @@
                     await refreshUserData();
                     closeAuthModal();
                     
+                    // --- BẮT ĐẦU: XỬ LÝ DỮ LIỆU DISCORD CALLBACK ---
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const discordDataStr = urlParams.get('discord_data');
+                    if (discordDataStr) {
+                        try {
+                            const data = JSON.parse(decodeURIComponent(discordDataStr));
+                            await saveDiscordData(data);
+                            // Xóa param khỏi URL
+                            window.history.replaceState({}, document.title, window.location.pathname + '#profile');
+                        } catch(e) {
+                            console.error("Lỗi parse Discord data", e);
+                        }
+                    }
+                    // --- KẾT THÚC: XỬ LÝ DỮ LIỆU DISCORD ---
+
                     if (event !== 'PASSWORD_RECOVERY') {
                         showApp();
                     }
@@ -1325,7 +1416,6 @@
                     DOM.appView.classList.add('hidden');
                     DOM.landingView.classList.remove('hidden');
                     setTimeout(() => DOM.landingView.classList.add('active'), 50);
-                    generateFakeCharts();
                     
                     window.history.replaceState(null, null, window.location.pathname);
                 }
@@ -1340,6 +1430,42 @@
         
         initGameServices();
     }
+
+    // --- HÀM LƯU VÀ XÓA DISCORD LINK ---
+    async function saveDiscordData(data) {
+        if (!appState.currentUser) return;
+        
+        const updates = {
+            discord_id: data.user.id,
+            discord_username: data.user.username,
+            discord_avatar: data.user.avatar,
+            discord_decoration: data.decorationUrl
+        };
+
+        const { error } = await supabaseClient.from('profiles').update(updates).eq('id', appState.currentUser.id);
+        
+        if (!error) {
+            Object.assign(appState.currentUser, updates);
+            updateUI();
+            showToast('Discord linked successfully!', 'success');
+        } else {
+            showToast('Failed to link Discord', 'error');
+        }
+    }
+
+    async function unlinkDiscord() {
+        if (!appState.currentUser) return;
+        
+        const updates = { discord_id: null, discord_username: null, discord_avatar: null, discord_decoration: null };
+        const { error } = await supabaseClient.from('profiles').update(updates).eq('id', appState.currentUser.id);
+        
+        if (!error) {
+            Object.assign(appState.currentUser, updates);
+            updateUI();
+            showToast('Discord unlinked', 'info');
+        }
+    }
+    // ------------------------------------
 
     function handleHashRouting() {
         if (!appState.currentUser) return;
@@ -1372,7 +1498,6 @@
         setTimeout(() => DOM.landingView.classList.add('hidden'), 300);
         DOM.appView.classList.remove('hidden');
         updateUI();
-        generateFakeCharts();
         
         let initialHash = window.location.hash.replace('#', '') || 'home';
         const validViews = ['home', 'topup', 'product', 'games', 'robux', 'orders', 'profile', 'checkout-canva'];
@@ -1513,8 +1638,27 @@
         document.getElementById('boost-service').addEventListener('change', calcBoostPrice);
         DOM.gamesForm.addEventListener('submit', handleGameBoostOrder);
 
-        document.getElementById('btn-generic-pay').addEventListener('click', () => {
-            if(pendingPurchaseAction) pendingPurchaseAction();
+        document.getElementById('btn-generic-pay').addEventListener('click', async function() {
+            if (pendingPurchaseAction) {
+                const action = pendingPurchaseAction;
+                pendingPurchaseAction = null; 
+                
+                const originalText = this.innerHTML;
+                this.innerHTML = '<svg class="animate-spin h-5 w-5 text-white shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+                this.disabled = true;
+                this.classList.add('opacity-70', 'cursor-not-allowed');
+                
+                try {
+                    await action();
+                } catch (error) {
+                    console.error("Payment action failed:", error);
+                    showToast('Đã có lỗi xảy ra khi xử lý giao dịch.', 'error');
+                } finally {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    this.classList.remove('opacity-70', 'cursor-not-allowed');
+                }
+            }
             closeGenericModal();
         });
     }
@@ -1593,7 +1737,6 @@
         calcBoostPrice();
     }
 
-    // ====== BẮT ĐẦU LOGIC ROBUX MỚI ======
     function setupRobuxEvents() {
         const methodSelect = document.getElementById('robux-method');
         const officialArea = document.getElementById('robux-official-area');
@@ -1728,26 +1871,35 @@
         }
 
         openGenericConfirm('Thanh Toán Robux', desc, price, async () => {
-            if (appState.currentUser.balance < price) return showToast('Số dư không đủ! Vui lòng nạp quỹ.', 'error');
+            if (appState.currentUser.balance < price) {
+                showToast('Số dư không đủ! Vui lòng nạp quỹ.', 'error');
+                return;
+            }
             
             const orderCode = 'RBX-' + Math.random().toString(36).substr(2, 6).toUpperCase();
             
-            await supabaseClient.from('orders').insert([{
-                order_code: orderCode,
-                user_id: appState.currentUser.id,
-                type: 'robux',
-                price: price,
-                details: details
-            }]);
-            
-            await updateBalanceAndLogTx(-price, 'Mua Robux');
-            
-            finalizeOrder('Tạo đơn mua Robux thành công!');
-            document.getElementById('robux-form').reset();
-            calcRobuxPrice();
+            try {
+                const { error } = await supabaseClient.from('orders').insert([{
+                    order_code: orderCode,
+                    user_id: appState.currentUser.id,
+                    type: 'robux',
+                    price: price,
+                    details: details
+                }]);
+                
+                if (error) throw error;
+                
+                await updateBalanceAndLogTx(-price, 'Mua Robux');
+                
+                finalizeOrder('Tạo đơn mua Robux thành công!');
+                document.getElementById('robux-form').reset();
+                calcRobuxPrice();
+            } catch (err) {
+                console.error(err);
+                showToast('Lỗi tạo đơn hàng', 'error');
+            }
         });
     }
-    // ====== KẾT THÚC LOGIC ROBUX MỚI ======
 
     function calcBoostPrice() {
         const serviceSelect = document.getElementById('boost-service');
@@ -1766,6 +1918,10 @@
         e.preventDefault();
         const gameKey = document.getElementById('boost-game').value;
         const serviceSelect = document.getElementById('boost-service');
+        if (serviceSelect.selectedIndex === -1) {
+            return showToast('Vui lòng chọn dịch vụ hợp lệ', 'error');
+        }
+        
         const serviceName = serviceSelect.options[serviceSelect.selectedIndex].text;
         const username = document.getElementById('boost-username').value;
         const password = document.getElementById('boost-password').value;
@@ -1774,23 +1930,33 @@
         if (!username || !password) return showToast('Username and password are required', 'error');
 
         openGenericConfirm('Game Service', `${serviceName} for ${gameServicesConfig[gameKey].name}`, price, async () => {
-            if (appState.currentUser.balance < price) return showToast('Insufficient balance! Please top up.', 'error');
+            if (appState.currentUser.balance < price) {
+                showToast('Số dư không đủ! Vui lòng nạp quỹ.', 'error');
+                return;
+            }
             
             const orderCode = 'BST-' + Math.random().toString(36).substr(2, 6).toUpperCase();
             
-            await supabaseClient.from('orders').insert([{
-                order_code: orderCode,
-                user_id: appState.currentUser.id,
-                type: 'game_service',
-                price: price,
-                details: { game: gameServicesConfig[gameKey].name, service: serviceName, acc_user: username, acc_pass: password }
-            }]);
-            
-            await updateBalanceAndLogTx(-price, 'Game Boost Service');
-            
-            finalizeOrder('Game boosting service ordered!');
-            DOM.gamesForm.reset();
-            populateGameServices();
+            try {
+                const { error } = await supabaseClient.from('orders').insert([{
+                    order_code: orderCode,
+                    user_id: appState.currentUser.id,
+                    type: 'game_service',
+                    price: price,
+                    details: { game: gameServicesConfig[gameKey].name, service: serviceName, acc_user: username, acc_pass: password }
+                }]);
+                
+                if (error) throw error;
+                
+                await updateBalanceAndLogTx(-price, 'Game Boost Service');
+                
+                finalizeOrder('Game boosting service ordered!');
+                DOM.gamesForm.reset();
+                populateGameServices();
+            } catch (err) {
+                console.error(err);
+                showToast('Lỗi tạo đơn hàng', 'error');
+            }
         });
     }
 
@@ -1986,20 +2152,73 @@
         
         const dateStr = new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
         document.getElementById('profile-date').innerText = dateStr;
+        document.getElementById('profile-uid').innerText = user.id;
 
         const initial = user.username.charAt(0).toUpperCase();
         
         const sbImg = document.getElementById('sidebar-avatar');
         const sbInit = document.getElementById('sidebar-initial');
+        const sbDeco = document.getElementById('sidebar-decoration');
+        
         const prImg = document.getElementById('profile-avatar-img');
         const prInit = document.getElementById('profile-avatar-initial');
+        const prDeco = document.getElementById('profile-decoration');
 
-        if (user.avatar_url) {
-            sbImg.src = user.avatar_url; sbImg.classList.remove('hidden'); sbInit.classList.add('hidden');
-            prImg.src = user.avatar_url; prImg.classList.remove('hidden'); prInit.classList.add('hidden');
+        // Ưu tiên hiển thị Avatar: Discord > Upload tự do
+        const displayAvatar = user.discord_avatar || user.avatar_url;
+
+        if (displayAvatar) {
+            if(sbImg) { sbImg.src = displayAvatar; sbImg.classList.remove('hidden'); }
+            if(sbInit) sbInit.classList.add('hidden');
+            if(prImg) { prImg.src = displayAvatar; prImg.classList.remove('hidden'); }
+            if(prInit) prInit.classList.add('hidden');
         } else {
-            sbImg.classList.add('hidden'); sbInit.classList.remove('hidden'); sbInit.innerText = initial;
-            prImg.classList.add('hidden'); prInit.classList.remove('hidden'); prInit.innerText = initial;
+            if(sbImg) sbImg.classList.add('hidden');
+            if(sbInit) { sbInit.classList.remove('hidden'); sbInit.innerText = initial; }
+            if(prImg) prImg.classList.add('hidden');
+            if(prInit) { prInit.classList.remove('hidden'); prInit.innerText = initial; }
+        }
+
+        // Xử lý hiển thị Khung viền (Decoration)
+        if (user.discord_decoration) {
+            if(sbDeco) { sbDeco.src = user.discord_decoration; sbDeco.classList.remove('hidden'); }
+            if(prDeco) { prDeco.src = user.discord_decoration; prDeco.classList.remove('hidden'); }
+        } else {
+            if(sbDeco) sbDeco.classList.add('hidden');
+            if(prDeco) prDeco.classList.add('hidden');
+        }
+
+        // Cập nhật giao diện mục Discord Connection
+        const iconUnlinked = document.getElementById('discord-icon-unlinked');
+        const linkAvatar = document.getElementById('discord-link-avatar');
+        const linkName = document.getElementById('discord-link-name');
+        const linkStatus = document.getElementById('discord-link-status');
+        const btnLink = document.getElementById('btn-link-discord');
+        const btnUnlink = document.getElementById('btn-unlink-discord');
+        
+        if (iconUnlinked && linkName) {
+            if (user.discord_id) {
+                // Đã liên kết
+                iconUnlinked.classList.add('hidden');
+                linkAvatar.src = user.discord_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+                linkAvatar.classList.remove('hidden');
+                
+                linkName.innerText = user.discord_username;
+                linkStatus.innerHTML = '<span class="text-green-400 font-bold uppercase tracking-widest text-[9px]">Linked</span>';
+                
+                btnLink.classList.add('hidden');
+                btnUnlink.classList.remove('hidden');
+            } else {
+                // Chưa liên kết
+                iconUnlinked.classList.remove('hidden');
+                linkAvatar.classList.add('hidden');
+                
+                linkName.innerText = 'Discord';
+                linkStatus.innerText = 'Sync Avatar & Decoration';
+                
+                btnLink.classList.remove('hidden');
+                btnUnlink.classList.add('hidden');
+            }
         }
 
         renderOrders();
@@ -2020,7 +2239,7 @@
             DOM.tabBtnCard.classList.replace('text-gray-500', 'text-brand-400');
             DOM.tabBtnBank.classList.replace('border-brand-500', 'border-transparent');
             DOM.tabBtnBank.classList.replace('text-brand-400', 'text-gray-500');
-            DOM.tabContentCard.classList.remove('hidden');
+            DOM.tabContentCard.remove('hidden');
             DOM.tabContentBank.classList.add('hidden');
         }
     }
@@ -2483,12 +2702,22 @@
         DOM.ordersTableBody.innerHTML = '';
         if (appState.orders.length === 0) {
             DOM.ordersTableBody.parentElement.classList.add('hidden');
+            const pagContainer = document.getElementById('orders-pagination');
+            if(pagContainer) pagContainer.classList.add('hidden');
             DOM.noOrders.classList.remove('hidden');
         } else {
             DOM.ordersTableBody.parentElement.classList.remove('hidden');
             DOM.noOrders.classList.add('hidden');
             
-            appState.orders.forEach(order => {
+            // Logic tính tổng số trang
+            const totalPages = Math.ceil(appState.orders.length / ordersPerPage);
+            if (currentOrderPage > totalPages) currentOrderPage = totalPages;
+            if (currentOrderPage < 1) currentOrderPage = 1;
+            
+            const startIdx = (currentOrderPage - 1) * ordersPerPage;
+            const paginatedOrders = appState.orders.slice(startIdx, startIdx + ordersPerPage);
+            
+            paginatedOrders.forEach(order => {
                 const date = new Date(order.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
                 let sClass = '', sIcon = '';
                 if (order.status === 'pending') { sClass = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'; sIcon = '<span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span>'; }
@@ -2515,7 +2744,28 @@
                     </tr>
                 `);
             });
+
+            // Logic hiển thị / ẩn thanh phân trang
+            const pagContainer = document.getElementById('orders-pagination');
+            if (pagContainer) {
+                if (totalPages > 1) {
+                    pagContainer.classList.remove('hidden');
+                    pagContainer.classList.add('flex');
+                    document.getElementById('orders-page-info').innerText = `Page ${currentOrderPage} / ${totalPages}`;
+                    
+                    pagContainer.children[0].disabled = currentOrderPage === 1;
+                    pagContainer.children[2].disabled = currentOrderPage === totalPages;
+                } else {
+                    pagContainer.classList.add('hidden');
+                    pagContainer.classList.remove('flex');
+                }
+            }
         }
+    }
+
+    function changeOrderPage(dir) {
+        currentOrderPage += dir;
+        renderOrders();
     }
 
     async function renderTransactions() {
@@ -2611,30 +2861,80 @@
         else badge.classList.add('hidden');
     }
 
-    function generateFakeCharts() {
-        const chart = document.getElementById('fake-chart');
-        if (!chart) return;
-        chart.innerHTML = '';
-        for(let i=0; i<7; i++) {
-            const height = Math.floor(Math.random() * 80) + 20;
-            chart.innerHTML += `<div class="w-full bg-brand-500/30 rounded-t-md hover:bg-brand-400 transition-colors chart-bar relative group" style="height: ${height}%"><div class="opacity-0 group-hover:opacity-100 absolute -top-6 md:-top-8 left-1/2 -translate-x-1/2 bg-surface-950 text-[10px] md:text-xs py-0.5 px-1.5 md:py-1 md:px-2 rounded font-bold text-white transition-opacity">${height}</div></div>`;
-        }
-    }
-
     async function handleAvatarUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
+
+        const overlay = document.querySelector('.avatar-overlay');
+        if (overlay) overlay.style.display = 'none';
+
+        showToast('Uploading avatar to CDN...', 'info');
+
         const reader = new FileReader();
         reader.onload = async (event) => {
-            const base64Avatar = event.target.result;
-            const { error } = await supabaseClient.from('profiles').update({ avatar_url: base64Avatar }).eq('id', appState.currentUser.id);
-            
-            if(!error) {
-                appState.currentUser.avatar_url = base64Avatar;
-                updateUI();
-                showToast('Avatar updated!', 'success');
-            } else {
-                showToast('Failed to update avatar', 'error');
+            try {
+                const base64Avatar = event.target.result;
+                
+                const oldAvatarUrl = appState.currentUser.avatar_url; 
+                
+                const uploadRes = await fetch('https://dev.celestiax.fun/cdn/v1/img/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        file: base64Avatar,
+                        fileName: `avatar_${appState.currentUser.id}.png`,
+                        folder: '/avatars'
+                    })
+                });
+                
+                const uploadData = await uploadRes.json();
+                
+                if (!uploadData.success) {
+                    throw new Error(uploadData.error || 'Upload CDN failed');
+                }
+                
+                const imageUrl = uploadData.data.url; 
+                
+                const { error } = await supabaseClient.from('profiles').update({ avatar_url: imageUrl }).eq('id', appState.currentUser.id);
+                
+                if(!error) {
+                    appState.currentUser.avatar_url = imageUrl;
+                    updateUI(); 
+                    showToast('Avatar updated successfully!', 'success');
+
+                    if (oldAvatarUrl && oldAvatarUrl.includes('/avatars/')) {
+                        try {
+                            const oldFileName = oldAvatarUrl.split('/').pop(); 
+                            
+                            const listRes = await fetch('https://dev.celestiax.fun/cdn/v1/img/data?folder=/avatars');
+                            const listData = await listRes.json();
+                            
+                            if (listData.success && listData.data) {
+                                const oldFile = listData.data.find(f => f.name === oldFileName);
+                                
+                                if (oldFile && oldFile.fileId) {
+                                     await fetch('https://dev.celestiax.fun/cdn/v1/img/delete', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ fileId: oldFile.fileId })
+                                    });
+                                    console.log('Successfully cleaned up the old avatar on CDN!');
+                                }
+                            }
+                        } catch (err) {
+                            console.log('Cant delete old avatar:', err);
+                        }
+                    }
+
+                } else {
+                    throw error;
+                }
+            } catch (error) {
+                console.error("Error upload avatar:", error);
+                showToast('Failed to update avatar. Please try again.', 'error');
+            } finally {
+                if (overlay) overlay.style.display = '';
+                e.target.value = '';
             }
         };
         reader.readAsDataURL(file);
@@ -2738,7 +3038,6 @@
         }
     }
 </script>
-
 
 </body>
 </html>
